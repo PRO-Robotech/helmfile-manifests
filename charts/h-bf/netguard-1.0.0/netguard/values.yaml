@@ -25,8 +25,8 @@ appSpec:
           name: manager
           enabled: true
           image:
-            repository: sgroups/sgroups.k8s.netguard
-            tag: "init-bb8362cc"
+            repository: sgroups/sgroups.k8s.netguard-backend
+            tag: "main-0815c363"
 
           extraCommand:
             - /manager
