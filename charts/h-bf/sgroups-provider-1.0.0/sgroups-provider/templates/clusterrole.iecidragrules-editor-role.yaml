@@ -1,0 +1,27 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-iecidragrules-editor-role
+rules:
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - iecidragrules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - iecidragrules/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

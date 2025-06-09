@@ -1,0 +1,31 @@
+- name: netbox-postgresql
+  namespace: incloud-netbox
+  skipDeps: true
+  chart: charts/bitnami/postgresql-{{ env "POSTGRES_VERSION" }}/postgresql
+  version: '{{ env "POSTGRES_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "netbox"
+
+- name: netbox
+  namespace: incloud-netbox
+  skipDeps: true
+  chart: charts/netbox-chart/netbox-{{ env "NETBOX_VERSION" }}/netbox
+  version: '{{ env "NETBOX_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "netbox"
+
+- name: netbox-istio-ingressgateway
+  namespace: incloud-netbox
+  skipDeps: true
+  chart: charts/istio-release/gateway-{{ env "ISTIO_VERSION" }}/gateway
+  version: '{{ env "ISTIO_VERSION" }}'
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "netbox"

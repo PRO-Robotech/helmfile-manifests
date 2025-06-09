@@ -1,0 +1,6 @@
+global:
+  postgresql:
+    auth:
+      database: {{ .Values.global.netbox.externalDB.dbName }}
+      username: {{ .Values.global.netbox.externalDB.dbUser }}
+      password: {{ .Values.global.netbox.externalDB.dbPassword }}

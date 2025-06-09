@@ -1,0 +1,30 @@
+{{- range $appName, $appValue := .Values.applications }}
+  {{- if eq (include "appSpec.configMap.status" $appValue) "true" }}
+    {{- range $volumeName, $volumeValue := $appValue.volumes -}}
+      {{- if not (hasKey $volumeValue.volume "mode") -}}
+        {{ fail "Error! <mode> in the Volumes structure is incorrectly defined" }}
+      {{- end -}}
+      {{- if eq $volumeValue.volume.mode "configMap" }}
+        {{- if not (eq ( include "appSpec.configMap.volume.status" $volumeValue ) "true") }}
+          {{ fail "Error! The Volumes structure is incorrectly defined" }}
+        {{- end }}
+        {{- if not $volumeValue.volume.projected }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-{{ $volumeValue.volume.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+data:
+  {{- include "appSpec.configMap.format.yaml"  $volumeValue.volume | nindent 2 -}}
+  {{- include "appSpec.configMap.format.json"  $volumeValue.volume | nindent 2 -}}
+  {{- include "appSpec.configMap.format.text"  $volumeValue.volume | nindent 2 -}}
+  {{- include "appSpec.configMap.format.dict"  $volumeValue.volume | nindent 2 -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

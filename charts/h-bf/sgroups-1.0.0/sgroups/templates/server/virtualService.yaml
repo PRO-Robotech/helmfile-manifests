@@ -1,0 +1,27 @@
+{{- with .Values.appSpec.applications.server }}
+  {{- if .enabled }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  hosts:
+    - {{ $.Release.Name }}.{{ $.Release.Namespace }}.{{ $.Values.domain }}
+  gateways:
+    - {{ $.Release.Name }}
+  http:
+    - name: {{ .name }}
+      match:
+        - uri:
+            prefix: /server/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: {{ $.Release.Name }}-{{ .name }}
+            port:
+              number: {{ .containers.server.extraPorts.ingress.containerPort }}
+  {{- end }}
+{{- end }}

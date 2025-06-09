@@ -1,0 +1,9 @@
+- name: netguard
+  namespace: incloud-sgroups
+  chart: charts/h-bf/netguard-{{ env "NETGUARD_VERSION" }}/netguard
+  version: '{{ env "NETGUARD_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "netguard"

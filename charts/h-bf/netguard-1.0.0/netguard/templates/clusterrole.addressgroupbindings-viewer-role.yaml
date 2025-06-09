@@ -1,0 +1,23 @@
+{{- with .Values.appSpec.applications.netguard }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-addressgroupbindings-viewer-role
+rules:
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - addressgroupbindings
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - addressgroupbindings/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

@@ -1,0 +1,87 @@
+
+
+
+defaults:
+  defaultReplicas: 0
+
+  defaultVolumes: {}
+
+  defaultContainerSpec:
+    defaultImagePullPolicy: IfNotPresent
+
+    defaultResources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        ephemeral-storage: 50Mi
+        cpu: 100m
+        memory: 128Mi
+
+    defaultVolumeMounts: {}
+
+    defaultEnv: {}
+
+    defaultPorts: {}
+
+    defaultSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+      privileged: false
+      runAsNonRoot: true
+      runAsGroup: 65532
+      runAsUser: 65532
+
+    defaultTerminationMessagePath: /dev/termination-log
+    defaultTerminationMessagePolicy: File
+
+  defaultInitContainers: {}
+  defaultContainers: {}
+
+  defaultRestartPolicy: Always
+  defaultTerminationGracePeriodSeconds: 30
+
+  defaultDnsPolicy: ClusterFirst
+  # defaultServiceAccountName: FOO
+
+  defaultHostNetwork: "false"
+  defaultHostPID: "false"
+  defaultHostIPC: "false"
+  defaultSchedulerName: default-scheduler
+
+  # enableServiceLinks в Kubernetes контролирует, будут ли ссылки на сервисы, которые доступны в namespace пода, 
+  # автоматически добавляться в переменные окружения пода. 
+  # По умолчанию, Kubernetes автоматически создает переменные окружения для всех сервисов, 
+  # доступных в namespace, что может быть нежелательно по соображениям безопасности или производительности.
+  #
+  # true:  Включает  автоматическое создание переменных окружения для сервисов в namespace. Это значение по умолчанию.
+  # false: Отключает автоматическое создание переменных окружения для сервисов в namespace.
+  defaultEnableServiceLinks: false
+
+
+  # В Kubernetes приоритеты задаются с помощью объектов PriorityClass. 
+  # Администраторы кластера могут создавать свои собственные PriorityClass, 
+  # задавая при этом уровень приоритета и параметры preemption (предварительное вытеснение). 
+  # По умолчанию в Kubernetes доступны следующие приоритеты:
+  # TODO
+  # defaultPriorityClassName: ""
+
+  # PreemptionPolicy в Kubernetes используется для управления поведением предварительного вытеснения (preemption) подов. 
+  # Предварительное вытеснение позволяет подам с высоким приоритетом вытеснять поды с более низким приоритетом, 
+  # чтобы освободить ресурсы для подов с высоким приоритетом.
+  # TODO
+  # defaultPreemptionPolicy: ""
+
+
+  # runtimeClassName в Kubernetes используется для указания конкретного RuntimeClass, 
+  # который должен быть использован для запуска контейнеров пода. 
+  # RuntimeClass позволяет использовать различные контейнерные runtime (например, runc, gVisor, Kata Containers и т.д.) 
+  # для различных подов в одном кластере.
+  # TODO
+  # defaultRuntimeClassName: ""
+
+
+applications: {}

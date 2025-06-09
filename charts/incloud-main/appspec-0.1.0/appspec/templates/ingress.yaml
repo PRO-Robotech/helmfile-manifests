@@ -1,0 +1,46 @@
+{{- range $appName, $appValue := .Values.applications }}
+  {{- if $appValue.ingress }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $.Release.Name }}-{{ $appValue.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+  {{- with $appValue.ingress.annotations}}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+spec:
+  ingressClassName: {{ $appValue.ingress.ingressClassName }}
+  rules:
+    {{- range $hostName, $hostValue := $appValue.ingress.hosts }}
+    - host: {{ $hostName }}
+      http:
+        paths:
+          {{- range $pathName, $pathValue := $hostValue.paths }}
+          - path: {{ $pathName }}
+            pathType: {{ $pathValue.pathType | default "Prefix" }}
+            backend:
+              service:
+                name: {{ $pathValue.serviceName | default (printf "%s-%s" $.Release.Name $appValue.name) }}
+                port:
+                {{- if $pathValue.servicePortSpec }}
+                  {{- toYaml $pathValue.servicePortSpec | nindent 18 }}
+                {{- else }}
+                  name: ingress
+                {{- end }}
+          {{- end }}
+    {{- end }}
+  tls:
+    {{- range $hostName, $hostValue := $appValue.ingress.hosts }}
+    - hosts:
+        - {{ $hostName }}
+      secretName: "{{ $.Release.Name }}-{{ $hostValue.certificate.name }}"
+    {{- end }}
+
+  {{- end }}
+{{- end }}

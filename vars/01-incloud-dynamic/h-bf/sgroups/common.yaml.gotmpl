@@ -1,0 +1,30 @@
+{{- $mainDomain := .Values.global.domains.main -}}
+
+domain: {{ $mainDomain }}
+
+appSpec:
+  applications:
+    server:
+      containers:
+        server:
+          extraEnv:
+            dbUser:     {{ .Values.global.sgroups.externalDB.dbUser }}
+            dbPassword: {{ .Values.global.sgroups.externalDB.dbPassword }}
+            dbUrl:      {{ .Values.global.sgroups.externalDB.dbUrl }}
+            dbPort:     {{ .Values.global.sgroups.externalDB.dbPort }}
+            dbName:     {{ .Values.global.sgroups.externalDB.dbName }}
+
+      initContainers:
+        migration:
+          extraEnv:
+            dbUser:     {{ .Values.global.sgroups.externalDB.dbUser }}
+            dbPassword: {{ .Values.global.sgroups.externalDB.dbPassword }}
+            dbUrl:      {{ .Values.global.sgroups.externalDB.dbUrl }}
+            dbPort:     {{ .Values.global.sgroups.externalDB.dbPort }}
+            dbName:     {{ .Values.global.sgroups.externalDB.dbName }}
+
+    web:
+      containers:
+        web:
+          extraEnv:
+            HBF_API: http://{{ .Release.Name }}.{{ .Release.Namespace }}.{{ $mainDomain }}/server

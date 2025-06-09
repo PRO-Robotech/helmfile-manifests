@@ -1,0 +1,22 @@
+{{- with .Values.appSpec.applications.ipamprovider }}
+  {{- if .enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-{{ .volumes.controllerManagerConfig.volume.name }}
+  namespace: {{ $.Release.Namespace }}
+data:
+  config.yaml: |
+    app:
+      name: 'ipam'
+      version: '1.0.0'
+
+    netbox:
+      host: "{{ $.Values.netbox.host }}"
+      auth_token: "{{ $.Values.netbox.auth_token }}"
+
+    logger:
+      log_level: "{{ $.Values.log_level }}"
+  {{- end }}
+{{- end }}

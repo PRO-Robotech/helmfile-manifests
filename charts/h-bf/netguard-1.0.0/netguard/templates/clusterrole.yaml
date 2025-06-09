@@ -1,0 +1,63 @@
+{{- with .Values.appSpec.applications.netguard }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+rules:
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - addressgroupbindingpolicies
+  - addressgroupbindings
+  - addressgroupportmappings
+  - rules2ses
+  - servicealiases
+  - services
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - addressgroupbindingpolicies/finalizers
+  - addressgroupbindings/finalizers
+  - addressgroupportmappings/finalizers
+  - rules2ses/finalizers
+  - servicealiases/finalizers
+  - services/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - addressgroupbindingpolicies/status
+  - addressgroupbindings/status
+  - addressgroupportmappings/status
+  - rules2ses/status
+  - servicealiases/status
+  - services/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - addressgroups
+  - ieagagrules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  {{- end }}
+{{- end }}

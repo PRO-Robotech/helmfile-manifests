@@ -1,0 +1,43 @@
+# Intelliji and VSCode
+# Ignore everything but code style settings and run configurations
+# that are supposed to be shared within teams.
+.idea
+.idea/*
+.vscode
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/dist
+
+# misc
+.DS_Store
+public/mockServiceWorker.js
+/proxy
+
+# secrets
+/.env.*
+!/.env.dist
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+tmp/*
+test.sh

@@ -1,0 +1,21 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-networks-admin-role
+rules:
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - networks
+  verbs:
+  - '*'
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - networks/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

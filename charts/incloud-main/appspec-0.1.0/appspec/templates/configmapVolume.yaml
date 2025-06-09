@@ -1,0 +1,43 @@
+{{- range $appName, $appValue := .Values.applications }}
+  {{- range $volumeName, $volumeValue := $appValue.volumes }}
+    {{- if eq $volumeValue.volume.mode "configMap"}}
+      {{- if $volumeValue.volume.payload }}
+        {{- if $volumeValue.volume.payload.content }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-{{ $volumeValue.volume.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+
+data:
+  
+  {{- if eq (lower $volumeValue.volume.payload.format ) "yaml" }}
+  {{ $volumeValue.volume.name -}}: 
+    {{- $volumeValue.volume.payload.content | toYaml | nindent 4 }}
+  {{- end }}
+
+  {{- if eq (lower $volumeValue.volume.payload.format ) "json" }}
+  {{ $volumeValue.volume.name -}}: |- 
+    {{- $volumeValue.volume.payload.content | toJson | nindent 4 }}
+  {{- end }}
+
+  {{- if eq (lower $volumeValue.volume.payload.format ) "text" }}
+  {{ $volumeValue.volume.name -}}: |-
+    {{- $volumeValue.volume.payload.content | nindent 4 }}
+  {{- end }}
+
+  {{- if eq (lower $volumeValue.volume.payload.format ) "dict" }}
+  {{- range $contentName, $contentValue := $volumeValue.volume.payload.content }}
+    {{ $contentName }}: {{ $contentValue -}}
+  {{- end }}
+  {{- end }}
+
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

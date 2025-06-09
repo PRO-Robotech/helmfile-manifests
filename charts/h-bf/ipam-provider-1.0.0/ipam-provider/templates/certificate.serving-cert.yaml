@@ -1,0 +1,22 @@
+{{- with .Values.appSpec.applications.ipamprovider }}
+  {{- if .enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  commonName: {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}.svc
+  dnsNames:
+  - {{ $.Release.Name }}-{{ .name }}
+  - {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}
+  - {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}.svc
+  issuerRef:
+    kind: ClusterIssuer
+    name: issuer-selfsigned
+  usages:	
+    - server auth
+  secretName: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,88 @@
+sgroup:
+  grpcAddress: sgroups-server.incloud-sgroups.svc:9006
+  log_level: debug
+
+appSpec:
+  applications:
+    sgroupsprovider:
+      enabled: true
+      type: Deployment
+      name: sgroupsprovider
+      replicas: 1
+
+      tolerations:
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+
+      extraPriorityClassName: system-cluster-critical
+
+      volumes:
+        certificate:
+          volume:
+            mode: secret
+            name: sgroupsprovider-certificate
+        controllerManagerConfig:
+          volume:
+            mode: configMap
+            name: sgroupsprovider-config
+
+      containers:
+        manager:
+          name: manager
+          enabled: true
+          image:
+            repository: sgroups/sgroups.k8s.provider
+            tag: "v1.0.0-989568ac"
+
+          extraCommand:
+            - /manager
+
+          extraArgs:
+            health-probe-bind-address: ":8081"
+            leader-elect: true
+            metrics-bind-address: 127.0.0.1:8080
+            webhook-bind-port: 8443
+            config: /config.yaml
+            webhook-cert-path: /etc/certs
+
+          extraPorts:
+            https:
+              containerPort: 8443
+              protocol: TCP
+            metrics:
+              containerPort: 8080
+              protocol: TCP
+
+          extraResources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+
+          extraLivenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          extraReadinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          extraVolumeMounts:
+            certificate:
+              volumeMount:
+                path: /etc/certs
+            controllerManagerConfig:
+              volumeMount:
+                path: /config.yaml
+                spec:
+                  subPath: config.yaml

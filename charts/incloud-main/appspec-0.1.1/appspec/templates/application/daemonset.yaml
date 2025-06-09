@@ -1,0 +1,72 @@
+{{- range $appName, $appValue := .Values.applications }}
+  {{- if and (eq $appValue.type "DaemonSet") $appValue.enabled }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ $.Release.Name }}-{{ $appValue.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+
+spec:
+  selector:
+    matchLabels:
+      {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 6 }}
+
+  template:
+
+    metadata:
+      labels:
+        {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 8 }}
+
+      annotations:
+        {{- include "appSpec.application.annotations"  (list $appValue) | nindent 8 }}
+
+    spec:
+      {{- with $appValue.nodeSelector}}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with $appValue.tolerations}}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with deepCopy $.Values.defaults.defaultContainers |  merge ($appValue.containers | default dict ) }}
+      containers:
+        {{- range $containerName, $containerValue := . }}
+        {{- include "appSpec.container-spec" (list $containerValue $containerName $) | nindent 8 }}
+        {{- end }}
+      {{- end }}
+
+      {{ with deepCopy $.Values.defaults.defaultInitContainers |  merge ($appValue.initContainers | default dict ) }}
+      initContainers:
+        {{- range $containerName, $containerValue := . }}
+        {{- include "appSpec.container-spec" (list $containerValue $containerName $) | nindent 8 }}
+        {{- end }}
+      {{- end }}
+
+      restartPolicy:                  {{ $appValue.extraRestartPolicy                 | default $.Values.defaults.defaultRestartPolicy  }}
+      terminationGracePeriodSeconds:  {{ $appValue.extraTerminationGracePeriodSeconds | default $.Values.defaults.defaultTerminationGracePeriodSeconds }}
+      dnsPolicy:                      {{ $appValue.extraDnsPolicy                     | default $.Values.defaults.defaultDnsPolicy }}
+      hostNetwork:                    {{ $appValue.extraHostNetwork                   | default $.Values.defaults.defaultHostNetwork }}
+      hostPID:                        {{ $appValue.extraHostPID                       | default $.Values.defaults.defaultHostPID }}
+      hostIPC:                        {{ $appValue.extraHostIPC                       | default $.Values.defaults.defaultHostIPC }}
+      schedulerName:                  {{ $appValue.extraSchedulerName                 | default $.Values.defaults.defaultSchedulerName }}
+      priorityClassName:              {{ $appValue.extraPriorityClassName             | default $.Values.defaults.defaultPriorityClassName }}
+      runtimeClassName:               {{ $appValue.extraRuntimeClassName              | default $.Values.defaults.defaultRuntimeClassName }}
+      enableServiceLinks:             {{ $appValue.extraEnableServiceLinks            | default $.Values.defaults.defaultEnableServiceLinks }}
+      preemptionPolicy:               {{ $appValue.extraPreemptionPolicy              | default $.Values.defaults.defaultPreemptionPolicy }}
+      serviceAccountName:             {{ $.Release.Name }}-{{ $appValue.name }}
+
+      volumes:
+        {{- $defaultVolumes := $.Values.defaults.defaultVolumes -}}
+        {{- include "appSpec.application.containersVolumes" (list $defaultVolumes   $.Release.Name $appValue) | nindent 6 -}}
+        {{- include "appSpec.application.containersVolumes" (list $appValue.volumes $.Release.Name $appValue) | nindent 6 -}}
+
+
+{{- end }}
+{{- end }}

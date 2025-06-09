@@ -1,0 +1,8 @@
+{{- $commonVar        := printf "../00-globals/00-common.yaml" | readFile | fromYaml }}
+{{- $commonEnvVar     := printf "../00-globals/%s/10-networkAddresses.yaml" (.Environment.Name) | readFile | fromYaml }}
+{{- $clusterFullName  := printf "%s-%s-%s-%s" (env "CLUSTER_NAME") (env "CLUSTER_ENV") (env "CLUSTER_AREA") (env "CLUSTER_INDEX") }}
+
+global:
+  clusterFullName: {{ $clusterFullName }}
+  domains:
+    main: {{ printf "%s.%s" $clusterFullName $commonVar.global.domains.external }}

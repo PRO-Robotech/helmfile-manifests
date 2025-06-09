@@ -1,0 +1,17 @@
+- name: crossplane
+  namespace: incloud-crossplane
+  chart: charts/incloud-main/crossplane-{{ env "CROSSPLANE_VERSION" }}/crossplane
+  version: '{{ env "CROSSPLANE_VERSION" }}'
+  inherit:
+  - template: localCharts
+  labels:
+    incloud-collections: "crossplane"
+
+- name: crossplane-paas
+  namespace: incloud-crossplane
+  chart: charts/incloud-paas/crossplane-paas-{{ env "CROSSPLANE_PAAS_VERSION" }}/crossplane-paas
+  version: '{{ env "CROSSPLANE_VERSION" }}'
+  inherit:
+  - template: localCharts
+  labels:
+    incloud-collections: "crossplane-paas"

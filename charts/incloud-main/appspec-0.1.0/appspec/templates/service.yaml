@@ -1,0 +1,43 @@
+{{- $serviceType := "ClusterIP" -}}
+{{- range $appName, $appValue := .Values.applications }}
+  {{- if $appValue.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-{{ $appValue.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+spec:
+  selector:
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+
+  ports:
+  {{- range $containerName, $containerValue := $appValue.containers }}
+    {{- range $keySpec, $valueSpec :=  $containerValue }}
+      {{- if eq $keySpec "extraPorts" }}
+      {{- range $portName, $portValue := $containerValue.extraPorts  }}
+      {{- if eq (lower $portName) "ingress"}}
+    - name: ingress
+      {{- else }}
+    - name: {{ $containerValue.name }}-{{ $portName }}
+      {{- end }}
+      port: {{ $portValue.containerPort }}
+      targetPort: {{ $portValue.containerPort }}
+      protocol: {{ $portValue.protocol }}
+      {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- range $appSpecKey, $appSpecValue :=  $appValue }}
+    {{- if eq $appSpecKey "service" }}
+      {{- $serviceType = $appSpecValue.type }}
+    {{- end }}
+  {{- end }}
+  type: {{ $serviceType }}
+
+  {{- end }}
+{{- end }}

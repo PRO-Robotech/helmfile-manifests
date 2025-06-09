@@ -1,0 +1,6 @@
+global:
+  postgresql:
+    auth:
+      database: {{ .Values.global.sgroups.externalDB.dbName }}
+      username: {{ .Values.global.sgroups.externalDB.dbUser }}
+      password: {{ .Values.global.sgroups.externalDB.dbPassword }}

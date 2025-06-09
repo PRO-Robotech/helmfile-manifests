@@ -1,0 +1,250 @@
+globalVars:
+  sockPath:         &sockPath         /csi/csi.sock
+  sockDir:          &sockDir          /csi
+  sockEndpoint:     &sockEndpoint     unix://csi/csi.sock
+  vmwareConfigDir:  &vmwareConfigDir  /etc/cloud
+  vmwareConfigPath: &vmwareConfigPath /etc/cloud/csi-vsphere.conf
+  fssName:          &fssName          internal-feature-states.csi.vsphere.vmware.com
+
+applications:
+
+  csi-controller:
+    type: Deployment
+
+    # service:
+    #   type: 2
+
+    volumes:
+      socket-dir:
+        volume:
+          mode: emptyDir
+          spec: {}
+
+      secret-vmware-controller:
+        volume:
+          mode: secret
+          spec:
+            secretName: incloud-csi-vmware-controller
+
+    containers:
+      csi-attacher:
+        enabled: true
+        image:
+          repository: registry.k8s.io/sig-storage/csi-attacher
+          tag: "v4.3.0"
+
+        extraArgs:
+          csi-address: $(ADDRESS)
+          kube-api-burst: 100
+          kube-api-qps: 100
+          leader-election: true
+          leader-election-lease-duration: 120s
+          leader-election-renew-deadline: 60s
+          leader-election-retry-period: 30s
+          timeout: 300s
+          v: 4
+
+        extraEnv:
+          ADDRESS: *sockPath
+
+        extraSecurityContext:
+          readOnlyRootFilesystem: false
+
+        extraVolumeMounts:
+          socket-dir:
+            volumeMount:
+              path: *sockDir
+
+      csi-resizer:
+        enabled: true
+        image:
+          repository: registry.k8s.io/sig-storage/csi-resizer
+          tag: "v1.8.0"
+
+        extraArgs:
+          csi-address: $(ADDRESS)
+          handle-volume-inuse-error: false
+          kube-api-burst: 100
+          kube-api-qps: 100
+          leader-election: true
+          leader-election-lease-duration: 120s
+          leader-election-renew-deadline: 60s
+          leader-election-retry-period: 30s
+          timeout: 300s
+          v: 4
+
+        extraEnv:
+          ADDRESS: *sockPath
+
+        extraSecurityContext:
+          readOnlyRootFilesystem: false
+
+        extraVolumeMounts:
+          socket-dir:
+            volumeMount:
+              path: *sockDir
+
+      liveness-probe:
+        enabled: true
+        image:
+          repository: registry.k8s.io/sig-storage/livenessprobe
+          tag: "v2.10.0"
+
+        extraArgs:
+          csi-address: $(ADDRESS)
+          v: 4
+
+        extraEnv:
+          ADDRESS: *sockPath
+
+        extraSecurityContext:
+          readOnlyRootFilesystem: false
+
+        extraVolumeMounts:
+          socket-dir:
+            volumeMount:
+              path: *sockDir
+
+      vsphere-syncer:
+        enabled: true
+        image:
+          repository: gcr.io/cloud-provider-vsphere/csi/ci/syncer
+          tag: "v3.1.0"
+
+        extraArgs:
+          fss-namespace: $(CSI_NAMESPACE)
+          fss-name: $(FSS_NAME)
+          leader-election: true
+          leader-election-lease-duration: 30s
+          leader-election-renew-deadline: 20s
+          leader-election-retry-period: 10s
+
+        extraEnv:
+          VSPHERE_CSI_CONFIG: *vmwareConfigPath
+          FSS_NAME: *fssName
+          FULL_SYNC_INTERVAL_MINUTES: "30"
+          GODEBUG: "x509sha1=1"
+          INCLUSTER_CLIENT_BURST: "100"
+          INCLUSTER_CLIENT_QPS: "100"
+          LOGGER_LEVEL: "PRODUCTION"
+
+        extraVolumeMounts:
+          secret-vmware-controller:
+            volumeMount:
+              path: *vmwareConfigDir
+
+        extraPorts:
+          prometheus:
+            containerPort: 2113
+            protocol: TCP
+
+      csi-provisioner:
+        enabled: true
+        image:
+          repository: registry.k8s.io/sig-storage/csi-provisioner
+          tag: "v3.5.0"
+
+        extraArgs:
+          csi-address: $(ADDRESS)
+          default-fstype: ext4
+          kube-api-burst: 100
+          kube-api-qps: 100
+          leader-election: true
+          leader-election-lease-duration: 120s
+          leader-election-renew-deadline: 60s
+          leader-election-retry-period: 30s
+          timeout: 300s
+          v: 4
+
+        extraEnv:
+          ADDRESS: *sockPath
+
+        extraSecurityContext:
+          readOnlyRootFilesystem: false
+
+        extraVolumeMounts:
+          socket-dir:
+            volumeMount:
+              path: *sockDir
+
+      csi-snapshotter:
+        enabled: true
+        image:
+          repository: registry.k8s.io/sig-storage/csi-snapshotter
+          tag: "v6.2.2"
+
+        extraArgs:
+          csi-address: $(ADDRESS)
+          kube-api-burst: 100
+          kube-api-qps: 100
+          leader-election: true
+          leader-election-lease-duration: 120s
+          leader-election-renew-deadline: 60s
+          leader-election-retry-period: 30s
+          timeout: 300s
+          v: 4
+
+        extraEnv:
+          ADDRESS: *sockPath
+
+        extraSecurityContext:
+          readOnlyRootFilesystem: false
+
+        extraVolumeMounts:
+          socket-dir:
+            volumeMount:
+              path: *sockDir
+
+      csi-controller:
+        enabled: true
+        image:
+          repository: gcr.io/cloud-provider-vsphere/csi/ci/driver
+          tag: "v3.1.0"
+
+        extraArgs:
+          fss-name: $(FSS_NAME)
+          fss-namespace: $(CSI_NAMESPACE)
+
+        extraEnv:
+          CSI_ENDPOINT: *sockEndpoint
+          VSPHERE_CSI_CONFIG: *vmwareConfigPath
+          FSS_NAME: *fssName
+          INCLUSTER_CLIENT_BURST: "100"
+          INCLUSTER_CLIENT_QPS: "100"
+          LOGGER_LEVEL: "PRODUCTION"
+          X_CSI_MODE: "controller"
+          X_CSI_SERIAL_VOL_ACCESS_TIMEOUT: "3m"
+          X_CSI_SPEC_DISABLE_LEN_CHECK: "true"
+
+        extraSecurityContext:
+          readOnlyRootFilesystem: false
+
+        extraLivenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: csi-controller-healthz
+          initialDelaySeconds: 30
+          periodSeconds: 180
+          timeoutSeconds: 10
+
+        extraVolumeMounts:
+          socket-dir:
+            volumeMount:
+              path: *sockDir
+
+          secret-vmware-controller:
+            volume:
+              mode: secret
+              spec:
+                secretName: incloud-csi-vmware-controller
+            volumeMount:
+              path: *vmwareConfigDir
+
+        extraPorts:
+          healthz:
+            containerPort: 9808
+            protocol: TCP
+          prometheus:
+            containerPort: 2112
+            protocol: TCP

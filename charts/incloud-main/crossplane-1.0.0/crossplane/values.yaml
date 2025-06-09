@@ -1,0 +1,290 @@
+appSpec:
+  applications:
+    crossplane:
+      enabled: true
+      type: Deployment
+      name: crossplane
+      replicas: 1
+
+      priorityClassName: system-node-critical
+
+      tolerations:
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-client
+          effect: NoSchedule
+
+      service:
+        enabled: true
+
+      ingress:
+        enabled: false
+
+      affinity:
+        mode: soft
+
+      strategy:
+        type: RollingUpdate
+        maxSurge: 25%
+        maxUnavailable: 25%
+
+      volumes:
+        packageCache:
+          volume:
+            mode: emptyDir
+            spec:
+              sizeLimit: 50Mi
+        bundleCA:
+          volume:
+            mode: emptyDir
+            spec:
+              sizeLimit: 10Mi
+        clientCertificate:
+          volume:
+            mode: secret
+            name: client-tls
+        serverCertificate:
+          volume:
+            mode: secret
+            name: server-tls
+
+        syncCA:
+          volume:
+            mode: configMap
+            name: entrypoint.sh
+            payload:
+              format: text
+              content: |-
+                #!/bin/sh
+
+                CERTMANAGER_CA_SECRET_NAME="crossplane-certmanager-ca"
+                CROSSPLANE_CA_SECRET_NAME="crossplane-root-ca"
+                CROSSPLANE_BUNDLE_CA_FILE="/tls/bundle-ca/root-certs.pem"
+
+                SA_TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+                SA_CERT="/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                CURRENT_NS=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+                KUBECTL="kubectl --server=https://kubernetes.default.svc --certificate-authority=${SA_CERT} --token=${SA_TOKEN}"
+
+                CA_CERT=$(${KUBECTL} -n ${CURRENT_NS} get secret crossplane-certmanager-ca -o jsonpath="{.data.tls\.crt}")
+                CA_KEY=$(${KUBECTL} -n ${CURRENT_NS} get secret crossplane-certmanager-ca -o jsonpath="{.data.tls\.key}")
+
+                echo "===== Create/update CA cert secret: ${CROSSPLANE_CA_SECRET_NAME}"
+                cat <<EOF | ${KUBECTL} apply -f -
+                apiVersion: v1
+                kind: Secret
+                metadata:
+                  name: ${CROSSPLANE_CA_SECRET_NAME}
+                  namespace: ${CURRENT_NS}
+                data:
+                  tls.crt: ${CA_CERT}
+                  tls.key: ${CA_KEY}
+                type: Opaque
+                EOF
+
+                echo ""
+                echo "===== Copy CA to crossplane trusted bundle"
+                echo -n ${CA_CERT} | base64 -d > ${CROSSPLANE_BUNDLE_CA_FILE}
+                [ -s ${CROSSPLANE_BUNDLE_CA_FILE} ] && echo "File ${CROSSPLANE_BUNDLE_CA_FILE} exist and is not empty"
+                # cat ${CROSSPLANE_BUNDLE_CA_FILE}
+
+      containers:
+        crossplane:
+          name: crossplane
+          enabled: true
+          image:
+            repository: xpkg.upbound.io/crossplane/crossplane
+            tag: v1.19.2
+
+          extraCommand:
+            - crossplane
+            - core
+            - start
+
+          extraArgs:
+            ca-bundle-path: /tls/bundle-ca/root-certs.pem
+            tls-server-certs-dir: /tls/server
+            tls-client-certs-dir: /tls/client
+            enable-external-secret-stores: true
+            debug: true
+
+          extraMetadataEnv:
+            GOMAXPROCS:
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane
+                  divisor: "1"
+                  resource: limits.cpu
+
+            GOMEMLIMIT:
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane
+                  divisor: "1"
+                  resource: limits.memory
+
+            POD_NAMESPACE:
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+
+            POD_SERVICE_ACCOUNT:
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.serviceAccountName
+
+          extraEnv:
+            LEADER_ELECTION: "true"
+            TLS_SERVER_CERTS_DIR: /tls/server
+            TLS_CLIENT_CERTS_DIR: /tls/client
+
+          extraPorts:
+            readyz:
+              containerPort: 8081
+              protocol: TCP
+            webhooks:
+              containerPort: 9443
+              protocol: TCP
+
+          extraLivenessProbe:
+            failureThreshold: 30
+            periodSeconds: 2
+            successThreshold: 1
+            tcpSocket:
+              port: readyz
+            timeoutSeconds: 1
+
+          extraReadinessProbe:
+            failureThreshold: 30
+            periodSeconds: 2
+            successThreshold: 1
+            tcpSocket:
+              port: readyz
+            timeoutSeconds: 1
+
+          extraResources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+
+          extraVolumeMounts:
+            packageCache:
+              volumeMount:
+                path: /cache
+            bundleCA:
+              volumeMount:
+                path: /tls/bundle-ca
+            clientCertificate:
+              volumeMount:
+                path: /tls/client
+            serverCertificate:
+              volumeMount:
+                path: /tls/server
+
+# Сертификаты CA, server, client выпускаются с помощью CertManager, однако
+# сертификаты для провайдеров и функций выпускаются на самим crossplane'ом
+# из поля ca.crt в секрете CA (crossplane-root-ca), который является CA для 
+# выпускаемого CA и соответсвенно выпускаемсые crossplane'ом сертификаты не
+# валидные.
+# Решение: Создать сертификат, куда будет перенесено поле tls.crt из CA,
+# выпущенного CertManager'ом в ca.crt crossplane-root-ca
+      initContainers:
+        syncca:
+          name: syncca
+          enabled: true
+          image:
+            repository: bitnami/kubectl
+            tag: 1.32.4
+
+          extraCommand:
+            - /bin/sh
+            - /entrypoint.sh
+
+          extraVolumeMounts:
+            syncCA:
+              volumeMount:
+                path: /entrypoint.sh
+                spec:
+                  subPath: entrypoint.sh
+            bundleCA:
+              volumeMount:
+                path: /tls/bundle-ca
+
+    rbacmanager:
+      enabled: true
+      type: Deployment
+      name: rbacmanager
+      replicas: 1
+
+      priorityClassName: system-node-critical
+
+      tolerations:
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-client
+          effect: NoSchedule
+
+      service:
+        enabled: true
+
+      ingress:
+        enabled: false
+
+      affinity:
+        mode: soft
+
+      strategy:
+        type: RollingUpdate
+        maxSurge: 25%
+        maxUnavailable: 25%
+
+      containers:
+        rbacmanager:
+          name: rbacmanager
+          enabled: true
+          image:
+            repository: xpkg.upbound.io/crossplane/crossplane
+            tag: v1.19.2
+
+          extraCommand:
+            - crossplane
+            - rbac
+            - start
+          
+          extraArgs:
+            provider-clusterrole: crossplane-rbacmanager:allowed-provider-permissions
+
+          extraMetadataEnv:
+            GOMAXPROCS:
+              valueFrom:
+                resourceFieldRef:
+                  containerName: rbacmanager
+                  divisor: "1"
+                  resource: limits.cpu
+
+            GOMEMLIMIT:
+              valueFrom:
+                resourceFieldRef:
+                  containerName: rbacmanager
+                  divisor: "1"
+                  resource: limits.memory
+
+          extraEnv:
+            LEADER_ELECTION: "true"
+
+          extraResources:
+            limits:
+              cpu: 100m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi

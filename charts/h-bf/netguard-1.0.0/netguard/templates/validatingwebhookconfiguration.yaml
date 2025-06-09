@@ -1,0 +1,143 @@
+{{- with .Values.appSpec.applications.netguard }}
+  {{- if .enabled }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-validatingwebhookconfiguration
+  annotations:
+    {{- with .volumes.certificate }}
+    cert-manager.io/inject-ca-from: '{{ $.Release.Namespace }}/{{ $.Release.Name }}-{{ .volume.name }}'
+    {{- end }}
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-netguard-sgroups-io-v1alpha1-addressgroupbinding
+      port: {{ .containers.manager.extraPorts.https.containerPort }}
+  failurePolicy: Fail
+  name: vaddressgroupbinding-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - netguard.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - addressgroupbindings
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-netguard-sgroups-io-v1alpha1-addressgroupbindingpolicy
+      port: {{ .containers.manager.extraPorts.https.containerPort }}
+  failurePolicy: Fail
+  name: vaddressgroupbindingpolicy-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - netguard.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - addressgroupbindingpolicies
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-netguard-sgroups-io-v1alpha1-addressgroupportmapping
+      port: {{ .containers.manager.extraPorts.https.containerPort }}
+  failurePolicy: Fail
+  name: vaddressgroupportmapping-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - netguard.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - addressgroupportmappings
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-netguard-sgroups-io-v1alpha1-rules2s
+      port: {{ .containers.manager.extraPorts.https.containerPort }}
+  failurePolicy: Fail
+  name: vrules2s-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - netguard.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - rules2ses
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-netguard-sgroups-io-v1alpha1-service
+      port: {{ .containers.manager.extraPorts.https.containerPort }}
+  failurePolicy: Fail
+  name: vservice-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - netguard.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - services
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-netguard-sgroups-io-v1alpha1-servicealias
+      port: {{ .containers.manager.extraPorts.https.containerPort }}
+  failurePolicy: Fail
+  name: vservicealias-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - netguard.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - servicealiases
+  sideEffects: None
+  {{- end }}
+{{- end }}

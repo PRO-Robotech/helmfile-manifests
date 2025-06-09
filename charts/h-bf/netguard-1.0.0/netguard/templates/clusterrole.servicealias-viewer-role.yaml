@@ -1,0 +1,23 @@
+{{- with .Values.appSpec.applications.netguard }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-servicealias-viewer-role
+rules:
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - servicealias
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - netguard.sgroups.io
+  resources:
+  - servicealias/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

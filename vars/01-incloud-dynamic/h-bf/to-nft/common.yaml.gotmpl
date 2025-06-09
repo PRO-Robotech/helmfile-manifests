@@ -1,0 +1,25 @@
+{{- $customDomain  := "example.com" -}}
+{{- $mainDomain   := .Values.global.domains.main -}}
+
+domain: {{ $mainDomain }}
+
+appSpec:
+  applications:
+    agent:
+      volumes:
+        configurationClientFile:
+          volume:
+            mode: configMap
+            name: client-config
+            payload:
+              format: json
+              content:
+                extapi:
+                  svc:
+                    sgroups:
+                      address: {{ $customDomain }}:9006
+                base-rules:
+                    networks: []
+                dns:
+                    nameservers:
+                      - 8.8.8.8

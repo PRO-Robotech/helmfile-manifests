@@ -1,0 +1,22 @@
+{{- with .Values.appSpec.applications.server }}
+  {{- if .enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  commonName: {{ $.Release.Name }}-{{ .name }}
+  dnsNames:
+    - {{ $.Release.Name }}-{{ .name }}
+    - {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}
+    - {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}.svc
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: {{ $.Release.Name }}
+  usages:
+    - server auth
+  secretName: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
+  {{- end }}
+{{- end }}

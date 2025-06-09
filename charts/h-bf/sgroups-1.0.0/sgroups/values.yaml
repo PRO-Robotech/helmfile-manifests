@@ -1,0 +1,230 @@
+
+domain: prorobotech.ru
+
+globalVolumeServerRun:               &globalVolumeServerRun               "/opt/h-bf/sgroups/server-run.sh"
+globalVolumeMigration:               &globalVolumeMigration               "/opt/h-bf/sgroups/migration.sh"
+globalVolumeConfigurationServerFile: &globalVolumeConfigurationServerFile "/opt/h-bf/sgroups/server/config.yaml"
+globalVolumeconfigurationClientFile: &globalVolumeconfigurationClientFile "/opt/h-bf/sgroups/client/config.yaml"
+globalVolumeCertificate:             &globalVolumeCertificate             "/opt/h-bf/sgroups/tls"
+
+gateway:
+  enabled: true
+
+certificates:
+  enabled: true
+
+appSpec:
+  applications:
+    server:
+      enabled: true
+      type: Deployment
+      name: server
+      replicas: 2
+
+      tolerations:
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+
+      service:
+        enabled: true
+        type: LoadBalancer
+
+      ingress:
+        enabled: false
+
+      affinity:
+        mode: soft
+
+      strategy:
+        type: RollingUpdate
+        maxSurge: 25%
+        maxUnavailable: 25%
+
+      volumes:
+        certificate:
+          volume:
+            mode: secret
+            name: server-tls
+
+        migration:
+          volume:
+            mode: configMap
+            name: init-goose
+            #projected: true
+            payload:
+              format: text
+              content: |-
+                #!/bin/bash
+                SG_STORAGE_POSTGRES_URL="postgres://${dbUser}:${dbPassword}@${dbUrl}:${dbPort}/${dbName}?sslmode=disable"
+                export SG_STORAGE_POSTGRES_URL=$SG_STORAGE_POSTGRES_URL
+                exec /app/bin/goose -table=sgroups_db_ver postgres $SG_STORAGE_POSTGRES_URL up
+
+        serverRun:
+          volume:
+            mode: configMap
+            name: init-sgroups
+            #projected: true
+            payload:
+              format: text
+              content: |-
+                #!/bin/bash
+                SG_STORAGE_POSTGRES_URL="postgres://${dbUser}:${dbPassword}@${dbUrl}:${dbPort}/${dbName}?sslmode=disable"
+                export SG_STORAGE_POSTGRES_URL=$SG_STORAGE_POSTGRES_URL
+                exec ./bin/sgroups --config=${serverConfig}
+
+        configurationServerFile:
+          volume:
+            mode: configMap
+            name: server-config
+            payload:
+              format: json
+              content:
+                logger:
+                    level: DEBUG
+                metrics:
+                    enable: true
+                healthcheck:
+                    enable: true
+                server:
+                    endpoint: tcp://0.0.0.0:9006
+                    graceful-shutdown: 30s
+                    api-path-prefix: "apis/sgroups.io/v1"
+                storage:
+                  type: postgres
+                authn:
+                  type: tls
+                  tls:
+                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                    client:
+                      verify: skip
+                      ca-files: 
+                        - "/opt/h-bf/sgroups/tls/ca.crt"
+
+      containers:
+        server:
+          name: server
+          enabled: true
+          image:
+            repository: sgroups/sgroups.server
+            tag: "v2.0.0-319ef8dc"
+
+          extraCommand:
+            - /bin/sh
+            - *globalVolumeServerRun
+
+          extraEnv:
+            dbUser:       "dbUser"
+            dbPassword:   "dbPassword"
+            dbUrl:        "dbUrl"
+            dbPort:       "dbPort"
+            dbName:       "dbName"
+            serverConfig: *globalVolumeConfigurationServerFile
+
+          extraPorts:
+            ingress:
+              containerPort: 9006
+              protocol: TCP
+
+          extraVolumeMounts:
+            configurationServerFile:
+              volumeMount:
+                path: *globalVolumeConfigurationServerFile
+                spec:
+                  subPath: server-config
+
+            serverRun:
+              volumeMount:
+                path: *globalVolumeServerRun
+                spec:
+                  subPath: init-sgroups
+
+            certificate:
+              volumeMount:
+                path:  *globalVolumeCertificate
+
+      initContainers:
+        migration:
+          name: goose
+          enabled: true
+          image:
+            repository: sgroups/sgroups.goose
+            tag: "v2.0.0-319ef8dc"
+
+          extraCommand:
+            - /bin/sh
+            - *globalVolumeMigration
+
+          extraEnv:
+            dbUser:     "dbUser"
+            dbPassword: "dbPassword"
+            dbUrl:      "dbUrl"
+            dbPort:     "dbPort"
+            dbName:     "dbName"
+            dbSchema:   "public"
+
+          extraVolumeMounts:
+            migration:
+              volumeMount:
+                path: *globalVolumeMigration
+                spec:
+                  subPath: init-goose
+
+    web:
+      enabled: true
+      type: Deployment
+      name: web
+      replicas: 2
+
+      tolerations:
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+
+      service:
+        enabled: true
+
+      ingress:
+        enabled: false
+
+      affinity:
+        mode: soft
+
+      strategy:
+        type: RollingUpdate
+        maxSurge: 25%
+        maxUnavailable: 25%
+
+      containers:
+        web:
+          name: web
+          enabled: true
+          image:
+            repository: sgroups/sgroups.ui
+            tag: "v4.1.5-1c5bd967"
+
+          extraCommand:
+            - /bin/bash
+            - -c
+            - /usr/share/nginx/html/client/env.sh && exec nginx -g 'daemon off;'
+
+          extraPorts:
+            ingress:
+              containerPort: 80
+              protocol: TCP
+
+          extraEnv:
+            HBF_API: http://release-name.prorobotech.ru/server
+            BASE_PREFIX: "client"
+            GRAPH_ENABLED: "false"
+
+          extraSecurityContext:
+            allowPrivilegeEscalation: true
+            privileged: true
+            readOnlyRootFilesystem: false
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false

@@ -1,0 +1,9 @@
+- name: to-nft
+  namespace: incloud-sgroups
+  chart: charts/h-bf/to-nft-{{ env "TO_NFT_VERSION" }}/to-nft
+  version: '{{ env "TO_NFT_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "to-nft"

@@ -1,0 +1,18 @@
+{{- with .Values.appSpec.applications.agent }}
+  {{- if .enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  commonName: {{ $.Release.Name }}-{{ .name }}
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: {{ $.Release.Name }}
+  usages:
+    - client auth
+  secretName: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
+  {{- end }}
+{{- end }}

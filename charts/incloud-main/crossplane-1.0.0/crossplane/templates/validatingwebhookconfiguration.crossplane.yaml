@@ -1,0 +1,66 @@
+{{- with .Values.appSpec.applications.crossplane }}
+  {{- if .enabled }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: crossplane
+  annotations:
+    {{- with .volumes.serverCertificate }}
+    cert-manager.io/inject-ca-from: '{{ $.Release.Namespace }}/{{ $.Release.Name }}-{{ .volume.name }}'
+    {{- end }}
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: {{ $.Release.Name }}-crossplane
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-apiextensions-crossplane-io-v1-compositeresourcedefinition
+      port: {{ .containers.crossplane.extraPorts.webhooks.containerPort }}
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: compositeresourcedefinitions.apiextensions.crossplane.io
+  namespaceSelector: {}
+  objectSelector: {}
+  rules:
+  - apiGroups:
+    - apiextensions.crossplane.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - compositeresourcedefinitions
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 10
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: {{ $.Release.Name }}-crossplane
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-apiextensions-crossplane-io-v1-composition
+      port: {{ .containers.crossplane.extraPorts.webhooks.containerPort }}
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: compositions.apiextensions.crossplane.io
+  namespaceSelector: {}
+  objectSelector: {}
+  rules:
+  - apiGroups:
+    - apiextensions.crossplane.io
+    apiVersions:
+    - v1
+    operations:
+    - UPDATE
+    - CREATE
+    resources:
+    - compositions
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 10
+  {{- end }}
+{{- end }}
+

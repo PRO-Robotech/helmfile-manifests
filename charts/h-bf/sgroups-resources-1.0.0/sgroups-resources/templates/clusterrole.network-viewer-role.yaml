@@ -1,0 +1,23 @@
+{{- with .Values.appSpec.applications.sgroupsresources }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-network-viewer-role
+rules:
+- apiGroups:
+  - sgroups.b-cloud.io
+  resources:
+  - networks
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - sgroups.b-cloud.io
+  resources:
+  - networks/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

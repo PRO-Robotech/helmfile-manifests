@@ -1,0 +1,12 @@
+{{- with .Values.appSpec.applications.crossplane }}
+  {{- if .enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ $.Release.Name }}-issuer-ca
+  namespace: {{ $.Release.Namespace }}
+spec:
+  selfSigned: {}
+  {{- end }}
+{{- end }}

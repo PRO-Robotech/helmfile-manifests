@@ -1,0 +1,83 @@
+{{- $mainDomain := printf "%s.%s" .Release.Namespace .Values.global.domains.main -}}
+
+externalDatabase:
+  host:     {{ .Values.global.netbox.externalDB.dbUrl }}
+  port:     {{ .Values.global.netbox.externalDB.dbPort }}
+  database: {{ .Values.global.netbox.externalDB.dbName }}
+  username: {{ .Values.global.netbox.externalDB.dbUser }}
+  password: {{ .Values.global.netbox.externalDB.dbPassword }}
+
+superuser:
+  name: {{ .Values.global.netbox.superUser.user }}
+  password: {{ .Values.global.netbox.superUser.password }}
+
+helm-inserter:
+  templates:
+    netboxGateway: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: Gateway
+      metadata:
+        name: {{ .Release.Name }}-gateway
+        namespace: {{ .Release.Namespace }}
+      spec:
+        selector:
+          istio: {{ .Release.Name }}-istio-ingressgateway
+        servers:
+          - port:
+              number: 80
+              name: http
+              protocol: HTTP
+            hosts:
+              - "*.{{ $mainDomain }}"
+          - port:
+              number: 443
+              name: https
+              protocol: HTTPS
+            hosts:
+              - "*.{{ $mainDomain }}"
+            tls:
+              mode: SIMPLE
+              credentialName: {{ .Release.Name }}-cert-tls
+
+    netboxCertificate: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: {{ .Release.Name }}-cert
+        namespace: {{ .Release.Namespace }}
+      spec:
+        duration: {{ .Values.global.certManager.defaults.duration }}
+        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: issuer-selfsigned
+        dnsNames:
+          - "*.{{ $mainDomain }}"
+        commonName: "netbox.{{ .Release.Namespace }}"
+        secretName: {{ .Release.Name }}-cert-tls
+
+    netboxVirtualService: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+        - "{{ .Release.Name }}.{{ $mainDomain }}"
+        gateways:
+        - {{ .Release.Name }}-gateway
+        http:
+        - name: {{ .Release.Name }}
+          match:
+            - uri:
+                prefix: /
+          route:
+          - destination:
+              host: {{ .Release.Name }}
+              port:
+                number: 80

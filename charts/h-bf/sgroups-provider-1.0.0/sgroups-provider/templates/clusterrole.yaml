@@ -1,0 +1,51 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+rules:
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - addressgroups
+  - agagicmprules
+  - ieagagrules
+  - iecidragrules
+  - networkbindings
+  - networks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - addressgroups/finalizers
+  - agagicmprules/finalizers
+  - ieagagrules/finalizers
+  - iecidragrules/finalizers
+  - networkbindings/finalizers
+  - networks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - addressgroups/networks
+  - addressgroups/status
+  - agagicmprules/status
+  - ieagagrules/status
+  - iecidragrules/status
+  - networkbindings/status
+  - networks/status
+  verbs:
+  - get
+  - patch
+  - update
+  {{- end }}
+{{- end }}

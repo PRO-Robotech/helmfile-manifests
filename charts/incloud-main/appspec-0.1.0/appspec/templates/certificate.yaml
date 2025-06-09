@@ -1,0 +1,44 @@
+{{- range $appName, $appValue := .Values.applications }}
+  {{- with $appValue.ingress }}
+    {{- range $hostName, $hostValue := .hosts }}
+      {{- if .certificate.spec  }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $.Release.Name }}-{{ .certificate.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+
+spec:
+{{- with .certificate }}
+
+  {{- if .spec }}
+    {{- if not .spec.dnsNames }}
+  dnsNames:
+    - {{ $hostName }}
+    {{- end }}
+  {{- else }}
+  dnsNames:
+    - {{ $hostName }}
+  {{- end }}
+
+  {{- with .spec }}
+  {{- . | toYaml | nindent 2 }}
+  {{- end }}
+
+  secretName: {{ $.Release.Name }}-{{ .name }}
+
+  issuerRef:
+  {{- with .issuerRef }}
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+
+{{- end }}
+
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

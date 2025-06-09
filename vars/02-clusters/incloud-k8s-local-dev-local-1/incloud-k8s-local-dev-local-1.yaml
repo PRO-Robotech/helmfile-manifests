@@ -1,0 +1,9 @@
+global:
+  clusterName:              incloud-k8s-local
+  clusterEnv:               dev
+  clusterArea:              local
+  clusterIndex:             1
+  clusterVersion:           v1.31.0
+  incloudComponentsVersion: v1.0.0
+  incloudRepositoryVersion: dev
+  clusterNetwork:           10.244.0.0/24

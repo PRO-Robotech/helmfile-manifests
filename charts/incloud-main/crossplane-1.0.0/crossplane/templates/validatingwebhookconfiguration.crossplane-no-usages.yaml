@@ -1,0 +1,40 @@
+{{- with .Values.appSpec.applications.crossplane }}
+  {{- if .enabled }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ $.Release.Name }}-no-usages
+  annotations:
+    {{- with .volumes.serverCertificate }}
+    cert-manager.io/inject-ca-from: '{{ $.Release.Namespace }}/{{ $.Release.Name }}-{{ .volume.name }}'
+    {{- end }}
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: {{ $.Release.Name }}-crossplane
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-no-usages
+      port: {{ .containers.crossplane.extraPorts.webhooks.containerPort }}
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: nousages.apiextensions.crossplane.io
+  namespaceSelector: {}
+  objectSelector:
+    matchLabels:
+      crossplane.io/in-use: "true"
+  rules:
+  - apiGroups:
+    - '*'
+    apiVersions:
+    - '*'
+    operations:
+    - DELETE
+    resources:
+    - '*'
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 10
+  {{- end }}
+{{- end }}

@@ -1,0 +1,13 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-metrics-reader
+rules:
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

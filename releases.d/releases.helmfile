@@ -1,0 +1,8 @@
+{{ readFile "templates.yaml" }}
+
+releases:
+
+{{- $releasesDir := printf "%s/releases.d/defaults/" (exec "pwd" (list) | trim) -}}
+{{- range $file := ((exec "ls" (list  $releasesDir) | trim ) | splitList "\n" )}}
+{{ printf "%s/%s" $releasesDir $file | readFile  }}
+{{- end }}

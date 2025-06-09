@@ -1,0 +1,27 @@
+{{- range $appName, $appValue := .Values.applications }}
+  {{- range $containerName, $containerValue := $appValue.containers }}
+    {{- range $keySpec, $valueSpec :=  $containerValue }}
+      {{- if eq $keySpec "extraEnvFrom" }}
+      {{- range $cmName, $cmValue := $containerValue.extraEnvFrom.configMapRefs  }}
+        {{- if and $cmValue  $cmValue.content }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-{{ $containerName }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+
+data: 
+  {{ $cmName }}: |-
+    {{ $cmValue.content | nindent 4 }}
+
+        {{- end }}
+      {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

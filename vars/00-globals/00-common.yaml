@@ -1,0 +1,33 @@
+global:
+  addresses: {}
+  dnsServers: []
+  ntpServers: []
+
+  istioNamespace: incloud-istio
+
+  certManager:
+    defaults:
+      duration:     2160h # 90d
+      renewBefore:  360h # 15d
+
+  domains:
+    external: x5.ru
+
+  netbox:
+    externalDB:
+      dbUrl:      netbox-postgresql
+      dbPort:     5432
+      dbName:     netbox
+      dbUser:     netbox
+      dbPassword: netbox
+    superUser:
+      user:       admin
+      password:   admin
+
+  sgroups:
+    externalDB:
+      dbUrl:      sgroups-postgresql
+      dbPort:     5432
+      dbName:     sgroups
+      dbUser:     sgroups
+      dbPassword: sgroups

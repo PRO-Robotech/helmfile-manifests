@@ -1,0 +1,140 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-validatingwebhookconfiguration
+  annotations:
+    {{- with .volumes.certificate }}
+    cert-manager.io/inject-ca-from: '{{ $.Release.Namespace }}/{{ $.Release.Name }}-{{ .volume.name }}'
+    {{- end }}
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-addressgroup
+      port: 8443
+  failurePolicy: Fail
+  name: vaddressgroup.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - addressgroups
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-agagicmprule
+      port: 8443
+  failurePolicy: Fail
+  name: vagagicmprule.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - agagicmprules
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-ieagagrule
+      port: 8443
+  failurePolicy: Fail
+  name: vieagagrule.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - ieagagrules
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-iecidragrule
+      port: 8443
+  failurePolicy: Fail
+  name: viecidragrule.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - iecidragrules
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-network
+      port: 8443
+  failurePolicy: Fail
+  name: vnetwork.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - networks
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-networkbinding
+      port: 8443
+  failurePolicy: Fail
+  name: vnetworkbinding.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - networkbindings
+  sideEffects: None
+  {{- end }}
+{{- end }}

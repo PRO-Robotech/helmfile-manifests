@@ -1,0 +1,35 @@
+{{- with .Values.appSpec.applications.ipamprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+rules:
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - networkclaims
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - networkclaims/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - networkclaims/status
+  verbs:
+  - get
+  - patch
+  - update
+  {{- end }}
+{{- end }}

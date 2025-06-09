@@ -1,0 +1,15 @@
+dependencies:
+- name: common
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 2.31.1
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 15.5.38
+- name: redis
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 20.13.4
+- name: helm-inserter
+  repository: file://../../../../charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+  version: 0.2.5
+digest: sha256:a1ace6dcec4696224c1e387ac6d3c2d9d4ceb8bafb8381a0d0a032c6853686c7
+generated: "2025-06-06T18:04:25.24593+05:00"

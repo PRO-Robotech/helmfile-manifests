@@ -1,0 +1,115 @@
+{{- range $appName, $appValue := .Values.applications }}
+{{- if (eq $appValue.type "Deployment") }}
+{{- if .enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $appValue.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+
+spec:
+  replicas: {{ $appValue.replicas | default $.Values.defaults.defaultReplicas }}
+
+  selector:
+    matchLabels:
+      {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 6 }}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+  template:
+
+    metadata:
+      labels:
+        {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 8 }}
+
+      annotations:
+      {{- with $appValue.volumes | default dict }}
+        {{- range $volumeName, $volumeValue := . }}
+          {{- include "appSpec.deployment.volume-annotation" (list $volumeValue $volumeName) | nindent 10 }}
+        {{- end }}
+      {{- end }}
+
+    spec:
+      
+      {{- with $appValue.nodeSelector}}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with $appValue.tolerations}}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with deepCopy $.Values.defaults.defaultContainers |  merge ($appValue.containers | default dict ) }}
+      containers:
+        {{- range $k, $v := . }}
+          {{- with $v }}
+        {{- $containerSpec := deepCopy $.Values.defaults |  merge . }}
+        {{- include "appSpec.container-spec" (list $containerSpec $k $.Release.Name) | nindent 8 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+
+      {{ with deepCopy $.Values.defaults.defaultInitContainers |  merge ($appValue.initContainers | default dict ) }}
+      initContainers:
+        {{- range $k, $v := . }}
+          {{- with $v }}
+        {{- $containerSpec := deepCopy $.Values.defaults |  merge . }}
+        {{- include "appSpec.container-spec" (list $containerSpec $k $.Release.Name) | nindent 8 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+
+      restartPolicy:                  {{ $appValue.extraRestartPolicy                 | default $.Values.defaults.defaultRestartPolicy  }}
+      terminationGracePeriodSeconds:  {{ $appValue.extraTerminationGracePeriodSeconds | default $.Values.defaults.defaultTerminationGracePeriodSeconds }}
+      dnsPolicy:                      {{ $appValue.extraDnsPolicy                     | default $.Values.defaults.defaultDnsPolicy }}
+      hostNetwork:                    {{ $appValue.extraHostNetwork                   | default $.Values.defaults.defaultHostNetwork }}
+      hostPID:                        {{ $appValue.extraHostPID                       | default $.Values.defaults.defaultHostPID }}
+      hostIPC:                        {{ $appValue.extraHostIPC                       | default $.Values.defaults.defaultHostIPC }}
+      schedulerName:                  {{ $appValue.extraSchedulerName                 | default $.Values.defaults.defaultSchedulerName }}
+      priorityClassName:              {{ $appValue.extraPriorityClassName             | default $.Values.defaults.defaultPriorityClassName }}
+      runtimeClassName:               {{ $appValue.extraRuntimeClassName              | default $.Values.defaults.defaultRuntimeClassName }}
+      enableServiceLinks:             {{ $appValue.extraEnableServiceLinks            | default $.Values.defaults.defaultEnableServiceLinks }}
+      preemptionPolicy:               {{ $appValue.extraPreemptionPolicy              | default $.Values.defaults.defaultPreemptionPolicy }}
+      serviceAccountName:             {{ $.Release.Name }}-{{ $appValue.name }}
+      
+      volumes:
+      {{- with $.Values.defaults.defaultVolumes }}
+        {{- range $volumeName, $volumeValue := . }}
+          {{- include "appSpec.deployment.containers-volumes" (list $volumeValue $volumeName $.Release.Name) | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with $appValue.volumes }}
+        {{- range $volumeName, $volumeValue := . }}
+          {{- include "appSpec.deployment.containers-volumes" (list $volumeValue $volumeName $.Release.Name) | nindent 8 }}
+        {{- end }}
+      {{- end }}
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ include "appSpec.name" $ }}
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - {{ $.Release.Name }}
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,13 @@
+- name: cert-manager
+  namespace: incloud-cert-manager
+  chart: charts/jetstack/cert-manager-{{ env "CERT_MANAGER_VERSION" }}/cert-manager
+  version: '{{ env "CERT_MANAGER_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+  - template: localCharts
+  labels:
+    incloud-collections: "cert-manager"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5

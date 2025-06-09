@@ -1,0 +1,205 @@
+templates:
+
+  mirror: &custom
+    missingFileHandler: Debug
+    labels:
+      release: "{{ .Release.Name }}"
+    values:
+    - vars/00-globals/00-common.yaml
+    - vars/00-globals/00-common.yaml.gotmpl
+    - vars/00-globals/10-networkAddresses.yaml
+    - vars/00-globals/10-networkAddresses.yaml.gotmpl
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses.yaml
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses.yaml.gotmpl
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания базовых изменений параметров (лучшие практики) без привязки к имени релиза.
+    - vars/01-incloud-static/{{ .Release.Chart }}/common.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/common.yaml.gotmpl
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/cluster.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/common-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/common-{{ .Environment.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания базовых изменений параметров (лучшие практики) с привязкой к имени релиза.
+    - vars/01-incloud-static/{{ .Release.Chart }}/{{ .Release.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/{{ .Release.Name }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/{{ .Release.Name }}-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/{{ .Release.Name }}-{{ .Environment.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных параметров для области москва/питер
+    - vars/01-incloud-static/{{ .Release.Chart }}/area/common.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/area/common.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/area/common-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/area/common-{{ .Environment.Name }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/area/common-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/area/common-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/area/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/area/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/area/common-{{ env "CLUSTER_AREA" }}-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/area/common-{{ env "CLUSTER_AREA" }}-{{ .Environment.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных сетевых политик для разных сетевых плагинов  (cilium|calico)
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для разных систем мониторинга ресурсов, требуемые для мониторинга.
+    - vars/01-incloud-static/{{ .Release.Chart }}/monitoring/common-{{ env "CLUSTER_MONITORING" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/monitoring/common-{{ env "CLUSTER_MONITORING" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ .Release.Chart }}/monitoring/{{ .Release.Name }}-{{ env "CLUSTER_MONITORING" }}.yaml
+    - vars/01-incloud-dynamic/{{ .Release.Chart }}/monitoring/{{ .Release.Name }}-{{ env "CLUSTER_MONITORING" }}.yaml.gotmpl
+
+    # # Данный блок нужен для описания специфичных параметров, которые нужно изменить только для определенной версии чарта.
+    # - vars/01-incloud-static/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/common.yaml
+    # - vars/01-incloud-dynamic/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/common.yaml.gotmpl
+    # - vars/01-incloud-static/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/common-{{ env "CLUSTER_AREA" }}.yaml
+    # - vars/01-incloud-dynamic/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/common-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    # - vars/01-incloud-static/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/{{ .Release.Name }}.yaml
+    # - vars/01-incloud-dynamic/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/{{ .Release.Name }}.yaml.gotmpl
+    # - vars/01-incloud-static/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml
+    # - vars/01-incloud-dynamic/{{ .Release.Chart }}/versions/{{ (split "/" .Release.Chart)._2 }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для кластеров параметров без привязки к приложению.
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/common.yaml
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/common.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для кластеров параметров с привязкой к приложению.
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ .Release.Chart }}/common.yaml
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ .Release.Chart }}/common.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для кластеров параметров с привязкой к приложению и наименованию релиза.
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ .Release.Chart }}/{{ .Release.Name }}.yaml
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ .Release.Chart }}/{{ .Release.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для групп кластеров параметров без привязки к приложению.
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для групп кластеров параметров без привязки к приложению.
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml.gotmpl
+
+  localCharts: &custom
+    missingFileHandler: Debug
+    labels:
+      release: "{{ .Release.Name }}"
+    values:
+    - vars/00-globals/00-common.yaml
+    - vars/00-globals/00-common.yaml.gotmpl
+    - vars/00-globals/10-networkAddresses.yaml
+    - vars/00-globals/10-networkAddresses.yaml.gotmpl
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses.yaml
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses.yaml.gotmpl
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/00-globals/{{ .Environment.Name }}/10-networkAddresses-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания базовых изменений параметров (лучшие практики) без привязки к имени релиза.
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/cluster.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/common.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/common.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/common-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/common-{{ .Environment.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания базовых изменений параметров (лучшие практики) с привязкой к имени релиза.
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/{{ .Release.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/{{ .Release.Name }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/{{ .Release.Name }}-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/{{ .Release.Name }}-{{ .Environment.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных параметров для области москва/питер
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common-{{ .Environment.Name }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common-{{ env "CLUSTER_AREA" }}-{{ .Environment.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/area/common-{{ env "CLUSTER_AREA" }}-{{ .Environment.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания resources в релизах
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/resources/common.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/resources/common.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/resources/{{ .Release.Name }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/resources/{{ .Release.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных сетевых политик для разных сетевых плагинов  (cilium|calico)
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/common-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/network-policies/{{ .Release.Name }}-{{ .Environment.Name }}-{{ env "CLUSTER_CNI_PLUGIN" }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для разных систем мониторинга ресурсов, требуемые для мониторинга.
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/monitoring/common-{{ env "CLUSTER_MONITORING" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/monitoring/common-{{ env "CLUSTER_MONITORING" }}.yaml.gotmpl
+    - vars/01-incloud-static/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/monitoring/{{ .Release.Name }}-{{ env "CLUSTER_MONITORING" }}.yaml
+    - vars/01-incloud-dynamic/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/monitoring/{{ .Release.Name }}-{{ env "CLUSTER_MONITORING" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для кластеров параметров без привязки к приложению.
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/common.yaml
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/common.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для кластеров параметров с привязкой к приложению.
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/common.yaml
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/common.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для кластеров параметров с привязкой к приложению и наименованию релиза.
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/{{ .Release.Name }}.yaml
+    - vars/02-clusters/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}/{{ (split "/" .Release.Chart)._1 }}/{{ (split "/" .Release.Chart)._3 }}/{{ .Release.Name }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для групп кластеров параметров без привязки к приложению.
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/common-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml.gotmpl
+
+    # Данный блок нужен для описания специфичных для групп кластеров параметров без привязки к приложению.
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}.yaml.gotmpl
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml
+    - vars/03-mesh/{{ env "CLUSTER_NAME" }}-{{ .Environment.Name }}/{{ .Release.Name }}-{{ env "CLUSTER_AREA" }}-{{ env "CLUSTER_INDEX" }}.yaml.gotmpl

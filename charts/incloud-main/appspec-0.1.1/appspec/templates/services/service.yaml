@@ -1,0 +1,32 @@
+{{- range $appName, $appValue := .Values.applications }}
+{{- if (eq (include "appSpec.service.status" $appValue) "true") }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-{{ $appValue.name }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+  annotations:
+    {{- include "appSpec.service.annotations" $appValue | nindent 4 }}
+spec:
+  selector:
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+ 
+  {{- include "appSpec.service.ports"                   $appValue | nindent 2 }}
+
+  {{- include "appSpec.service.type"                    $appValue | nindent 2 }}
+  {{- include "appSpec.service.sessionAffinity"         $appValue | nindent 2 }}
+
+  {{- include "appSpec.service.clusterIP"               $appValue | nindent 2 }}
+  {{- include "appSpec.service.internalTrafficPolicy"   $appValue | nindent 2 }}
+
+  {{- if eq (include "appSpec.service.type.name" $appValue) "LoadBalancer" }}
+    {{- include "appSpec.service.loadBalancerIP"        $appValue | nindent 2 }}
+    {{- include "appSpec.service.externalTrafficPolicy" $appValue | nindent 2 }}
+  {{- end }}
+
+{{- end }}
+{{- end }}

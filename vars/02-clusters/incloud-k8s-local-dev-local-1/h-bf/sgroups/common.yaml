@@ -1,0 +1,6 @@
+appSpec:
+  applications:
+    server:
+      replicas: 1
+    web:
+      replicas: 1

@@ -1,0 +1,9 @@
+- name: sgroups-provider
+  namespace: incloud-sgroups
+  chart: charts/h-bf/sgroups-provider-{{ env "SGROUPS_PROVIDER_VERSION" }}/sgroups-provider
+  version: '{{ env "SGROUPS_PROVIDER_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "sgroups-provider"

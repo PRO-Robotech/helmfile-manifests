@@ -1,0 +1,38 @@
+bases:
+- releases.d/releases.helmfile
+- {{ (printf "vars/02-clusters/%s-%s-%s-%s/releases.helmfile" (requiredEnv "CLUSTER_NAME") (requiredEnv "CLUSTER_ENV") (requiredEnv "CLUSTER_AREA") (requiredEnv "CLUSTER_INDEX")) }}
+
+environments:
+  dev:
+    missingFileHandler: &common_missingFileHandler Debug
+    values: &common_values
+    # special variable for helmfile execs usage
+    - helmfileGlobalsPath: {{ printf "%s/vars/00-globals/00-common.yaml" (exec "pwd" (list) | trim) }}
+    - helmfileHelperImageFmt: {{ printf "%s/tools/helmfile/helpers/image_fmt.py" (exec "pwd" (list) | trim) }}
+    # include NetworkAddresses as values, necessary for including global services addresses/fqdns to the chart values
+    - {{ printf "%s/vars/00-globals/00-common.yaml" (exec "pwd" (list) | trim) }}
+    - {{ printf "%s/vars/00-globals/00-common.yaml.gotmpl" (exec "pwd" (list) | trim) }}
+    - {{ printf "%s/vars/00-globals/10-networkAddresses.yaml" (exec "pwd" (list) | trim) }}
+    - {{ printf "%s/vars/00-globals/10-networkAddresses.yaml.gotmpl" (exec "pwd" (list) | trim) }}
+    - {{ printf "%s/vars/00-globals/%s/10-networkAddresses.yaml" (exec "pwd" (list) | trim) (.Environment.Name) }}
+    - {{ printf "%s/vars/00-globals/%s/10-networkAddresses.yaml.gotmpl" (exec "pwd" (list) | trim) (.Environment.Name) }}
+    - {{ printf "%s/vars/00-globals/%s/10-networkAddresses-%s.yaml" (exec "pwd" (list) | trim) (.Environment.Name) ( requiredEnv "CLUSTER_AREA" ) }}
+    - {{ printf "%s/vars/00-globals/%s/10-networkAddresses-%s.yaml.gotmpl" (exec "pwd" (list) | trim) (.Environment.Name) ( requiredEnv "CLUSTER_AREA" ) }}
+    - {{ printf "%s/vars/02-clusters/%s/common.yaml" (exec "pwd" (list) | trim) (requiredEnv "CLUSTER_NAME") }}
+    - {{ printf "%s/vars/02-clusters/%s/common-%s.yaml" (exec "pwd" (list) | trim) (requiredEnv "CLUSTER_NAME") (.Environment.Name) }}
+    - {{ printf "%s/vars/02-clusters/%s-%s-%s-%s/common.yaml" (exec "pwd" (list) | trim) ( requiredEnv "CLUSTER_NAME" ) ( env "CLUSTER_ENV" ) ( env "CLUSTER_AREA" ) ( env "CLUSTER_INDEX" ) }}
+    - {{ printf "%s/vars/02-clusters/%s/common-%s.yaml" (exec "pwd" (list) | trim) (requiredEnv "CLUSTER_NAME") (.Environment.Name) }}
+  test:
+    missingFileHandler: *common_missingFileHandler
+    values: *common_values
+  stage:
+    missingFileHandler: *common_missingFileHandler
+    values: *common_values
+  prod:
+    missingFileHandler: *common_missingFileHandler
+    values: *common_values
+helmDefaults:
+  insecureSkipTLSVerify: false
+  args:
+  - --include-crds
+  # skipDeps: true

@@ -1,0 +1,9 @@
+dependencies:
+- name: appSpec
+  repository: file://../../../../charts/incloud-main/appspec-0.1.0/appspec
+  version: 0.1.0
+- name: helm-inserter
+  repository: file://../../../../charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+  version: 0.2.5
+digest: sha256:b400093642790574d400abc6079c2934b12922056c2e8f973f12f52eee2cd4a6
+generated: "2025-05-07T21:31:50.532061+05:00"

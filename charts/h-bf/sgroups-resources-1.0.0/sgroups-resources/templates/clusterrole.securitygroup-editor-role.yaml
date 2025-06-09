@@ -1,0 +1,27 @@
+{{- with .Values.appSpec.applications.sgroupsresources }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-securitygroup-editor-role
+rules:
+- apiGroups:
+  - sgroups.b-cloud.io
+  resources:
+  - securitygroups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sgroups.b-cloud.io
+  resources:
+  - securitygroups/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

@@ -1,0 +1,9 @@
+- name: sgroups-resources
+  namespace: incloud-sgroups
+  chart: charts/h-bf/sgroups-resources-{{ env "SGROUPS_RESOURCES_VERSION" }}/sgroups-resources
+  version: '{{ env "SGROUPS_RESOURCES_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "sgroups-resources"

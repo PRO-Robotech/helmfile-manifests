@@ -1,0 +1,129 @@
+
+
+globalVolumeconfigurationClientFile: &globalVolumeconfigurationClientFile "/opt/h-bf/sgroups/client/config.yaml"
+globalVolumeCertificate:             &globalVolumeCertificate             "/opt/h-bf/sgroups/tls"
+
+certificates:
+  enabled: true
+
+appSpec:
+  applications:
+    agent:
+      enabled: false
+      type: DaemonSet
+      name: agent
+
+      tolerations:
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+
+      service:
+        enabled: true
+        type: ClusterIP
+
+      volumes:
+        certificate:
+          volume:
+            mode: secret
+            name: agent-tls
+
+        configurationClientFile:
+          volume:
+            mode: configMap
+            name: client-config
+            payload:
+              format: json
+              content:
+                exit-on-success: false
+                graceful-shutdown: 10s
+                logger:
+                    level: DEBUG
+                fqdn-rules:
+                  strategy: dns
+                extapi:
+                  svc:
+                    def-daial-duration: 10s
+                    sgroups:
+                      dial-duration: 3s
+                      address: release-name-server:9006
+                      sync-status:
+                        interval: 3s #mandatory
+                        push: true
+                      #check-sync-status: 5s
+                      use-json-codec: false
+                      api-path-prefix: "/apis/sgroups.io/v1"
+                      authn:
+                        type: tls
+                        tls:
+                          key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                          cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                          server:
+                            verify: true
+                            ca-files: 
+                              - "/opt/h-bf/sgroups/tls/ca.crt"
+                netlink:
+                  watcher: #netlink watcher
+                      linger: 1s
+                base-rules:
+                  networks: 
+                    - 10.244.120.242/32
+                    - 8.8.8.8/32
+                    - 10.96.0.0/12
+                dns:
+                  nameservers:
+                    - 10.96.0.10
+                    - 8.8.8.8
+                  proto: udp
+                  port: 53
+                  dial-duration: 3s
+                  read-duration: 5s
+                  write-duration: 5s
+                  retries: 5
+                  retry-timeout: 3s
+                telemetry:
+                  useragent: "string"
+                  endpoint: 0.0.0.0:9660
+                  metrics:
+                      enable: true
+                  healthcheck:
+                      enable: true
+                  profile:
+                      enable: true
+
+      containers:
+        agent:
+          name: agent
+          enabled: true
+          image:
+            repository: sgroups/sgroups.to-nft
+            tag: "v2.0.0-319ef8dc"
+
+          extraCommand:
+            - ./bin/to-nft
+
+          extraArgs:
+            config: *globalVolumeconfigurationClientFile
+
+          extraVolumeMounts:
+            configurationClientFile:
+              volumeMount:
+                path: *globalVolumeconfigurationClientFile
+                spec:
+                  subPath: client-config
+
+            certificate:
+              volumeMount:
+                path:  *globalVolumeCertificate
+
+          extraPorts:
+            metrics:
+              containerPort: 9660
+              protocol: TCP
+
+          extraSecurityContext:
+            allowPrivilegeEscalation: true
+            privileged: true
+            runAsNonRoot: false
+            runAsUser: 0

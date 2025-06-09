@@ -1,0 +1,55 @@
+{{- with .Values.appSpec.applications.sgroupsresources }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumnetworkpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumnetworkpolicies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - cilium.io
+  resources:
+  - ciliumnetworkpolicies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - sgroups.b-cloud.io
+  resources:
+  - iecidrsgrules
+  - networks
+  - securitygroups
+  verbs:
+  - "*"
+  {{- end }}
+{{- end }}

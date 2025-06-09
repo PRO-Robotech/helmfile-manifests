@@ -1,0 +1,21 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-agagicmprules-admin-role
+rules:
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - agagicmprules
+  verbs:
+  - '*'
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - agagicmprules/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

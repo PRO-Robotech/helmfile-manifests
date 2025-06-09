@@ -1,0 +1,41 @@
+apiVersion: v2
+name: netbox
+version: 5.0.0-beta.103
+appVersion: "v4.1.1"
+type: application
+kubeVersion: ^1.25.0-0
+description: IP address management (IPAM) and data center infrastructure management (DCIM) tool
+home: https://netbox.dev/
+icon: https://raw.githubusercontent.com/netbox-community/netbox/develop/docs/netbox_logo.svg
+sources:
+  - https://github.com/netbox-community/netbox
+  - https://github.com/netbox-community/netbox-chart
+maintainers:
+  - name: netbox-community
+    url: https://github.com/netbox-community
+  - name: bootc
+    url: https://github.com/bootc
+dependencies:
+  - name: common
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: ^2.23.0
+    tags:
+      - bitnami-common
+  - name: postgresql
+    version: ^15.5.32
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: postgresql.enabled
+  - name: redis
+    version: ^20.1.4
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: redis.enabled
+
+  - name: helm-inserter
+    version: "*"
+    repository: "file://../../../../charts/incloud-main/helm-inserter-0.2.5/helm-inserter"
+
+annotations:
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Upstream Project
+      url: https://github.com/netbox-community/netbox

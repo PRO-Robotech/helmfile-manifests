@@ -1,0 +1,56 @@
+{{- with .Values.appSpec.applications.ipamprovider }}
+  {{- if .enabled }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-validatingwebhookconfiguration
+  annotations:
+    {{- with .volumes.certificate }}
+    cert-manager.io/inject-ca-from: '{{ $.Release.Namespace }}/{{ $.Release.Name }}-{{ .volume.name }}'
+    {{- end }}
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-networkclaim
+      port: 8443
+  failurePolicy: Fail
+  name: vnetworkclaims.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - networkclaims
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: "{{ $.Release.Name }}-{{ .name }}"
+      namespace: {{ $.Release.Namespace }}
+      path: /validate-provider-sgroups-io-v1alpha1-networkclaim
+      port: 8443
+  failurePolicy: Fail
+  name: vnetworkclaim-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - provider.sgroups.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - networkclaims
+  sideEffects: None
+  {{- end }}
+{{- end }}

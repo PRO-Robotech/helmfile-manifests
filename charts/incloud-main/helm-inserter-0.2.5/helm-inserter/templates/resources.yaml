@@ -1,0 +1,20 @@
+{{- $template := fromYaml (include "raw.resource" .) -}}
+
+{{- range $_, $v := .Values.resources }}
+{{-   if $v }}
+---
+{{      merge $v $template | toYaml -}}
+{{-   end }}
+{{- end }}
+
+{{- range $_, $t := .Values.templates }}
+{{-   if $t }}
+{{-     $v := tpl $t $ -}}
+{{-     range (split "\n---\n" $v ) }}
+{{-       if . }}
+---
+{{          merge (. | fromYaml) $template | toYaml }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}

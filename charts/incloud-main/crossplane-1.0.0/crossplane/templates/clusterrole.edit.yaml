@@ -1,0 +1,51 @@
+{{- with .Values.appSpec.applications.rbacmanager }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-edit:main-resources
+  labels:
+    rbac.crossplane.io/aggregate-to-edit: "true"
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - "*"
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apiextensions.crossplane.io
+  resources:
+  - "*"
+  verbs:
+  - "*"
+- apiGroups:
+  - pkg.crossplane.io
+  resources:
+  - "*"
+  verbs:
+  - "*"
+- apiGroups:
+  - secrets.crossplane.io
+  resources:
+  - "*"
+  verbs:
+  - "*"
+  {{- end }}
+{{- end }}

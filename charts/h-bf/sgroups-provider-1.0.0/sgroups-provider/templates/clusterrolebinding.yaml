@@ -1,0 +1,16 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $.Release.Name }}-{{ .name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ $.Release.Name }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  {{- end }}
+{{- end }}

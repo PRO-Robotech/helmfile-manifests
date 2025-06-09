@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: 0.2.3
+deprecated: true
+description: Add raw kuberntes resources to helm chart
+home: https://github.com/helm/charts/blob/master/incubator/raw
+name: helm-inserter
+version: 0.2.5
+

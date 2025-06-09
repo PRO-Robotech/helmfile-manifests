@@ -1,0 +1,23 @@
+{{- with .Values.appSpec.applications.sgroupsprovider }}
+  {{- if .enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-addressgroups-viewer-role
+rules:
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - addressgroups
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - provider.sgroups.io
+  resources:
+  - addressgroups/status
+  verbs:
+  - get
+  {{- end }}
+{{- end }}

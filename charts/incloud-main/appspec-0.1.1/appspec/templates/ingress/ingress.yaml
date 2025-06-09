@@ -1,0 +1,21 @@
+{{- range $appName, $appValue := .Values.applications }}
+{{- if eq (include "appSpec.ingress.status" $appValue) "true" }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $.Release.Name }}-{{ $appValue.name }}
+  labels:
+    {{- include "appSpec.labels" $ | nindent 4 }}
+    {{- include "appSpec.applicationSelectorLabels" (list $appValue.name $) | nindent 4 }}
+  annotations:
+    {{- include "appSpec.ingress.annotations" $appValue | nindent 4 }}
+
+spec:
+  {{- include "appSpec.ingress.ingressClassName" $appValue        | nindent 2 }}
+  {{- include "appSpec.ingress.rules" (list $appName $appValue $) | nindent 2 }}
+  {{- include "appSpec.ingress.tls"   (list $appName $appValue $) | nindent 2 }}
+
+{{- end }}
+{{- end }}

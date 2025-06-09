@@ -1,0 +1,6 @@
+dependencies:
+- name: appSpec
+  repository: file://../../../../charts/incloud-main/appspec-0.1.1/appspec
+  version: 0.1.1
+digest: sha256:91d05443b7d98ff359c5484ca967d7bca962016f849cd703cf9d12774a9bd7b1
+generated: "2025-06-06T18:15:29.716473+05:00"

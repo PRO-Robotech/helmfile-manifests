@@ -1,0 +1,47 @@
+cainjector:
+  containerSecurityContext:
+    runAsNonRoot: true
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  tolerations:
+    - operator: Exists
+certManager:
+  enabled: true
+containerSecurityContext:
+  runAsNonRoot: true
+global:
+  priorityClassName: system-cluster-critical
+installCRDs: true
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+startupapicheck:
+  containerSecurityContext:
+    runAsNonRoot: true
+  tolerations:
+    - operator: Exists
+tolerations:
+  - operator: Exists
+webhook:
+  containerSecurityContext:
+    runAsNonRoot: true
+  enabled: true
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  securePort: 8443
+  tolerations:
+    - operator: Exists

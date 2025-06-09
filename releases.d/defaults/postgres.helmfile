@@ -1,0 +1,13 @@
+- name: postgres-operator
+  namespace: incloud-postgres-operator
+  chart: charts/bitnami/postgresql-{{ env "POSTGRES_VERSION" }}/postgresql
+  version: '{{ env "POSTGRES_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "postgres"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5

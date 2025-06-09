@@ -1,0 +1,8 @@
+tolerations:
+  - operator: Exists
+priorityClassName: system-cluster-critical
+
+default:
+  tolerations:
+    - operator: Exists
+  priorityClassName: system-cluster-critical

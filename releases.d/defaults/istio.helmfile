@@ -1,0 +1,41 @@
+- name: istiod
+  namespace: incloud-istio
+  chart: charts/istio-release/istiod-{{ env "ISTIO_VERSION" }}/istiod
+  version: '{{ env "ISTIO_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "istio"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
+
+- name: istio-base
+  namespace: incloud-istio
+  chart: charts/istio-release/base-{{ env "ISTIO_VERSION" }}/base
+  version: '{{ env "ISTIO_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+  - template: localCharts
+  labels:
+    incloud-collections: "istio"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
+
+- name: istio-ingressgateway
+  namespace: incloud-istio
+  chart: charts/istio-release/gateway-{{ env "ISTIO_VERSION" }}/gateway
+  version: '{{ env "ISTIO_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+  - template: localCharts
+  labels:
+    incloud-collections: "istio"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
