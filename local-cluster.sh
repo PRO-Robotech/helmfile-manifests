@@ -190,3 +190,17 @@ do
   kubectl apply -f ${TMP_DIR}/netguard.yaml
 done
 
+
+echo ""
+echo "--- templating incloud-web"
+helmfile \
+  -e dev \
+  --kube-version=${K8S_VERSION} \
+  -l incloud-collections=incloud-web \
+  template > ${TMP_DIR}/incloud-web.yaml
+echo "--- deploy incloud-web"
+kubectl create ns incloud-web
+for i in {1..3}
+do
+  kubectl apply -f ${TMP_DIR}/incloud-web.yaml
+done

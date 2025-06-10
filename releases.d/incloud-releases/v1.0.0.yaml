@@ -7,6 +7,7 @@ POSTGRES_VERSION:                                 16.7.10
 ### incloud CHARTS
 CROSSPLANE_VERSION:                               1.0.0
 IPAM_PROVIDER_VERSION:                            1.0.0
+INCLOUD_WEB_VERSION:                              1.0.0
 NETBOX_VERSION:                                   5.0.0-beta.103
 NETGUARD_VERSION:                                 1.0.0
 SGROUPS_PROVIDER_VERSION:                         1.0.0

@@ -1,0 +1,8 @@
+appSpec:
+  applications:
+    gatekeeper:
+      containers:
+        gatekeeper:
+          extraArgs:
+            discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.main }}"
+            redirection-url:  "https://incloud.{{ .Release.Namespace}}.{{ .Values.global.domains.main }}"

@@ -1,5 +1,12 @@
 global:
-  addresses: {}
+  addresses:
+    idp:
+      schema: https
+      fqdn: ""
+    incloud:
+      schema: https
+      fqdn: ""
+
   dnsServers: []
   ntpServers: []
 
@@ -31,3 +38,10 @@ global:
       dbName:     sgroups
       dbUser:     sgroups
       dbPassword: sgroups
+
+  idp:
+    clientID: incloud
+    clientSecret: incloud
+
+  gatekeeper:
+    encryptionKey: d633e36d18abd96ea64f1d4059c25d14

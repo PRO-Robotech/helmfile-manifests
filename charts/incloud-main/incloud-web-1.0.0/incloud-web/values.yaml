@@ -1,0 +1,124 @@
+---
+appSpec:
+  applications:
+    gatekeeper:
+      enabled: true
+      type: Deployment
+      name: gatekeeper
+      replicas: 1
+
+      extraPriorityClassName: system-cluster-critical
+
+      containers:
+        gatekeeper:
+          name: gatekeeper
+          enabled: true
+          image:
+            repository: dmkolbin/gatekeeper
+            tag: "0.2.0"
+
+          extraArgs:
+            listen:                           0.0.0.0:8000
+            discovery-url:                    ""
+            client-id:                        ""
+            client-secret:                    ""
+            redirection-url:                  https://
+            enable-refresh-tokens:            true
+            encryption-key:                   ""
+            upstream-url:                     http://incloud-web-web:5000
+            resources=uri:                    "/*"
+            skip-openid-provider-tls-verify:  true
+            scopes:                           "openid profile email groups offline_access"
+            server-write-timeout:             30s
+            upstream-response-header-timeout: 30s
+
+          extraLivenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/health
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          extraReadinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/health
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          extraPorts:
+            ingress:
+              containerPort: 8000
+              protocol: TCP
+
+    web:
+      enabled: true
+      type: Deployment
+      name: web
+      replicas: 1
+
+      extraPriorityClassName: system-cluster-critical
+
+      containers:
+        web:
+          name: web
+          enabled: true
+          image:
+            repository: sgroups/openapi-ui
+            tag: "main-7365cbc7"
+
+          extraSecurityContext:
+            capabilities:
+              add:
+                - CAP_CHOWN
+                - CAP_NET_BIND_SERVICE
+                - CAP_SETGID
+                - CAP_SETUID
+            readOnlyRootFilesystem: false
+            runAsGroup: 0
+            runAsUser: 101
+
+          extraEnv:
+            CUSTOMIZATION_API_GROUP: in-cloud.io
+            CUSTOMIZATION_API_VERSION: v1alpha
+            RPROJECTS_VERSION: v1alpha
+            PROJECTS_RESOURCE_NAME: projects
+            MARKETPLACE_RESOURCE_NAME: marketplacepanels
+            MARKETPLACE_KIND: MarketplacePanel
+            INSTANCES_VERSION: v1alpha1
+            BASEPREFIX: /openapi-ui
+
+          extraPorts:
+            http:
+              containerPort: 5000
+              protocol: TCP
+
+          extraLivenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2

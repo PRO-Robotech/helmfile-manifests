@@ -1,0 +1,785 @@
+{{- $idpURL       := printf "%s://%s" .Values.global.addresses.idp.schema .Values.global.addresses.idp.fqdn -}}
+{{- $incloudAddr  := printf "%s://%s" .Values.global.addresses.incloud.schema .Values.global.addresses.incloud.fqdn -}}
+{{- $apiAddr      := "https://kubernetes.default.svc" -}}
+
+appSpec:
+  applications:
+    gatekeeper:
+      containers:
+        gatekeeper:
+          extraArgs:
+            discovery-url:    {{ $idpURL }}
+            redirection-url:  {{ $incloudAddr }}
+            upstream-url:     {{ $apiAddr }}
+            client-id:        "{{ .Values.global.idp.clientID }}"
+            client-secret:    "{{ .Values.global.idp.clientSecret }}"
+            encryption-key:   "{{ .Values.global.gatekeeper.encryptionKey }}"
+
+helm-inserter:
+  templates:
+    BreadcrumbProjectList: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-list
+      spec:
+        pathToMatch: "/openapi-ui/clusters/:clusterName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+
+    BreadcrumbProject: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project
+      spec:
+        pathToMatch: "/openapi-ui/clusters/:clusterName/projects/:namespace"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+
+    BreadcrumbProjectFactory: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-factory
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/factory/project/:namespace"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+
+    BreadcrumbProjectAPIs: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-apis
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-namespaced-typename
+          label: Create
+
+    BreadcrumbInstanceAPIs: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-apis
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-namespaced-typename
+          label: Create
+
+    BreadcrumbProjectEdit: |
+      ---
+      # form apis project: edit
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-namespaced-typename
+          label: Update {entryName}
+
+    BreadcrumbInstanceEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-namespaced-typename
+          label: Update {entryName}
+
+    BreadcrumbProjectBuildIn: |
+      ---
+      # form builtin project
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-buildin
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/builtin-table/{typeName}"
+        - key: create-builtin-res-namespaced-typename
+          label: Create
+
+    BreadcrumbInstanceBuildIn: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-buildin
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/builtin/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/builtin-table/{typeName}"
+        - key: create-builtin-res-namespaced-typename
+          label: Create
+
+    BreadcrumbProjectBuildInEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-buildin-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/builtin-table/{typeName}"
+        - key: create-builtin-res-namespaced-typename
+          label: Update {entryName}
+
+    BreadcrumbInstanceBuildInEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-buildin-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/builtin/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/builtin-table/{typeName}"
+        - key: create-builtin-res-namespaced-typename
+          label: Update {entryName}
+
+    BreadcrumbProjectCRDForm: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-crd-form
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-namespaced-typename
+          label: Create
+
+    BreadcrumbInstanceCRDForm: |
+      ---
+      # form crds instance
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-crd-form
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/crds/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-namespaced-typename
+          label: Create
+
+    BreadcrumbProjectCRDEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-crd-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-namespaced-typename
+          label: Update {entryName}
+
+    BreadcrumbInstanceCRDEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-crd-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-namespaced-typename
+          label: Update {entryName}
+
+    BreadcrumbInstanceCRDTable: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-crd-table
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: crd
+          label: "{crdName}"
+
+    BreadcrumbInstanceNonCRDTable: |
+      ---
+      # non crd table instance
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-non-crd-table
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/api-table/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: noncrd
+          label: "{typeName}"
+
+    BreadcrumbInstanceBuildInTable: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: instance-buildin-table
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/builtin-table/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{syntheticProject}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instance
+          label: "{namespace}"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+        - key: builtin
+          label: "{typeName}"
+
+    BreadcrumbProjectCRDTable: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-crd-table
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: crd
+          label: "{crdName}"
+
+    BreadcrumbInstanceNonCRDForm: |
+      ---
+      # crd table project
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-non-crd-table
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: noncrd
+          label: "{typeName}"
+
+    BreadcrumbProjectBuildInTable: |
+      ---
+      # builtin table project
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: project-buildin-table
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/builtin-table/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: builtin
+          label: "{typeName}"
+
+    BreadcrumbClusterAPIsForm: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: cluster-apis-form
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: B-Cloud
+          label: B-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: create-api-res-typename
+          label: Create
+
+    BreadcrumbClusterAPIsEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: cluster-apis-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: B-Cloud
+          label: B-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: create-api-res-typename
+          label: Update {entryName}
+
+    BreadcrumbClusterBuildInForm: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: cluster-buildin-form
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: B-Cloud
+          label: B-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: create-builtin-res-typename
+          label: Create
+
+    BreadcrumbClusterBuildInEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: cluster-buildin-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: B-Cloud
+          label: B-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: create-builtin-res-typename
+          label: Update {entryName}
+
+    BreadcrumbClusterCRDForm: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: cluster-crd-form
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        breadcrumbItems:
+        - key: B-Cloud
+          label: B-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: create-crd-res-typename
+          label: Create
+
+    BreadcrumbClusterCRDEdit: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Breadcrumb
+      metadata:
+        name: cluster-crd-edit
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: B-Cloud
+          label: B-Cloud
+          link: "/openapi-ui"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: create-crd-res-typename
+          label: Update {entryName}
+
+    MarketplacePanelInstances: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: MarketplacePanel
+      metadata:
+        name: instances
+      spec:
+        description: instances
+        name: Instances
+        type: nonCrd
+        apiGroup: in-cloud.io
+        apiVersion: v1alpha1
+        typeName: instances
+        disabled: false
+        hidden: false
+        tags:
+        - instances
+        icon: instances
+
+    FactoryProject: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: Factory
+      metadata:
+        name: project
+      spec:
+        key: project
+        urlsToFetch:
+        - "/api/clusters/{2}/k8s/apis/in-cloud.io/v1alpha/projects/{6}"
+        data:
+        - type: antdRow
+          data:
+            id: 1
+            gutter:
+            - 24
+            - 24
+            style:
+              flexGrow: 1
+          children:
+          - type: antdCol
+            data:
+              id: 2
+              span: 13
+            children:
+            - type: ContentCard
+              data:
+                id: 21
+                style:
+                  flexGrow: 1
+              children:
+              - type: ProjectInfoCard
+                data:
+                  id: 211
+                  clusterNamePartOfUrl: "{2}"
+                  namespacePartOfUrl: "{6}"
+                  baseApiGroup: in-cloud.io
+                  baseApiVersion: v1alpha
+                  baseProjectVersion: v1alpha
+                  projectResourceName: projects
+                  mpResourceName: marketplacepanels
+                  baseprefix: openapi-ui
+                children:
+                - type: Spacer
+                  data:
+                    id: 2111
+                    "$space": 20
+                    "$samespace": true
+                - type: parsedText
+                  data:
+                    id: 2112
+                    text: "{reqs[0]['spec', 'description']}"
+                - type: Spacer
+                  data:
+                    id: 2113
+                    "$space": 24
+                    "$samespace": true
+                - type: antdFlex
+                  data:
+                    id: 2114
+                    gap: 14
+                    vertical: true
+                  children:
+                  - type: DefaultDiv
+                    data:
+                      id: 211141
+                    children:
+                    - type: antdText
+                      data:
+                        id: 2111411
+                        type: secondary
+                        text: Developer Instruments
+                  - type: DefaultDiv
+                    data:
+                      id: 211142
+                    children:
+                    - type: antdFlex
+                      data:
+                        id: 2111421
+                        gap: 14
+                        wrap: true
+                      children:
+                      - type: antdButton
+                        data:
+                          id: 21114211
+                          type: link
+                          href: "/"
+                          text: Test
+                      - type: antdButton
+                        data:
+                          id: 21114212
+                          type: link
+                          href: "/"
+                          text: Test
+          - type: antdCol
+            data:
+              id: 3
+              span: 11
+            children:
+            - type: ContentCard
+              data:
+                id: 31
+                style:
+                  flexGrow: 1
+              children:
+              - type: MarketplaceCard
+                data:
+                  id: 311
+                  clusterNamePartOfUrl: "{2}"
+                  namespacePartOfUrl: "{6}"
+                  baseApiGroup: in-cloud.io
+                  baseApiVersion: v1alpha
+                  mpResourceName: marketplacepanels
+                  mpResourceKind: MarketplacePanel
+                  baseprefix: openapi-ui
+
+    TableUriMapping: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: TableUriMapping
+      metadata:
+        name: instances
+      spec:
+        keysToParse:
+        - metadata
+        - name
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/in-cloud.io/v1alpha1/instances"
+        pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/{namespace}/api-table/apps/v1/deployments"
+
+    TableUriMapping: |
+      ---
+      apiVersion: in-cloud.io/v1alpha
+      kind: TableUriMapping
+      metadata:
+        name: projects
+      spec:
+        keysToParse:
+        - metadata
+        - name
+        pathToMatch: "/openapi-ui/clusters/:clusterName"
+        pathToNavigate: "/openapi-ui/clusters/{clusterName}/projects/~recordValue~/"

@@ -1,0 +1,9 @@
+- name: incloud-web
+  namespace: incloud-web
+  chart: charts/incloud-main/incloud-web-{{ env "INCLOUD_WEB_VERSION" }}/incloud-web
+  version: '{{ env "INCLOUD_WEB_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "incloud-web"
