@@ -1,6 +1,7 @@
 ### COMMUNITY CHARTS
 CERT_MANAGER_VERSION:                             v1.17.2
 CILIUM_VERSION:                                   1.17.4
+DEX_VERSION:                                      0.23.0
 ISTIO_VERSION:                                    1.24.3
 POSTGRES_VERSION:                                 16.7.10
 

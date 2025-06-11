@@ -1,0 +1,26 @@
+config:
+  frontend:
+    theme: "coreos"
+    issuer: "InCloud"
+
+  storage:
+    type: postgres
+    config:
+      ssl:
+        mode: disable
+
+  web:
+    http: 0.0.0.0:5556
+
+  expiry:
+    signingKeys: "6h"
+    idTokens: "24h"
+
+  logger:
+    level: debug
+    format: json
+
+  oauth2:
+    passwordConnector: local
+
+  enablePasswordDB: True

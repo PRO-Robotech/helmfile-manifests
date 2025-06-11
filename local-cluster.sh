@@ -43,15 +43,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: anonymous-clusterrolebinding
+  name: admin-clusterrolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: admin-clusterrole
 subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: User
-  name: system:anonymous
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: admin@x5.ru
 EOF
 
 echo ""
@@ -188,6 +188,21 @@ kubectl create ns incloud-sgroups
 for i in {1..3}
 do
   kubectl apply -f ${TMP_DIR}/netguard.yaml
+done
+
+
+echo ""
+echo "--- templating dex"
+helmfile \
+  -e dev \
+  --kube-version=${K8S_VERSION} \
+  -l incloud-collections=dex \
+  template > ${TMP_DIR}/dex.yaml
+echo "--- deploy dex"
+kubectl create ns incloud-idp
+for i in {1..3}
+do
+  kubectl apply -f ${TMP_DIR}/dex.yaml
 done
 
 

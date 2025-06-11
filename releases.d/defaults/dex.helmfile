@@ -1,0 +1,20 @@
+- name: dex-postgresql
+  namespace: incloud-netbox
+  skipDeps: true
+  chart: charts/bitnami/postgresql-{{ env "POSTGRES_VERSION" }}/postgresql
+  version: '{{ env "POSTGRES_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "dex"
+
+- name: dex
+  namespace: incloud-idp
+  chart: charts/dexidp/dex-{{ env "DEX_VERSION" }}/dex
+  version: '{{ env "DEX_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "dex"

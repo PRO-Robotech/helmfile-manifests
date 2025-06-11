@@ -2,10 +2,10 @@ global:
   addresses:
     idp:
       schema: https
-      fqdn: ""
+      fqdn: dex.incloud.x5.ru
     incloud:
       schema: https
-      fqdn: ""
+      fqdn: incloud.incloud.x5.ru
 
   dnsServers: []
   ntpServers: []
@@ -28,7 +28,7 @@ global:
       dbUser:     netbox
       dbPassword: netbox
     superUser:
-      user:       admin
+      username:   admin
       password:   admin
 
   sgroups:
@@ -38,6 +38,17 @@ global:
       dbName:     sgroups
       dbUser:     sgroups
       dbPassword: sgroups
+
+  dex:
+    externalDB:
+      dbUrl:      dex-postgresql
+      dbPort:     5432
+      dbName:     dex
+      dbUser:     dex
+      dbPassword: dex
+    adminUser:
+      username:   admin
+      password:   admin
 
   idp:
     clientID: incloud

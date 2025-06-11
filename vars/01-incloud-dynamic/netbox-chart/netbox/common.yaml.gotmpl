@@ -8,7 +8,7 @@ externalDatabase:
   password: {{ .Values.global.netbox.externalDB.dbPassword }}
 
 superuser:
-  name: {{ .Values.global.netbox.superUser.user }}
+  name:     {{ .Values.global.netbox.superUser.username }}
   password: {{ .Values.global.netbox.superUser.password }}
 
 helm-inserter:

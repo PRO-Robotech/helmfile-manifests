@@ -1,0 +1,111 @@
+
+{{- $mainDomain       := printf "%s.%s" .Release.Namespace .Values.global.domains.external -}}
+{{- $idpFQDN          := .Values.global.addresses.idp.fqdn -}}
+{{- $idpURL           := printf "%s://%s" .Values.global.addresses.idp.schema $idpFQDN -}}
+
+config:
+  issuer: {{ $idpURL }}
+
+  frontend:
+    issuerUrl: "{{ $idpURL }}"
+
+  storage:
+    config:
+      host:     {{ .Values.global.dex.externalDB.dbUrl }}
+      port:     {{ .Values.global.dex.externalDB.dbPort }}
+      database: {{ .Values.global.dex.externalDB.dbName }}
+      user:     {{ .Values.global.dex.externalDB.dbUser }}
+      password: {{ .Values.global.dex.externalDB.dbPassword }}
+
+  staticClients:
+    - id: "{{ .Values.global.idp.clientID }}"
+      name: "{{ .Values.global.idp.clientID }}"
+      secret: "{{ .Values.global.idp.clientSecret }}"
+      redirectURIs:
+        - http://localhost:8000/oauth/callback
+        - http://localhost:8000
+        - https://netbox.incloud-netbox.incloud-k8s-local-dev-local-1.x5.ru
+        - https://sgroups.incloud-sgroups.incloud-k8s-local-dev-local-1.x5.ru
+        - https://incloud.incloud-web.incloud-k8s-local-dev-local-1.x5.ru
+
+  staticPasswords:
+    - email: "admin@{{ .Values.global.domains.external }}"
+      # bcrypt hash of the string "admin": $(echo admin | htpasswd -BinC 10 admin | cut -d: -f2)
+      hash: "$2y$10$OFnA7tTUKalTsIiIWzPSp.XE4MhyGSoYh8pzUYSBsuJnN2pcuM7wG"
+      username: "{{ .Values.global.dex.adminUser.username }}"
+      userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+
+helm-inserter:
+  templates:
+    dexGateway: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: Gateway
+      metadata:
+        name: {{ .Release.Name }}-gateway
+        namespace: {{ .Release.Namespace }}
+      spec:
+        selector:
+          istio: {{ .Release.Name }}-istio-ingressgateway
+        servers:
+          - port:
+              number: 80
+              name: http
+              protocol: HTTP
+            hosts:
+              - "dex.{{ $mainDomain }}"
+              - "{{ $idpFQDN }}"
+          - port:
+              number: 443
+              name: https
+              protocol: HTTPS
+            hosts:
+              - "dex.{{ $mainDomain }}"
+              - "{{ $idpFQDN }}"
+            tls:
+              mode: SIMPLE
+              credentialName: {{ .Release.Name }}-cert-tls
+
+    dexCertificate: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: {{ .Release.Name }}-cert
+        namespace: {{ .Release.Namespace }}
+      spec:
+        duration: {{ .Values.global.certManager.defaults.duration }}
+        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: issuer-selfsigned
+        dnsNames:
+          - "dex.{{ $mainDomain }}"
+          - "{{ $idpFQDN }}"
+        commonName: "dex.{{ .Release.Namespace }}"
+        secretName: {{ .Release.Name }}-cert-tls
+
+    dexVirtualService: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+        - "dex.{{ $mainDomain }}"
+        - "{{ $idpFQDN }}"
+        gateways:
+        - {{ .Release.Name }}-gateway
+        http:
+        - name: {{ .Release.Name }}
+          match:
+            - uri:
+                prefix: /
+          route:
+          - destination:
+              host: {{ .Release.Name }}
+              port:
+                number: 5556
