@@ -1,12 +1,15 @@
 ### COMMUNITY CHARTS
 CERT_MANAGER_VERSION:                             v1.17.2
 CILIUM_VERSION:                                   1.17.4
+COREDNS_VERSION:                                  1.42.1
 DEX_VERSION:                                      0.23.0
+EXTERNAL_DNS_VERSION:                             1.16.1
 ISTIO_VERSION:                                    1.24.3
 POSTGRES_VERSION:                                 16.7.10
 
 ### incloud CHARTS
 CROSSPLANE_VERSION:                               1.0.0
+ETCD_OPERATOR_VERSION:                            1.0.0
 IPAM_PROVIDER_VERSION:                            1.0.0
 INCLOUD_WEB_VERSION:                              1.0.0
 NETBOX_VERSION:                                   5.0.0-beta.103

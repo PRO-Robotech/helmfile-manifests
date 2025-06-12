@@ -1,4 +1,4 @@
-{{- $mainDomain := printf "%s.%s" .Release.Namespace .Values.global.domains.main -}}
+{{- $mainDomain := printf "netbox.%s.%s" .Release.Namespace .Values.global.domains.internal -}}
 
 externalDatabase:
   host:     {{ .Values.global.netbox.externalDB.dbUrl }}

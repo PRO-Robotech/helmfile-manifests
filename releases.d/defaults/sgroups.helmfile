@@ -18,6 +18,10 @@
     - template: localCharts
   labels:
     incloud-collections: "sgroups"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
 
 - name: sgroups-istio-ingressgateway
   namespace: incloud-sgroups

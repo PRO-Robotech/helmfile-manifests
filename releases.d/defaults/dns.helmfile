@@ -1,0 +1,30 @@
+- name: coredns
+  namespace: incloud-coredns
+  chart: charts/coredns/coredns-{{ env "COREDNS_VERSION" }}/coredns
+  version: '{{ env "COREDNS_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "dns"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
+
+- name: external-dns
+  namespace: incloud-coredns
+  chart: charts/external-dns/external-dns-{{ env "EXTERNAL_DNS_VERSION" }}/external-dns
+  version: '{{ env "EXTERNAL_DNS_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "dns"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
+    - chart: charts/coredns/coredns-1.42.1/coredns
+      alias: coredns
+      version: 1.42.1

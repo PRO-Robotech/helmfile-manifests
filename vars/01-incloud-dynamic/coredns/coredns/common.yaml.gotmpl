@@ -1,0 +1,59 @@
+
+service:
+  clusterIP: "{{ .Values.global.k8s.svcCoreDnsIP }}"
+
+servers:
+  - zones:
+      - zone: .
+    port: 53
+
+    plugins:
+      - name: kubernetes
+        parameters: . in-addr.arpa ip6.arpa
+        configBlock: |-
+          pods verified 
+          fallthrough in-addr.arpa ip6.arpa
+          ttl 30
+
+      - name: transfer
+        configBlock: |-
+          to *
+
+      - name: loop
+      - name: reload
+      - name: errors
+      - name: ready
+
+      - name: loadbalance
+        parameter: round_robin
+      - name: forward
+        parameters: . /etc/resolv.conf
+      - name: cache
+        parameters: 30
+      - name: prometheus
+        parameters: 0.0.0.0:9153
+
+      - name: log
+        configBlock: |-
+          class all
+
+      - name: health
+        configBlock: |-
+          lameduck 5s
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - coredns
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - {{ .Release.Name }}
+        topologyKey: kubernetes.io/hostname
+      weight: 100

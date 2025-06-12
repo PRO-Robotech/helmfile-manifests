@@ -1,0 +1,27 @@
+{{- $mainDomain := printf "netbox.%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+
+helm-inserter:
+  templates:
+
+    netboxVirtualService: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+        - "{{ .Release.Name }}.{{ $mainDomain }}"
+        gateways:
+        - incloud-istio/istio-ingressgateway
+        http:
+        - name: {{ .Release.Name }}
+          match:
+            - uri:
+                prefix: /
+          route:
+          - destination:
+              host: {{ .Release.Name }}
+              port:
+                number: 80

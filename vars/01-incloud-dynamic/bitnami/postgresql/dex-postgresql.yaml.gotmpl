@@ -1,6 +1,4 @@
-global:
-  postgresql:
-    auth:
-      database: {{ .Values.global.dex.externalDB.dbName }}
-      username: {{ .Values.global.dex.externalDB.dbUser }}
-      password: {{ .Values.global.dex.externalDB.dbPassword }}
+auth:
+  database: {{ .Values.global.dex.externalDB.dbName }}
+  username: {{ .Values.global.dex.externalDB.dbUser }}
+  password: {{ .Values.global.dex.externalDB.dbPassword }}

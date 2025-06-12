@@ -1,0 +1,257 @@
+{{- $etcdPKIPath := "/etc/pki/etcd" -}}
+{{- $mainClusterName := .Values.global.clusterFullName -}}
+{{- $mainBaseDomain := .Values.global.domains.external -}}
+
+env:
+  - name: ETCD_URLS
+    value: https://etcd-external-dns.{{ .Release.Namespace }}.svc:2379
+  - name: ETCD_CA_FILE
+    value: "{{ $etcdPKIPath }}/ca.crt"
+  - name: ETCD_CERT_FILE
+    value: "{{ $etcdPKIPath }}/tls.crt"
+  - name: ETCD_KEY_FILE
+    value: "{{ $etcdPKIPath }}/tls.key"
+  - name: ETCD_TLS_INSECURE
+    value: "false"
+  - name: BIND_IP
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: status.hostIP
+
+domainFilters:
+  - "{ .Values.global.domains.external }}"
+
+extraArgs:
+  - --coredns-prefix=/external-dns-{{ $mainClusterName }}/
+  - --service-type-filter=ClusterIP
+
+extraVolumeMounts:
+  - name: client-etcd-certificate
+    readOnly: true
+    mountPath: {{ $etcdPKIPath }}
+
+extraVolumes:
+  - name: client-etcd-certificate
+    secret:
+      defaultMode: 420
+      secretName: etcd-{{ .Release.Name }}-client-tls
+
+coredns:
+  extraVolumeMounts:
+    - name: client-etcd-certificate
+      mountPath: {{ $etcdPKIPath }}
+
+  extraVolumes:
+    - name: client-etcd-certificate
+      secret:
+        defaultMode: 420
+        secretName: etcd-{{ .Release.Name }}-client-tls
+
+  zoneFiles:
+    - filename: db.{{ $mainBaseDomain }}
+      domain: {{ $mainBaseDomain }}
+      contents: |
+        $ORIGIN {{ $mainBaseDomain }}.
+        @	                                  10 IN	SOA      ns.dns.{{ $mainBaseDomain }}. hostmaster 2024061104 900 600 86400 3600
+        @	                                  10 IN	NS       ns.dns.{{ $mainBaseDomain }}.
+        {{ $mainClusterName }}              10 IN NS       ns.dns.{{ $mainClusterName }}.{{ $mainBaseDomain }}.
+
+  servers:
+
+    - zones:
+        - zone: {{ $mainBaseDomain }}.
+      port: 53
+
+      plugins:
+
+        - name: transfer
+          configBlock: |-
+            to *
+
+        - name: file
+          parameters: /etc/coredns/db.{{ $mainBaseDomain }}
+
+        - name: loop
+        - name: reload
+        - name: errors
+        - name: ready
+
+        - name: loadbalance
+          parameter: round_robin
+        - name: forward
+          parameters: . /etc/resolv.conf
+        - name: cache
+          parameters: 30
+        - name: prometheus
+          parameters: 0.0.0.0:9153
+
+        - name: log
+          configBlock: |-
+            class all
+
+        - name: health
+          configBlock: |-
+            lameduck 5s
+
+    - zones:
+        - zone: .
+      port: 53
+
+      plugins:
+        - name: kubernetes
+          parameters: . in-addr.arpa ip6.arpa
+          configBlock: |-
+            pods verified 
+            fallthrough in-addr.arpa ip6.arpa
+            ttl 30
+
+        - name: transfer
+          configBlock: |-
+            to *
+
+        - name: loop
+        - name: reload
+        - name: errors
+        - name: ready
+
+        - name: loadbalance
+          parameter: round_robin
+        - name: forward
+          parameters: . /etc/resolv.conf
+        - name: cache
+          parameters: 30
+        - name: prometheus
+          parameters: 0.0.0.0:9153
+
+        - name: log
+          configBlock: |-
+            class all
+
+        - name: health
+          configBlock: |-
+            lameduck 5s
+
+helm-inserter:
+  templates:
+    etcdCluster: |
+      ---
+      apiVersion: etcd.aenix.io/v1alpha1
+      kind: EtcdCluster
+      metadata:
+        name: etcd-{{ .Release.Name }}
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        replicas: 3
+        options:
+          election-timeout: "1000"
+          max-wals: "5"
+          max-snapshots: "5"
+          snapshot-count: "10000"
+          experimental-initial-corrupt-check: "true"
+          experimental-watch-progress-notify-interval: 5s
+          auto-compaction-retention: 1h
+          election-timeout: "1500"
+          heartbeat-interval: "300"
+          experimental-warning-apply-duration: "300ms"
+
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: default
+              accessModes: [ "ReadWriteOnce" ]
+              resources:
+                requests:
+                  storage: 3Gi
+
+        serviceTemplate:
+          spec:
+            type: ClusterIP
+            ports:
+              - appProtocol: TCP
+                name: server
+                port: 2379
+                targetPort: 2379
+
+        podTemplate:
+          metadata:
+            labels:
+              cluster: {{ .Release.Namespace }}
+          spec:
+            priorityClassName: "system-cluster-critical"
+            tolerations:
+              - operator: Exists
+            containers:
+              - name: etcd
+                image: "registry.k8s.io/etcd:3.5.15-0"
+                imagePullPolicy: Always
+                resources:
+                  limits:
+                    cpu: 400m
+                    memory: 2Gi
+                  requests:
+                    cpu: 200m
+                    memory: 1Gi
+
+        security:
+          # enableAuth: true
+          tls:
+            peerTrustedCASecret: etcd-{{ .Release.Name }}-peer-tls
+            peerSecret: etcd-{{ .Release.Name }}-peer-tls
+            serverTrustedCASecret: etcd-{{ .Release.Name }}-peer-tls
+            serverSecret: etcd-{{ .Release.Name }}-peer-tls
+            clientTrustedCASecret: etcd-{{ .Release.Name }}-client-tls
+            clientSecret: etcd-{{ .Release.Name }}-client-tls
+
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: etcd-{{ .Release.Name }}-peer
+        namespace: {{ .Release.Namespace }}
+      spec:
+        duration: {{ .Values.global.certManager.defaults.duration }}
+        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
+        secretName: etcd-{{ .Release.Name }}-peer-tls
+        isCA: false
+        usages:
+          - "server auth"
+          - "client auth"
+          - "signing"
+          - "key encipherment"
+        dnsNames:
+        - "etcd-{{ .Release.Name }}-0.etcd-{{ .Release.Name }}-headless.{{ .Release.Namespace }}.svc"
+        - "etcd-{{ .Release.Name }}-1.etcd-{{ .Release.Name }}-headless.{{ .Release.Namespace }}.svc"
+        - "etcd-{{ .Release.Name }}-2.etcd-{{ .Release.Name }}-headless.{{ .Release.Namespace }}.svc"
+        - "etcd-external-dns.{{ .Release.Namespace }}.svc"
+        privateKey:
+          rotationPolicy: Always
+          algorithm: RSA
+          size: 4096
+        issuerRef:
+          kind: ClusterIssuer
+          name: issuer-selfsigned
+
+    etcdCert: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: etcd-{{ .Release.Name }}-client
+        namespace: {{ .Release.Namespace }}
+      spec:
+        duration: {{ .Values.global.certManager.defaults.duration }}
+        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
+        commonName: {{ .Release.Namespace }}-etcd-client
+        secretName: etcd-{{ .Release.Name }}-client-tls
+        usages:
+        - "signing"
+        - "key encipherment"
+        - "client auth"
+        privateKey:
+          rotationPolicy: Always
+          algorithm: RSA
+          size: 4096
+        issuerRef:
+          kind: ClusterIssuer
+          name: issuer-selfsigned

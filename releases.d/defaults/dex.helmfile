@@ -1,5 +1,5 @@
 - name: dex-postgresql
-  namespace: incloud-netbox
+  namespace: incloud-idp
   skipDeps: true
   chart: charts/bitnami/postgresql-{{ env "POSTGRES_VERSION" }}/postgresql
   version: '{{ env "POSTGRES_VERSION" }}'
@@ -14,6 +14,20 @@
   chart: charts/dexidp/dex-{{ env "DEX_VERSION" }}/dex
   version: '{{ env "DEX_VERSION" }}'
   insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "dex"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
+
+- name: dex-istio-ingressgateway
+  namespace: incloud-idp
+  skipDeps: true
+  chart: charts/istio-release/gateway-{{ env "ISTIO_VERSION" }}/gateway
+  version: '{{ env "ISTIO_VERSION" }}'
   inherit:
     - template: localCharts
   labels:

@@ -1,0 +1,13 @@
+- name: etcd-operator
+  namespace: incloud-etcd-operator
+  skipDeps: true
+  chart: charts/aenix/etcd-operator-{{ env "ETCD_OPERATOR_VERSION" }}/etcd-operator
+  version: '{{ env "ETCD_OPERATOR_VERSION" }}'
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "etcd-operator"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5

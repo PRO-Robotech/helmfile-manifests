@@ -1,5 +1,5 @@
 
-{{- $mainDomain       := printf "%s.%s" .Release.Namespace .Values.global.domains.external -}}
+{{- $mainDomain       := printf "dex.%s.%s" .Release.Namespace .Values.global.domains.internal -}}
 {{- $idpFQDN          := .Values.global.addresses.idp.fqdn -}}
 {{- $idpURL           := printf "%s://%s" .Values.global.addresses.idp.schema $idpFQDN -}}
 
@@ -24,9 +24,9 @@ config:
       redirectURIs:
         - http://localhost:8000/oauth/callback
         - http://localhost:8000
-        - https://netbox.incloud-netbox.incloud-k8s-local-dev-local-1.x5.ru
-        - https://sgroups.incloud-sgroups.incloud-k8s-local-dev-local-1.x5.ru
-        - https://incloud.incloud-web.incloud-k8s-local-dev-local-1.x5.ru
+        - https://netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.x5.ru
+        - https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.x5.ru
+        - https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.x5.ru
 
   staticPasswords:
     - email: "admin@{{ .Values.global.domains.external }}"
@@ -37,55 +37,6 @@ config:
 
 helm-inserter:
   templates:
-    dexGateway: |
-      ---
-      apiVersion: networking.istio.io/v1alpha3
-      kind: Gateway
-      metadata:
-        name: {{ .Release.Name }}-gateway
-        namespace: {{ .Release.Namespace }}
-      spec:
-        selector:
-          istio: {{ .Release.Name }}-istio-ingressgateway
-        servers:
-          - port:
-              number: 80
-              name: http
-              protocol: HTTP
-            hosts:
-              - "dex.{{ $mainDomain }}"
-              - "{{ $idpFQDN }}"
-          - port:
-              number: 443
-              name: https
-              protocol: HTTPS
-            hosts:
-              - "dex.{{ $mainDomain }}"
-              - "{{ $idpFQDN }}"
-            tls:
-              mode: SIMPLE
-              credentialName: {{ .Release.Name }}-cert-tls
-
-    dexCertificate: |
-      ---
-      apiVersion: cert-manager.io/v1
-      kind: Certificate
-      metadata:
-        name: {{ .Release.Name }}-cert
-        namespace: {{ .Release.Namespace }}
-      spec:
-        duration: {{ .Values.global.certManager.defaults.duration }}
-        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
-        issuerRef:
-          group: cert-manager.io
-          kind: ClusterIssuer
-          name: issuer-selfsigned
-        dnsNames:
-          - "dex.{{ $mainDomain }}"
-          - "{{ $idpFQDN }}"
-        commonName: "dex.{{ .Release.Namespace }}"
-        secretName: {{ .Release.Name }}-cert-tls
-
     dexVirtualService: |
       ---
       apiVersion: networking.istio.io/v1alpha3
@@ -95,10 +46,10 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - "dex.{{ $mainDomain }}"
+        - "{{ $mainDomain }}"
         - "{{ $idpFQDN }}"
         gateways:
-        - {{ .Release.Name }}-gateway
+        - incloud-istio/istio-ingressgateway
         http:
         - name: {{ .Release.Name }}
           match:

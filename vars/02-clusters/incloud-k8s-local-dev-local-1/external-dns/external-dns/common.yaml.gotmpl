@@ -1,0 +1,74 @@
+{{- $etcdPKIPath := "/etc/pki/etcd" -}}
+{{- $mainClusterName := .Values.global.clusterFullName -}}
+{{- $mainBaseDomain := .Values.global.domains.external -}}
+
+helm-inserter:
+  templates:
+    etcdCluster: |
+      ---
+      apiVersion: etcd.aenix.io/v1alpha1
+      kind: EtcdCluster
+      metadata:
+        name: etcd-{{ .Release.Name }}
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        replicas: 1
+        options:
+          election-timeout: "1000"
+          max-wals: "5"
+          max-snapshots: "5"
+          snapshot-count: "10000"
+          experimental-initial-corrupt-check: "true"
+          experimental-watch-progress-notify-interval: 5s
+          auto-compaction-retention: 1h
+          election-timeout: "1500"
+          heartbeat-interval: "300"
+          experimental-warning-apply-duration: "300ms"
+
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: standard
+              accessModes: [ "ReadWriteOnce" ]
+              resources:
+                requests:
+                  storage: 3Gi
+
+        serviceTemplate:
+          spec:
+            type: ClusterIP
+            ports:
+              - appProtocol: TCP
+                name: server
+                port: 2379
+                targetPort: 2379
+
+        podTemplate:
+          metadata:
+            labels:
+              cluster: {{ .Release.Namespace }}
+          spec:
+            priorityClassName: "system-cluster-critical"
+            tolerations:
+              - operator: Exists
+            containers:
+              - name: etcd
+                image: "registry.k8s.io/etcd:3.5.15-0"
+                imagePullPolicy: Always
+                resources:
+                  limits:
+                    cpu: 400m
+                    memory: 2Gi
+                  requests:
+                    cpu: 200m
+                    memory: 1Gi
+
+        security:
+          # enableAuth: true
+          tls:
+            peerTrustedCASecret: etcd-{{ .Release.Name }}-peer-tls
+            peerSecret: etcd-{{ .Release.Name }}-peer-tls
+            serverTrustedCASecret: etcd-{{ .Release.Name }}-peer-tls
+            serverSecret: etcd-{{ .Release.Name }}-peer-tls
+            clientTrustedCASecret: etcd-{{ .Release.Name }}-client-tls
+            clientSecret: etcd-{{ .Release.Name }}-client-tls

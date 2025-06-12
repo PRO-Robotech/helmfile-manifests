@@ -1,0 +1,49 @@
+helm-inserter:
+  templates:
+    istioGW: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: Gateway
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "{{ .Values.global.domains.external }}"
+        name: istio-ingressgateway
+        namespace: {{ .Release.Namespace }}
+      spec:
+        selector:
+          istio: ingressgateway
+        servers:
+          - port:
+              number: 80
+              name: http
+              protocol: HTTP
+            hosts:
+              - "*.{{ .Values.global.domains.external }}"
+          - port:
+              number: 443
+              name: https
+              protocol: HTTPS
+            hosts:
+              - "*.{{ .Values.global.domains.external }}"
+            tls:
+              mode: SIMPLE
+              credentialName: {{ .Release.Name }}-cert-tls
+
+    istioCertificate: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: {{ .Release.Name }}-cert
+        namespace: {{ .Release.Namespace }}
+      spec:
+        duration: {{ .Values.global.certManager.defaults.duration }}
+        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: issuer-selfsigned
+        dnsNames:
+          - "*.{{ .Values.global.domains.external }}"
+        commonName: "{{ .Release.Namespace }}"
+        secretName: {{ .Release.Name }}-cert-tls

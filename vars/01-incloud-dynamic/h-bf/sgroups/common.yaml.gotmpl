@@ -1,4 +1,6 @@
-{{- $mainDomain := .Values.global.domains.main -}}
+{{- $mainDomain := .Values.global.domains.external -}}
+{{- $clusterFullName := .Values.global.clusterFullName -}}
+{{- $hbfDomain  := printf "%s-%s-%s.%s" .Release.Name .Release.Namespace $clusterFullName $mainDomain }}
 
 domain: {{ $mainDomain }}
 
@@ -27,4 +29,4 @@ appSpec:
       containers:
         web:
           extraEnv:
-            HBF_API: http://{{ .Release.Name }}.{{ .Release.Namespace }}.{{ $mainDomain }}/server
+            HBF_API: http://{{ $hbfDomain }}/server

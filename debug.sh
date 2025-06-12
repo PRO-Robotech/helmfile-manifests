@@ -3,9 +3,8 @@ export \
   CLUSTER_ENV=dev \
   CLUSTER_AREA=local \
   CLUSTER_INDEX=1 \
-  K8S_VERSION=v1.31.0 \
-  INCLOUD_COMPONENTS_VERSION=v1.0.0 \
-  HELMFILE_RELEASE="netbox"
+  K8S_VERSION=v1.32.0 \
+  INCLOUD_COMPONENTS_VERSION=v1.0.0
 
 export \
   K8S_VERSION="${K8S_VERSION:-$(kubectl version | sed -n 's/.*Server Version:[[:space:]]*\(v[0-9.]*\).*/\1/p')}" \
@@ -18,6 +17,6 @@ source ${TMP_DIR}/components_versions.env
 
 helmfile \
   -e ${CLUSTER_ENV} \
-  -l release=${HELMFILE_RELEASE} \
+  -l incloud-collections=dns \
   --kube-version=${K8S_VERSION} \
   template

@@ -1,0 +1,70 @@
+
+logLevel: debug
+logFormat: json
+provider: coredns
+policy: sync
+
+sources:
+  - ingress
+  - service
+  - istio-virtualservice
+  - istio-gateway
+
+triggerLoopOnEvent: true
+
+priorityClassName: "system-cluster-critical"
+
+nodeSelector: {}
+
+tolerations:
+  - operator: Exists
+
+securityContext:
+  privileged: true
+  allowPrivilegeEscalation: true
+  readOnlyRootFilesystem: true
+  runAsNonRoot: false
+  runAsUser: 0
+  runAsGroup: 0
+  capabilities: {}
+
+coredns:
+  fullnameOverride: external-coredns
+
+  replicaCount: 2
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+
+  securityContext:
+    runAsNonRoot: false
+    readOnlyRootFilesystem: true
+    runAsUser: 0
+
+  rollingUpdate:
+    maxSurge: 35%
+
+  prometheus:
+    service:
+      enabled: true
+
+  isClusterService: false
+  serviceType: LoadBalancer
+
+  serviceAccount:
+    create: true
+    name: external-coredns
+
+  priorityClassName: "system-cluster-critical"
+
+  tolerations:
+    - operator: Exists
+
+  nodeSelector: {}
+
+  deployment:
+    enabled: true

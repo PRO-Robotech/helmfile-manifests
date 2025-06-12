@@ -1,8 +1,278 @@
+{{- $internalDomain         := printf "%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+{{- $webAddr                := printf "incloud.%s" $internalDomain }}
+{{- $apiAddr                := printf "api.%s" $internalDomain }}
+{{- $mainClusterName        := .Values.global.clusterFullName -}}
+{{- $values                 := printf "../../../../02-clusters/%s/%s.yaml"  $mainClusterName $mainClusterName | readFile | fromYaml -}}
+
+{{- $clustersList := list }}
+{{- range $managedInstance := $values.mgmtClusters -}}
+  {{- $managedCluster := $managedInstance.cluster -}}
+  {{- $clusterValues  := printf "../../../../02-clusters/%s/%s.yaml" $managedCluster $managedCluster | readFile | fromYaml }}
+  {{- $baseDomain     := printf "svc.%s.incloud.%s" ($managedCluster) ($.Values.global.domains.external) -}}
+  {{- $extWebAddr    := printf "incloud.%s.%s" ($.Release.Namespace) ($baseDomain) -}}
+  {{- $extApiAddr     := printf "api.%s.%s"  ($.Release.Namespace) ($baseDomain) -}}
+
+  {{- $tmpDict := dict }}
+  {{- $_ := set $tmpDict "api"             $extApiAddr }}
+  {{- $_ := set $tmpDict "name"            $managedCluster }}
+  {{- $_ := set $tmpDict "tenant"          $clusterValues.global.clusterEnv }}
+  {{- $_ := set $tmpDict "description"     $managedCluster }}
+  {{- $_ := set $tmpDict "externalDomain"  $extWebAddr }}
+  {{- $_ := set $tmpDict "baseDomain"      $baseDomain }}
+
+  {{ $clustersList = append $clustersList $tmpDict }}
+{{- end }}
+
 appSpec:
   applications:
     gatekeeper:
       containers:
         gatekeeper:
           extraArgs:
-            discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.main }}"
-            redirection-url:  "https://incloud.{{ .Release.Namespace}}.{{ .Values.global.domains.main }}"
+            discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.internal }}"
+            redirection-url:  "https://incloud.{{ .Release.Namespace}}.{{ .Values.global.domains.internal }}"
+
+helm-inserter:
+  templates:
+    {{- range $clustersList }}
+    {{ .name }}DestinationRule: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: DestinationRule
+      metadata:
+        name: {{ $.Release.Name }}-{{ .name }}-dr
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        host: {{ .api }}
+        trafficPolicy:
+          tls:
+            insecureSkipVerify: true
+            mode: SIMPLE
+            sni: {{ .api }}
+
+    {{ .name }}DestinationRuleLocal: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: DestinationRule
+      metadata:
+        name: {{ $.Release.Name }}-{{ .name }}-dr-local
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.svc.{{ .baseDomain }}
+        trafficPolicy:
+          tls:
+            insecureSkipVerify: true
+            mode: SIMPLE
+            sni: {{ .api }} 
+
+    {{ .name }}ExtDestinationRule: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: DestinationRule
+      metadata:
+        name: {{ $.Release.Name }}-{{ .name }}-external-dr
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        host: {{ .externalDomain }}
+        trafficPolicy:
+          tls:
+            insecureSkipVerify: true
+            mode: SIMPLE
+            sni: {{ .externalDomain }}
+
+    {{ .name }}ExtServiceEntry: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: ServiceEntry
+      metadata:
+        name: {{ $.Release.Name }}-{{ .name }}-external-se
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        hosts:
+          - {{ .api }}
+          - {{ .externalDomain }}
+        location: MESH_EXTERNAL
+        ports:
+        - number: 443
+          name: https
+          protocol: HTTPS
+        - number: 80
+          name: http
+          protocol: HTTP
+        resolution: DNS
+    {{- end }}
+
+    istioIngressGW: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: Gateway
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "api.{{ $internalDomain }}"
+        name: incloud-istio-ingressgateway
+        namespace: {{ .Release.Namespace }}
+      spec:
+        selector:
+          istio: incloud-istio-ingressgateway
+        servers:
+          - port:
+              number: 80
+              name: http
+              protocol: HTTP
+            hosts:
+              - "*.{{ $internalDomain }}"
+          - port:
+              number: 443
+              name: https
+              protocol: HTTPS
+            hosts:
+              - "*.{{ $internalDomain }}"
+            tls:
+              mode: SIMPLE
+              credentialName: incloud-cert-tls
+
+    incloudSelfSignedCert: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: incloud-cert
+        namespace: {{ .Release.Namespace }}
+      spec:
+        duration: {{ .Values.global.certManager.defaults.duration }}
+        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: issuer-selfsigned
+        dnsNames:
+          - "*.{{ $internalDomain }}"
+        secretName: incloud-cert-tls
+
+    incloudVirtualService: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}-incloud-vsvc
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+        - test.com # {{ $webAddr }}
+        gateways:
+        - incloud-istio-ingressgateway
+        http:
+        - name: incloud
+          match:
+            - uri:
+                prefix: /
+          route:
+          - destination:
+              host: {{ $apiAddr }}
+              port:
+                number: 443
+
+    apiVirtualService: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}-api-vsvc
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+        - {{ $webAddr }}  #{{ $apiAddr }}
+        gateways:
+        # - incloud-istio-ingressgateway
+        - incloud-istio/istio-ingressgateway
+        http:
+
+        - name: k8s
+          match:
+            - uri:
+                prefix: /k8s/
+          rewrite:
+            uri: /
+          route:
+            - destination:
+                host: kubernetes.default.svc
+                port:
+                  number: 443
+
+        - name: metrics
+          match:
+            - uri:
+                prefix: /metrics/
+          rewrite:
+            uri: /
+          route:
+          - destination:
+              host: dashboard-metrics-scraper
+              port:
+                number: 8000
+
+        - name: terminal
+          match:
+            - uri:
+                prefix: /terminal/
+          rewrite:
+            uri: /
+          route:
+          - destination:
+              host: {{ .Release.Name }}-termserver
+              port:
+                number: 9000
+
+        {{- range $clustersList }}
+        - name: {{ .name }}
+          match:
+            - uri:
+                prefix: /api/clusters/{{ .name }}/
+          rewrite:
+            uri: /
+          route:
+          - destination:
+              {{- if eq (.api) "incloud-k8s-local-dev-local-1" }}
+              host: {{ .api }}
+              {{- else }}
+              host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.{{ .baseDomain }}
+              {{- end }}
+              port:
+                number: 443
+            headers:
+              request:
+                set:
+                  Host: {{ .api }}
+        {{- end }}
+
+        - name: clusterlist
+          match:
+            - uri:
+                prefix: /clusterlist
+              method:
+                exact: GET
+            - uri:
+                prefix: /api/clusters
+              method:
+                exact: GET
+          headers:
+            response:
+              set:
+                Content-Type: "application/json"
+          directResponse:
+            status: 200
+            body:
+              string: |
+                {{ $clustersList | toJson }}
+
+        - name: main
+          match:
+            - uri:
+                prefix: /
+          rewrite:
+            uri: /openapi-ui
+          route:
+            - destination: # return gatekeeper
+                host: {{ .Release.Name }}-web
+                port:
+                  number: 8080

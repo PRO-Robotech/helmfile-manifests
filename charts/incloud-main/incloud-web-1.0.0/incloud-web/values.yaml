@@ -98,14 +98,14 @@ appSpec:
 
           extraPorts:
             http:
-              containerPort: 5000
+              containerPort: 8080
               protocol: TCP
 
           extraLivenessProbe:
             failureThreshold: 3
             httpGet:
               path: /health
-              port: 5000
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 3
             periodSeconds: 10
@@ -116,7 +116,7 @@ appSpec:
             failureThreshold: 3
             httpGet:
               path: /health
-              port: 5000
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 3
             periodSeconds: 10

@@ -1,0 +1,25 @@
+fullnameOverride: coredns
+priorityClassName: system-cluster-critical
+prometheus:
+  service:
+    enabled: true
+replicaCount: 3
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 200m
+rollingUpdate:
+  maxSurge: 35%
+securityContext:
+  runAsNonRoot: false
+  readOnlyRootFilesystem: true
+  runAsUser: 0
+serviceAccount:
+  create: true
+  name: coredns
+tolerations:
+  - operator: Exists
+
+k8sAppLabelOverride: kube-dns

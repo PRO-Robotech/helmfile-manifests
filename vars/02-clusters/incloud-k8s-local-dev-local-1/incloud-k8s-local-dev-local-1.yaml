@@ -7,3 +7,7 @@ global:
   incloudComponentsVersion: v1.0.0
   incloudRepositoryVersion: dev
   clusterNetwork:           10.244.0.0/24
+
+mgmtClusters:
+  - cluster: incloud-k8s-local-dev-local-1
+    mode: demo

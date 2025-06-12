@@ -10,6 +10,9 @@ global:
   dnsServers: []
   ntpServers: []
 
+  k8s:
+    svcCoreDnsIP: 10.96.0.12
+
   istioNamespace: incloud-istio
 
   certManager:
