@@ -15,7 +15,7 @@ spec:
     singular: marketplacepanel
   scope: Cluster
   versions:
-  - name: v1alpha
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
         properties:

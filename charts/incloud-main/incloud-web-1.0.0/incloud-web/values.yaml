@@ -18,18 +18,18 @@ appSpec:
             tag: "0.2.0"
 
           extraArgs:
-            listen:                           0.0.0.0:8000
-            discovery-url:                    ""
-            client-id:                        ""
-            client-secret:                    ""
-            redirection-url:                  https://
-            enable-refresh-tokens:            true
-            encryption-key:                   ""
-            upstream-url:                     http://incloud-web-web:5000
-            resources=uri:                    "/*"
-            skip-openid-provider-tls-verify:  true
-            scopes:                           "openid profile email groups offline_access"
-            server-write-timeout:             30s
+            listen: 0.0.0.0:8000
+            discovery-url: ""
+            client-id: ""
+            client-secret: ""
+            redirection-url: https://
+            enable-refresh-tokens: true
+            encryption-key: ""
+            upstream-url: http://incloud-web-web:5000
+            resources=uri: "/*"
+            skip-openid-provider-tls-verify: true
+            scopes: "openid profile email groups offline_access"
+            server-write-timeout: 30s
             upstream-response-header-timeout: 30s
 
           extraLivenessProbe:
@@ -73,7 +73,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui
-            tag: "main-7365cbc7"
+            tag: "main-c9cc2203"
 
           extraSecurityContext:
             capabilities:
@@ -88,12 +88,15 @@ appSpec:
 
           extraEnv:
             CUSTOMIZATION_API_GROUP: in-cloud.io
-            CUSTOMIZATION_API_VERSION: v1alpha
-            RPROJECTS_VERSION: v1alpha
+            CUSTOMIZATION_API_VERSION: v1alpha1
+            PROJECTS_API_GROUP: in-cloud.io
+            PROJECTS_VERSION: v1alpha1
             PROJECTS_RESOURCE_NAME: projects
             MARKETPLACE_RESOURCE_NAME: marketplacepanels
             MARKETPLACE_KIND: MarketplacePanel
+            INSTANCES_API_GROUP: in-cloud.io
             INSTANCES_VERSION: v1alpha1
+            INSTANCES_RESOURCE_NAME: instances
             BASEPREFIX: /openapi-ui
 
           extraPorts:

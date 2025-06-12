@@ -15,7 +15,7 @@ spec:
     singular: iecidrsgrule
   scope: Namespaced
   versions:
-  - name: v1alpha
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
         description: IECidrSgRule is the Schema for the iecidrsgrules API.

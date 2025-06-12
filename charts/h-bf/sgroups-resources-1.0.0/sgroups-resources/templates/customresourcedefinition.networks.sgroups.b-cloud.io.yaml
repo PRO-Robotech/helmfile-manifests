@@ -15,7 +15,7 @@ spec:
     singular: network
   scope: Namespaced
   versions:
-  - name: v1alpha
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
         description: Network is the Schema for the networks API.

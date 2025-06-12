@@ -15,7 +15,7 @@ spec:
     singular: securitygroup
   scope: Namespaced
   versions:
-  - name: v1alpha
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
         description: SecurityGroup is the Schema for the securitygroups API.
