@@ -2,7 +2,7 @@
 {{- $webAddr                := printf "incloud.%s" $internalDomain }}
 {{- $apiAddr                := printf "api.%s" $internalDomain }}
 {{- $mainClusterName        := .Values.global.clusterFullName -}}
-{{- $values                 := printf "../../../../02-clusters/%s/%s.yaml"  $mainClusterName $mainClusterName | readFile | fromYaml -}}
+{{- $values                 := printf "../../../../02-clusters/%s/%s.yaml" $mainClusterName $mainClusterName | readFile | fromYaml -}}
 
 {{- $clustersList := list }}
 {{- range $managedInstance := $values.mgmtClusters -}}
@@ -200,30 +200,6 @@ helm-inserter:
                 port:
                   number: 443
 
-        - name: metrics
-          match:
-            - uri:
-                prefix: /metrics/
-          rewrite:
-            uri: /
-          route:
-          - destination:
-              host: dashboard-metrics-scraper
-              port:
-                number: 8000
-
-        - name: terminal
-          match:
-            - uri:
-                prefix: /terminal/
-          rewrite:
-            uri: /
-          route:
-          - destination:
-              host: {{ .Release.Name }}-termserver
-              port:
-                number: 9000
-
         {{- range $clustersList }}
         - name: {{ .name }}
           match:
@@ -233,7 +209,7 @@ helm-inserter:
             uri: /
           route:
           - destination:
-              {{- if eq (.api) "incloud-k8s-local-dev-local-1" }}
+              {{- if eq (.name) ($mainClusterName) }}
               host: {{ .api }}
               {{- else }}
               host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.{{ .baseDomain }}
