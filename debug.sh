@@ -17,6 +17,6 @@ source ${TMP_DIR}/components_versions.env
 
 helmfile \
   -e ${CLUSTER_ENV} \
-  -l incloud-collections=dns \
+  -l incloud-collections=crossplane \
   --kube-version=${K8S_VERSION} \
   template

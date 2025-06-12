@@ -1,0 +1,42 @@
+{{- $clusterArea          := (env "CLUSTER_AREA") -}}
+{{- $clusterEnv           := (env "CLUSTER_ENV") -}}
+{{- $clusterIndex         := (env "CLUSTER_INDEX") -}}
+{{- $clusterName          := (env "CLUSTER_NAME") -}}
+
+cluster:
+  name:         {{ $clusterName }}
+  environment:  {{ $clusterEnv }}
+  area:         {{ $clusterArea }}
+  index:        {{ $clusterIndex }}
+
+providers:
+  kubernetes:
+    runtimeConfig:
+      spec:
+        serviceAccountTemplate:
+          metadata:
+            name: {{ .Release.Name }}-crossplane
+
+helm-inserter:
+  templates:
+    k8sProviderServiceAccount: |
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: {{ .Release.Name }}-crossplane
+        namespace: {{ .Release.Namespace }}
+
+    k8sProviderClusterRoleBinding: |
+      ---
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: {{ .Release.Name }}-provider-kubernetes-cluster-admin
+      subjects:
+        - kind: ServiceAccount
+          name: {{ .Release.Name }}-crossplane
+          namespace: {{ .Release.Namespace }}
+      roleRef:
+        kind: ClusterRole
+        name: cluster-admin
+        apiGroup: rbac.authorization.k8s.io

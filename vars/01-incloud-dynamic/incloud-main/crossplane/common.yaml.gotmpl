@@ -1,7 +1,3 @@
-{{- $gitURL         := printf "%s://%s" .Values.global.addresses.git.schema .Values.global.addresses.git.fqdn -}}
-{{- $vaultURL       := printf "%s://%s" .Values.global.addresses.vault.schema .Values.global.addresses.vault.fqdn -}}
-{{- $opensearchURL  := printf "%s://%s:%d" .Values.global.addresses.opensearch.schema .Values.global.addresses.opensearch.fqdn .Values.global.addresses.opensearch.port -}}
-
 helm-inserter:
   templates:
     SecretStore: |

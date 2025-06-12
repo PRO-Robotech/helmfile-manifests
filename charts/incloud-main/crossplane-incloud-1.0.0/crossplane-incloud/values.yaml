@@ -8,7 +8,7 @@ secretStoreName: default
 
 functions:
   function-patch-and-transform:
-    package: nexus.berekebank.kz/repository/xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.8.2
+    package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.8.2
     runtimeConfig:
       spec:
         deploymentTemplate:
@@ -26,7 +26,7 @@ functions:
                     effect: NoSchedule
 
   function-go-templating:
-    package: nexus.berekebank.kz/repository/xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.10.0
+    package: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.10.0
     runtimeConfig:
       spec:
         deploymentTemplate:
@@ -45,7 +45,7 @@ functions:
 
 providers:
   kubernetes:
-    package: nexus.berekebank.kz/repository/xpkg.upbound.io/upbound/provider-kubernetes:v0.17.1
+    package: xpkg.upbound.io/upbound/provider-kubernetes:v0.17.1
     packagePullPolicy: IfNotPresent
     revisionActivationPolicy: Automatic
     revisionHistoryLimit: 1

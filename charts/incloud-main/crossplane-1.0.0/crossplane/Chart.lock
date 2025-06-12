@@ -5,5 +5,5 @@ dependencies:
 - name: helm-inserter
   repository: file://../../../../charts/incloud-main/helm-inserter-0.2.5/helm-inserter
   version: 0.2.5
-digest: sha256:667a2ee4e32311ffc84676e3e85f583c20dfba388fb3c76c0fdf18534018354c
-generated: "2025-04-24T18:50:37.898587+05:00"
+digest: sha256:0db49a51bf6b6919105ab319aa54132aed67e3180dce70a58ce745071f093fa3
+generated: "2025-06-12T19:44:08.581363+05:00"
