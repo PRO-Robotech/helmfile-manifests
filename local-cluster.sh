@@ -94,13 +94,13 @@ helmfile \
   template > ${TMP_DIR}/cert-manager.yaml incloud-collections: "cert-manager"
 echo "--- deploy cert-manager"
 kubectl create ns incloud-cert-manager
-kubectl -n incloud-cert-manager apply -f ${TMP_DIR}/cert-manager.yaml
+kubectl apply -f ${TMP_DIR}/cert-manager.yaml
 echo "----- waiting finish cert-manager startupapicheck"
 kubectl -n incloud-cert-manager wait job/cert-manager-startupapicheck --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
-kubectl -n incloud-cert-manager apply -f ${TMP_DIR}/cert-manager.yaml
+kubectl apply -f ${TMP_DIR}/cert-manager.yaml
 echo "----- waiting run cert-manager webhook"
 kubectl -n incloud-cert-manager wait deployment/cert-manager-webhook --for=jsonpath='{.status.readyReplicas}'=1 --timeout=180s
-kubectl -n incloud-cert-manager apply -f ${TMP_DIR}/cert-manager.yaml # деплоит сертификаты, которые в прошлую итерацию не создались из-за не работающей валидации
+kubectl apply -f ${TMP_DIR}/cert-manager.yaml # деплоит сертификаты, которые в прошлую итерацию не создались из-за не работающей валидации
 
 
 echo ""

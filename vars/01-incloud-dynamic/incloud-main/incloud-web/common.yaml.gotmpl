@@ -1,6 +1,6 @@
 {{- $idpURL       := printf "%s://%s" .Values.global.addresses.idp.schema .Values.global.addresses.idp.fqdn -}}
 {{- $incloudAddr  := printf "%s://%s" .Values.global.addresses.incloud.schema .Values.global.addresses.incloud.fqdn -}}
-{{- $apiAddr      := "https://kubernetes.default.svc" -}}
+{{- $k8sApiAddr      := "https://kubernetes.default.svc" -}}
 
 appSpec:
   applications:
@@ -10,7 +10,7 @@ appSpec:
           extraArgs:
             discovery-url:    {{ $idpURL }}
             redirection-url:  {{ $incloudAddr }}
-            upstream-url:     {{ $apiAddr }}
+            upstream-url:     {{ $k8sApiAddr }}
             client-id:        "{{ .Values.global.idp.clientID }}"
             client-secret:    "{{ .Values.global.idp.clientSecret }}"
             encryption-key:   "{{ .Values.global.gatekeeper.encryptionKey }}"

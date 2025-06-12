@@ -58,7 +58,7 @@ helm-inserter:
         name: {{ $.Release.Name }}-{{ .name }}-dr-local
         namespace: {{ $.Release.Namespace }}
       spec:
-        host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.svc.{{ .baseDomain }}
+        host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.{{ .baseDomain }}
         trafficPolicy:
           tls:
             insecureSkipVerify: true
@@ -160,7 +160,8 @@ helm-inserter:
         hosts:
         - test.com # {{ $webAddr }}
         gateways:
-        - incloud-istio-ingressgateway
+        # - incloud-istio-ingressgateway
+        - incloud-istio/istio-ingressgateway
         http:
         - name: incloud
           match:
@@ -269,8 +270,6 @@ helm-inserter:
           match:
             - uri:
                 prefix: /
-          rewrite:
-            uri: /openapi-ui
           route:
             - destination: # return gatekeeper
                 host: {{ .Release.Name }}-web
