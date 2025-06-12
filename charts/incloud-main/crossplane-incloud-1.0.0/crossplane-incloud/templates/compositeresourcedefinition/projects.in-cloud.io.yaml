@@ -1,0 +1,101 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: projects.in-cloud.io
+spec:
+  group: in-cloud.io
+  names:
+    kind: Project
+    listKind: ProjectList
+    plural: projects
+    singular: project
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        description: Project is the Schema for the projects API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ProjectSpec defines the desired state of Project
+            properties:
+              businessName:
+                description: full business name of project
+                type: string
+              description:
+                description: project description
+                type: string
+              prefix:
+                description: prefix of the project, max length 7
+                type: string
+            required:
+            - businessName
+            - description
+            - prefix
+            type: object
+          status:
+            type: object
+            properties:
+              resourceStatuses:
+                type: object
+                properties:
+                  kubernetes:
+                    type: object
+                    properties:
+                      claimConditionTypes:
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: set
+                      conditions:
+                        description: Состояния ресурса
+                        items:
+                          type: object
+                          properties:
+                            lastTransitionTime:
+                              format: date-time
+                              type: string
+                            message:
+                              type: string
+                            reason:
+                              type: string
+                            status:
+                              type: string
+                            type:
+                              type: string
+                          required:
+                            - lastTransitionTime
+                            - reason
+                            - status
+                            - type
+                        type: array
+                        x-kubernetes-list-map-keys:
+                          - type
+                        x-kubernetes-list-type: map
+                      connectionDetails:
+                        type: object
+                        properties:
+                          lastPublishedTime:
+                            format: date-time
+                            type: string
+        required:
+          - spec

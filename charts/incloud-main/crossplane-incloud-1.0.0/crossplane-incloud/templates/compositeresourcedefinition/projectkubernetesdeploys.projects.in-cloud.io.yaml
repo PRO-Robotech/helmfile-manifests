@@ -1,0 +1,32 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: projectkubernetesdeploys.projects.in-cloud.io
+spec:
+  group: projects.in-cloud.io
+  names:
+    kind: ProjectKubernetesDeploy
+    listKind: ProjectKubernetesDeployList
+    plural: projectkubernetesdeploys
+    singular: projectkubernetesdeploy
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              projectName:
+                type: string
+                description: Project name
+              description:
+                type: string
+                description: Project description
+            required:
+              - projectName
+              - description

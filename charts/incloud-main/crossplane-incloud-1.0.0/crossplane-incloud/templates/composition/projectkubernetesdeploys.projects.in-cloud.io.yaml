@@ -1,0 +1,49 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: projectkubernetesdeploys.projects.in-cloud.io
+spec:
+  compositeTypeRef:
+    apiVersion: projects.in-cloud.io/v1alpha1
+    kind: ProjectKubernetesDeploy
+  mode: Pipeline
+  pipeline:
+    - step: create-project-namespace
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: create-project-namespace
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: ""
+              spec:
+                providerConfigRef:
+                  name: {{ $.Values.providers.kubernetes.providerConfigs.main.metadata.name }}
+                deletionPolicy: Orphan
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: Namespace
+                    metadata:
+                      name: ""
+            patches:
+              # object name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.projectName
+                toFieldPath: metadata.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-namespace"
+
+              # metadata.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.projectName
+                toFieldPath: spec.forProvider.manifest.metadata.name

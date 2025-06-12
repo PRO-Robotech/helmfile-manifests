@@ -1,0 +1,29 @@
+{{- range $providerName, $providerValues := .Values.providers }}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: {{ $.Release.Name }}-{{ $providerName | lower }}-provider
+spec:
+  package: {{ $providerValues.package }}
+  {{- with $providerValues.runtimeConfig }}
+  runtimeConfigRef:
+    apiVersion: pkg.crossplane.io/v1beta1
+    kind: DeploymentRuntimeConfig
+    name: {{ $.Release.Name }}-{{ $providerName | lower }}-drc
+
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: {{ $.Release.Name }}-{{ $providerName | lower }}-drc
+spec:
+  {{ .spec | toYaml | nindent 2 }}
+  {{- end }}
+  {{- with $providerValues.providerConfigs }}
+    {{- range $_, $providerConfig := . }}
+---
+{{ $providerConfig | toYaml | nindent 0 }}
+    {{- end }}
+  {{- end }}
+{{- end }}

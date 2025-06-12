@@ -1,0 +1,87 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: instancedeploys.in-cloud.io
+spec:
+  group: in-cloud.io
+  names:
+    kind: InstanceDeploy
+    listKind: InstanceDeployList
+    plural: instancedeploys
+    singular: instancedeploy
+  claimNames:
+    kind: Instance
+    listKind: InstanceList
+    plural: instances
+    singular: instance
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        description: Instance is the Schema for the instances API
+        properties:
+          spec:
+            description: InstanceSpec defines the desired state of Instance
+            properties:
+              chatid:
+                description: telegram chat id where alerts will be sent
+                type: string
+              description:
+                description: project instance description
+                type: string
+              spi:
+                description: availability of personal data
+                type: boolean
+            required:
+            - description
+            type: object
+          status:
+            type: object
+            properties:
+              resourceStatuses:
+                type: object
+                properties:
+                  kubernetes:
+                    type: object
+                    properties:
+                      claimConditionTypes:
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: set
+                      conditions:
+                        description: Состояния ресурса
+                        items:
+                          type: object
+                          properties:
+                            lastTransitionTime:
+                              format: date-time
+                              type: string
+                            message:
+                              type: string
+                            reason:
+                              type: string
+                            status:
+                              type: string
+                            type:
+                              type: string
+                          required:
+                            - lastTransitionTime
+                            - reason
+                            - status
+                            - type
+                        type: array
+                        x-kubernetes-list-map-keys:
+                          - type
+                        x-kubernetes-list-type: map
+                      connectionDetails:
+                        type: object
+                        properties:
+                          lastPublishedTime:
+                            format: date-time
+                            type: string
+        required:
+          - spec

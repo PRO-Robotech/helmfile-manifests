@@ -1,0 +1,9 @@
+{{- range $envName, $envValues := .Values.environmentConfigs }}
+---
+apiVersion: apiextensions.crossplane.io/v1beta1
+kind: EnvironmentConfig
+metadata:
+  name: {{ $envName }}
+data:
+  {{ $envValues | toYaml | nindent 2 }}
+{{- end }}

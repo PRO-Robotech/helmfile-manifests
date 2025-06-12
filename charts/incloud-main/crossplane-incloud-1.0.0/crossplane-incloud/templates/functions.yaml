@@ -1,0 +1,23 @@
+{{- range $functionName, $functionValues := .Values.functions }}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Function
+metadata:
+  name: {{ $functionName | lower }}
+spec:
+  package: {{ $functionValues.package }}
+  {{- with $functionValues.runtimeConfig }}
+  runtimeConfigRef:
+    apiVersion: pkg.crossplane.io/v1beta1
+    kind: DeploymentRuntimeConfig
+    name: {{ $functionName | lower }}-drc
+
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: {{ $functionName | lower }}-drc
+spec:
+  {{ .spec | toYaml | nindent 2 }}
+  {{- end }}
+{{- end }}

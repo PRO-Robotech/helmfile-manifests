@@ -1,0 +1,35 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: instancedeploys.in-cloud.io
+spec:
+  compositeTypeRef:
+    apiVersion: in-cloud.io/v1alpha1
+    kind: InstanceDeploy
+  mode: Pipeline
+  pipeline:
+    - step: kubernetes-deploy
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: kubernetes-deploy
+            base:
+              apiVersion: instances.in-cloud.io/v1alpha1
+              kind: InstanceKubernetesDeploy
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.name
+                toFieldPath: metadata.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.labels.project
+                toFieldPath: spec.projectName
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.labels.instance
+                toFieldPath: spec.instanceName
+              - type: ToCompositeFieldPath
+                fromFieldPath: status
+                toFieldPath: status.resourceStatuses.kubernetes

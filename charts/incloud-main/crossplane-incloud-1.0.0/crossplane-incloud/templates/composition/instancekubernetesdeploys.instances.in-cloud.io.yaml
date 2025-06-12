@@ -1,0 +1,273 @@
+{{- $clusterFullName := printf "%s-%s-%s-%v" .Values.cluster.name .Values.cluster.environment .Values.cluster.area .Values.cluster.index }}
+
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: instancekubernetesdeploy.instances.in-cloud.io
+spec:
+  compositeTypeRef:
+    apiVersion: instances.in-cloud.io/v1alpha1
+    kind: InstanceKubernetesDeploy
+  mode: Pipeline
+  pipeline:
+    - step: create-instance-namespace
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: instance-namespace
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: ""
+              spec:
+                providerConfigRef:
+                  name: {{ $.Values.providers.kubernetes.providerConfigs.main.metadata.name }}
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: Namespace
+                    metadata:
+                      annotations:
+                        scheduler.alpha.kubernetes.io/defaultTolerations:
+                          '[
+                            {"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/in-cloud-client"},
+                            {"operator": "Exists", "effect": "NoSchedule", "key": "node-role.kubernetes.io/data-plane"}
+                          ]'
+                        scheduler.alpha.kubernetes.io/node-selector: node-role.kubernetes.io/in-cloud-client=
+                      labels:
+                        chat_id: ""
+                        instance: ""
+                        project: ""
+                        team_name: ""
+                        tenant: "{{ $.Values.cluster.environment }}"
+                      name: ""
+            patches:
+              # metadata.name
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s-namespace"
+                toFieldPath: metadata.name
+
+              # manifest
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s"
+                toFieldPath: spec.forProvider.manifest.metadata.name
+              # annotations
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s"
+                toFieldPath: spec.forProvider.manifest.metadata.annotations['ipam.cilium.io/ip-pool']
+              # labels
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.chatid
+                toFieldPath: spec.forProvider.manifest.metadata.labels.chat_id
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.projectName
+                toFieldPath: spec.forProvider.manifest.metadata.labels.project
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.instanceName
+                toFieldPath: spec.forProvider.manifest.metadata.labels.instance
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s"
+                toFieldPath: spec.forProvider.manifest.metadata.labels.team_name
+{{- if .Values.kubernetes.createAddressGroup }}
+    - step: create-instance-address-group
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: create-instance-ingress-address-group
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: ""
+              spec:
+                providerConfigRef:
+                  name: {{ $.Values.providers.kubernetes.providerConfigs.main.metadata.name }}
+                forProvider:
+                  manifest:
+                    apiVersion: provider.sgroups.io/v1alpha1
+                    kind: AddressGroup
+                    metadata:
+                      name: "{{ $clusterFullName }}-ingress"
+                      namespace: ""
+                    spec:
+                      defaultAction: DROP
+                      trace: true
+                      logs: true
+            patches:
+              # object name
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s-ingress-address-group"
+                toFieldPath: metadata.name
+
+              # manifest
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s"
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+          - name: create-instance-egress-address-group
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: ""
+              spec:
+                providerConfigRef:
+                  name: {{ $.Values.providers.kubernetes.providerConfigs.main.metadata.name }}
+                forProvider:
+                  manifest:
+                    apiVersion: provider.sgroups.io/v1alpha1
+                    kind: AddressGroup
+                    metadata:
+                      name: "{{ $clusterFullName }}-egress"
+                      namespace: ""
+                    spec:
+                      defaultAction: DROP
+                      trace: true
+                      logs: true
+            patches:
+              # object name
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s-egress-address-group"
+                toFieldPath: metadata.name
+
+              # manifest
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s"
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+{{- end }}
+{{- if .Values.kubernetes.createInstanceResourceQuota }}
+    - step: create-instance-resource-quota
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: create-instance-resource-quota
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: ""
+              spec:
+                providerConfigRef:
+                  name: {{ $.Values.providers.kubernetes.providerConfigs.main.metadata.name }}
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: ResourceQuota
+                    metadata:
+                      name: ""
+                      namespace: ""
+                    spec:
+                      hard:
+                        limits.cpu: ""
+                        limits.memory: ""
+                        requests.cpu: ""
+                        requests.memory: ""
+                        requests.storage: ""
+            patches:
+              # metadata.name
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s-quotas"
+                toFieldPath: metadata.name
+
+              # manifest.metadata
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s-quotas"
+                toFieldPath: spec.forProvider.manifest.metadata.name
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.projectName
+                    - fromFieldPath: spec.instanceName
+                  strategy: string
+                  string:
+                    fmt: "%s-%s"
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+              # quota
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.quotas.k8s.limits.cpu
+                toFieldPath: spec.forProvider.manifest.spec.hard['limits.cpu']
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.quotas.k8s.limits.memory
+                toFieldPath: spec.forProvider.manifest.spec.hard['limits.memory']
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.quotas.k8s.requests.cpu
+                toFieldPath: spec.forProvider.manifest.spec.hard['requests.cpu']
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.quotas.k8s.requests.memory
+                toFieldPath: spec.forProvider.manifest.spec.hard['requests.memory']
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.quotas.k8s.requests.storage
+                toFieldPath: spec.forProvider.manifest.spec.hard['requests.storage']
+{{- end }}
