@@ -87,17 +87,19 @@ appSpec:
             runAsUser: 101
 
           extraEnv:
-            BASEPREFIX:                 /openapi-ui
-            CUSTOMIZATION_API_GROUP:    in-cloud.io
-            CUSTOMIZATION_API_VERSION:  v1alpha1
-            INSTANCES_API_GROUP:        in-cloud.io
-            INSTANCES_RESOURCE_NAME:    instances
-            INSTANCES_VERSION:          v1alpha1
-            MARKETPLACE_KIND:           MarketplacePanel
-            MARKETPLACE_RESOURCE_NAME:  marketplacepanels
-            PROJECTS_API_GROUP:         in-cloud.io
-            PROJECTS_RESOURCE_NAME:     projects
-            PROJECTS_VERSION:           v1alpha1
+            BASEPREFIX: /openapi-ui
+            CUSTOMIZATION_API_GROUP: front.in-cloud.io
+            CUSTOMIZATION_API_VERSION: v1alpha1
+            INSTANCES_API_GROUP: in-cloud.io
+            INSTANCES_RESOURCE_NAME: instances
+            INSTANCES_VERSION: v1alpha1
+            MARKETPLACE_GROUP: front.in-cloud.io
+            MARKETPLACE_VERSION: v1alpha1
+            MARKETPLACE_KIND: MarketplacePanel
+            MARKETPLACE_RESOURCE_NAME: marketplacepanels
+            PROJECTS_API_GROUP: in-cloud.io
+            PROJECTS_RESOURCE_NAME: projects
+            PROJECTS_VERSION: v1alpha1
 
           extraPorts:
             http:

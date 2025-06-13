@@ -1,0 +1,76 @@
+{{- if .Values.appSpec.applications.web.enabled }}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: customcolumnsoverrides.front.in-cloud.io
+spec:
+  conversion:
+    strategy: None
+  group: front.in-cloud.io
+  names:
+    kind: CustomColumnsOverride
+    listKind: CustomColumnsOverrideList
+    plural: customcolumnsoverrides
+    singular: customcolumnsoverride
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        type: object
+        required:
+          - spec
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            required:
+              - overrideType
+              - additionalPrinterColumns
+            properties:
+              overrideType:
+                type: string
+                description: "Fully qualified resource name this configuration applies to (e.g. provider.sgroups.io/v1alpha1/addressgroups)."
+              additionalPrinterColumns:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - name
+                    - type
+                    - jsonPath
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      type: string
+                      enum: ["string", "integer", "number", "boolean", "Boolean", "date", "array"]
+                    jsonPath:
+                      type: string
+              additionalPrinterColumnsTrimLengths:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - key
+                    - value
+                  properties:
+                    key:
+                      type: string
+                      description: "Column name to which trimming is applied."
+                    value:
+                      type: integer
+                      minimum: 1
+                      description: "Maximum number of characters to display in the UI for this column."
+            x-kubernetes-preserve-unknown-fields: true
+    served: true
+    storage: true
+    subresources:
+      status: {}
+{{- end }}

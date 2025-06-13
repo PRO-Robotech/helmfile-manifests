@@ -3,16 +3,16 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: tableurimappings.in-cloud.io
+  name: marketplacepanels.front.in-cloud.io
 spec:
   conversion:
     strategy: None
-  group: in-cloud.io
+  group: front.in-cloud.io
   names:
-    kind: TableUriMapping
-    listKind: TableUriMappingList
-    plural: tableurimappings
-    singular: tableurimapping
+    kind: MarketplacePanel
+    listKind: MarketplacePanelList
+    plural: marketplacepanels
+    singular: marketplacepanel
   scope: Cluster
   versions:
   - name: v1alpha1
