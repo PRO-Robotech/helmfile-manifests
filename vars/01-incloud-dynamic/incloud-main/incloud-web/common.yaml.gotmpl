@@ -523,8 +523,8 @@ helm-inserter:
       spec:
         pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName"
         breadcrumbItems:
-        - key: B-Cloud
-          label: B-Cloud
+        - key: in-cloud
+          label: in-cloud
           link: "/openapi-ui"
         - key: cluster
           label: "{clusterName}"
@@ -541,8 +541,8 @@ helm-inserter:
       spec:
         pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
-        - key: B-Cloud
-          label: B-Cloud
+        - key: in-cloud
+          label: in-cloud
           link: "/openapi-ui"
         - key: cluster
           label: "{clusterName}"
@@ -559,8 +559,8 @@ helm-inserter:
       spec:
         pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName"
         breadcrumbItems:
-        - key: B-Cloud
-          label: B-Cloud
+        - key: in-cloud
+          label: in-cloud
           link: "/openapi-ui"
         - key: cluster
           label: "{clusterName}"
@@ -577,8 +577,8 @@ helm-inserter:
       spec:
         pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
-        - key: B-Cloud
-          label: B-Cloud
+        - key: in-cloud
+          label: in-cloud
           link: "/openapi-ui"
         - key: cluster
           label: "{clusterName}"
@@ -595,8 +595,8 @@ helm-inserter:
       spec:
         pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/"
         breadcrumbItems:
-        - key: B-Cloud
-          label: B-Cloud
+        - key: in-cloud
+          label: in-cloud
           link: "/openapi-ui"
         - key: cluster
           label: "{clusterName}"
@@ -613,8 +613,8 @@ helm-inserter:
       spec:
         pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
-        - key: B-Cloud
-          label: B-Cloud
+        - key: in-cloud
+          label: in-cloud
           link: "/openapi-ui"
         - key: cluster
           label: "{clusterName}"
@@ -629,7 +629,7 @@ helm-inserter:
       metadata:
         name: instances
       spec:
-        description: instances
+        description: Ресурс создающий экземпляр информационной системы.
         name: Instances
         type: nonCrd
         apiGroup: in-cloud.io
@@ -639,10 +639,9 @@ helm-inserter:
         hidden: false
         tags:
         - instances
-        icon: instances
+        icon: PHN2ZyB3aWR0aD0nODAwJyBoZWlnaHQ9JzgwMCcgdmlld0JveD0nMCAtMTAuNDQgNzIyLjg0NiA3MjIuODQ2JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxwYXRoIGQ9J00zNTguOTg2IDEwLjA2YTQ2LjcyNSA0Ni4zNDIgMCAwIDAtMTcuOTA2IDQuNTMxTDk2LjczNiAxMzEuMzQxYTQ2LjcyNSA0Ni4zNDIgMCAwIDAtMjUuMjggMzEuNDM4bC02MC4yODIgMjYyLjI1YTQ2LjcyNSA0Ni4zNDIgMCAwIDAgNi4zNDQgMzUuNTMxIDQ2LjcyNSA0Ni4zNDIgMCAwIDAgMi42NTYgMy42ODhsMTY5LjEyNSAyMTAuMjhhNDYuNzI1IDQ2LjM0MiAwIDAgMCAzNi41MzEgMTcuNDM4bDI3MS4yMTktLjA2MmE0Ni43MjUgNDYuMzQyIDAgMCAwIDM2LjUzMS0xNy40MDZsMTY5LjA2My0yMTAuMzEzYTQ2LjcyNSA0Ni4zNDIgMCAwIDAgOS4wMy0zOS4yMTlMNjUxLjMgMTYyLjcxNmE0Ni43MjUgNDYuMzQyIDAgMCAwLTI1LjI4MS0zMS40MzdMMzgxLjY0MyAxNC41OWE0Ni43MjUgNDYuMzQyIDAgMCAwLTIyLjY1Ny00LjUzeicgZmlsbD0nIzMyNmNlNScvPjxwYXRoIGQ9J00zNjEuNDA4IDk5LjMwN2MtOC4wNzcuMDAxLTE0LjYyNiA3LjI3Ni0xNC42MjUgMTYuMjUgMCAuMTM4LjAyOC4yNy4wMy40MDYtLjAxMSAxLjIyLS4wNyAyLjY4OS0uMDMgMy43NS4xOTIgNS4xNzYgMS4zMiA5LjEzOCAyIDEzLjkwNyAxLjIzIDEwLjIwNiAyLjI2IDE4LjY2NyAxLjYyNSAyNi41MzEtLjYyIDIuOTY1LTIuODAzIDUuNjc3LTQuNzUgNy41NjJsLS4zNDQgNi4xODhhMTkwLjMzNyAxOTAuMzM3IDAgMCAwLTI2LjQzOCA0LjA2MmMtMzcuOTc0IDguNjIzLTcwLjY3IDI4LjE4NC05NS41NjIgNTQuNTk0YTI0NS4xNjcgMjQ1LjE2NyAwIDAgMS01LjI4MS0zLjc1Yy0yLjYxMi4zNTMtNS4yNSAxLjE1OS04LjY4OC0uODQ0LTYuNTQ1LTQuNDA1LTEyLjUwNi0xMC40ODYtMTkuNzE5LTE3LjgxMi0zLjMwNS0zLjUwNC01LjY5OC02Ljg0MS05LjYyNS0xMC4yMTktLjg5MS0uNzY3LTIuMjUyLTEuODA0LTMuMjUtMi41OTQtMy4wNy0yLjQ0Ny02LjY5LTMuNzI0LTEwLjE4Ny0zLjg0My00LjQ5Ni0uMTU0LTguODI0IDEuNjA0LTExLjY1NiA1LjE1Ni01LjAzNiA2LjMxNS0zLjQyNCAxNS45NjggMy41OTMgMjEuNTYyLjA3MS4wNTcuMTQ3LjEwMS4yMTkuMTU3Ljk2NC43ODEgMi4xNDUgMS43ODMgMy4wMzEgMi40MzcgNC4xNjcgMy4wNzcgNy45NzMgNC42NTIgMTIuMTI1IDcuMDk0IDguNzQ3IDUuNDAyIDE1Ljk5OSA5Ljg4IDIxLjc1IDE1LjI4MSAyLjI0NiAyLjM5NCAyLjYzOSA2LjYxMyAyLjkzOCA4LjQzOGw0LjY4NyA0LjE4N2MtMjUuMDkzIDM3Ljc2NC0zNi43MDcgODQuNDEtMjkuODQzIDEzMS45MzhsLTYuMTI1IDEuNzgxYy0xLjYxNSAyLjA4NS0zLjg5NiA1LjM2NS02LjI4MiA2LjM0NC03LjUyNSAyLjM3LTE1Ljk5NCAzLjI0LTI2LjIxOCA0LjMxMi00LjguNC04Ljk0My4xNjEtMTQuMDMyIDEuMTI1LTEuMTIuMjEyLTIuNjguNjE5LTMuOTA2LjkwNmwtLjEyNS4wMzJjLS4wNjcuMDE1LS4xNTUuMDQ4LS4yMTkuMDYyLTguNjIgMi4wODMtMTQuMTU3IDEwLjAwNi0xMi4zNzUgMTcuODEzIDEuNzgzIDcuODA4IDEwLjIwMyAxMi41NTYgMTguODc1IDEwLjY4Ny4wNjMtLjAxNC4xNTQtLjAxNy4yMTktLjAzMS4wOTgtLjAyMi4xODQtLjA3LjI4MS0uMDk0IDEuMjEtLjI2NSAyLjcyNC0uNTYgMy43ODItLjg0MyA1LjAwMy0xLjM0IDguNjI2LTMuMzA4IDEzLjEyNS01LjAzMiA5LjY3Ni0zLjQ3IDE3LjY5MS02LjM3IDI1LjUtNy41IDMuMjYtLjI1NSA2LjY5NyAyLjAxMiA4LjQwNiAyLjk2OWw2LjM3NS0xLjA5NGMxNC42NyA0NS40ODMgNDUuNDE0IDgyLjI0NSA4NC4zNDQgMTA1LjMxM2wtMi42NTcgNi4zNzVjLjk1OCAyLjQ3NSAyLjAxNCA1LjgyNCAxLjMgOC4yNy0yLjgzOCA3LjM2LTcuNyAxNS4xMy0xMy4yMzcgMjMuNzkyLTIuNjgxIDQuMDAyLTUuNDI1IDcuMTA4LTcuODQ0IDExLjY4OC0uNTc5IDEuMDk2LTEuMzE2IDIuNzgtMS44NzUgMy45MzctMy43NTkgOC4wNDMtMS4wMDIgMTcuMzA1IDYuMjE5IDIwLjc4MiA3LjI2NiAzLjQ5NyAxNi4yODQtLjE5MiAyMC4xODctOC4yNS4wMDYtLjAxMi4wMjYtLjAyLjAzMS0uMDMyLjAwNC0uMDA5LS4wMDQtLjAyMiAwLS4wMy41NTYtMS4xNDMgMS4zNDQtMi42NDUgMS44MTMtMy43MiAyLjA3Mi00Ljc0NyAyLjc2Mi04LjgxNSA0LjIxOS0xMy40MDYgMy44Ny05LjcyIDUuOTk1LTE5LjkxOSAxMS4zMjItMjYuMjc0IDEuNDU5LTEuNzQgMy44MzctMi40MSA2LjMwMy0zLjA3bDMuMzEyLTZjMzMuOTM4IDEzLjAyNyA3MS45MjcgMTYuNTIzIDEwOS44NzUgNy45MDdhMTg5Ljc3IDE4OS43NyAwIDAgMCAyNS4wOTQtNy41NjNjLjkzIDEuNjUxIDIuNjYxIDQuODI2IDMuMTI1IDUuNjI1IDIuNTA2LjgxNSA1LjI0IDEuMjM2IDcuNDY5IDQuNTMxIDMuOTg1IDYuODEgNi43MSAxNC44NjUgMTAuMDMxIDI0LjU5NCAxLjQ1NyA0LjU5MSAyLjE3OCA4LjY2IDQuMjUgMTMuNDA2LjQ3MiAxLjA4MiAxLjI1NiAyLjYwNSAxLjgxMiAzLjc1IDMuODk1IDguMDg1IDEyLjk0MyAxMS43ODcgMjAuMjIgOC4yODIgNy4yMTktMy40NzggOS45NzktMTIuNzQgNi4yMTgtMjAuNzgyLS41NTktMS4xNTgtMS4zMjctMi44NDEtMS45MDYtMy45MzctMi40Mi00LjU4LTUuMTYzLTcuNjU1LTcuODQ0LTExLjY1Ni01LjUzNy04LjY2Mi0xMC4xMy0xNS44NTgtMTIuOTY5LTIzLjIyLTEuMTg3LTMuNzk2LjItNi4xNTcgMS4xMjUtOC42MjQtLjU1NC0uNjM1LTEuNzM5LTQuMjItMi40MzctNS45MDYgNDAuNDU3LTIzLjg4OSA3MC4yOTgtNjIuMDIyIDg0LjMxMi0xMDYuMDYzIDEuODkzLjI5OCA1LjE4Mi44OCA2LjI1IDEuMDk0IDIuMi0xLjQ1IDQuMjIyLTMuMzQ0IDguMTg4LTMuMDMxIDcuODA4IDEuMTI5IDE1LjgyMyA0LjAzIDI1LjUgNy41IDQuNDk4IDEuNzIzIDguMTIxIDMuNzIzIDEzLjEyNSA1LjA2MiAxLjA1Ny4yODMgMi41NzIuNTQ3IDMuNzgxLjgxMy4wOTcuMDIzLjE4My4wNzEuMjgxLjA5My4wNjYuMDE1LjE1Ni4wMTcuMjE5LjAzMiA4LjY3MiAxLjg2NiAxNy4wOTQtMi44OCAxOC44NzUtMTAuNjg4IDEuNzgtNy44MDctMy43NTQtMTUuNzMyLTEyLjM3NS0xNy44MTItMS4yNTQtLjI4Ni0zLjAzMi0uNzctNC4yNS0xLTUuMDktLjk2NC05LjIzMS0uNzI3LTE0LjAzMS0xLjEyNS0xMC4yMjUtMS4wNzItMTguNjk0LTEuOTQzLTI2LjIxOS00LjMxMy0zLjA2OC0xLjE5LTUuMjUxLTQuODQxLTYuMzEzLTYuMzQ0bC01LjkwNi0xLjcxOGMzLjA2Mi0yMi4xNTUgMi4yMzctNDUuMjEyLTMuMDYyLTY4LjI4Mi01LjM0OS0yMy4yODQtMTQuOC00NC41OC0yNy40MDctNjMuMzQzIDEuNTE1LTEuMzc4IDQuMzc3LTMuOTExIDUuMTg4LTQuNjU3LjIzNy0yLjYyNC4wMzMtNS4zNzUgMi43NS04LjI4MSA1Ljc1MS01LjQgMTMuMDAzLTkuODc5IDIxLjc1LTE1LjI4MSA0LjE1Mi0yLjQ0MyA3Ljk5LTQuMDE3IDEyLjE1Ni03LjA5NC45NDItLjY5NiAyLjIzLTEuNzk4IDMuMjE5LTIuNTk0IDcuMDE1LTUuNTk2IDguNjMtMTUuMjQ4IDMuNTk0LTIxLjU2Mi01LjAzNy02LjMxNC0xNC43OTctNi45MS0yMS44MTMtMS4zMTMtLjk5OC43OTEtMi4zNTMgMS44MjMtMy4yNSAyLjU5NC0zLjkyNiAzLjM3OC02LjM1MSA2LjcxNC05LjY1NiAxMC4yMTktNy4yMTMgNy4zMjYtMTMuMTc0IDEzLjQzOC0xOS43MTkgMTcuODQ0LTIuODM2IDEuNjUtNi45OSAxLjA4LTguODc1Ljk2OGwtNS41NjIgMy45NjljLTMxLjcyLTMzLjI2LTc0LjkwNS01NC41MjUtMTIxLjQwNi01OC42NTYtLjEzLTEuOTQ5LS4zLTUuNDcxLS4zNDQtNi41MzItMS45MDQtMS44MjEtNC4yMDQtMy4zNzYtNC43ODEtNy4zMTItLjYzNy03Ljg2NC40MjYtMTYuMzI1IDEuNjU2LTI2LjUzMS42NzktNC43NjkgMS44MDctOC43MyAyLTEzLjkwNy4wNDQtMS4xNzYtLjAyNy0yLjg4NC0uMDMxLTQuMTU2LS4wMDEtOC45NzQtNi41NDgtMTYuMjUtMTQuNjI1LTE2LjI1em0tMTguMzEzIDExMy40MzgtNC4zNDQgNzYuNzE4LS4zMTIuMTU3Yy0uMjkyIDYuODYzLTUuOTQgMTIuMzQzLTEyLjg3NSAxMi4zNDMtMi44NDEgMC01LjQ2My0uOTEyLTcuNTk0LTIuNDY4bC0uMTI1LjA2Mi02Mi45MDYtNDQuNTk0YzE5LjMzMy0xOS4wMSA0NC4wNjMtMzMuMDYgNzIuNTYyLTM5LjUzYTE1NC4xMjUgMTU0LjEyNSAwIDAgMSAxNS41OTQtMi42ODh6bTM2LjY1NiAwYzMzLjI3NCA0LjA5MiA2NC4wNDUgMTkuMTU5IDg3LjYyNSA0Mi4yNWwtNjIuNSA0NC4zMTItLjIxOC0uMDkzYy01LjU0OCA0LjA1MS0xMy4zNjQgMy4wNDYtMTcuNjg4LTIuMzc1YTEyLjgwNyAxMi44MDcgMCAwIDEtMi44MTItNy40N2wtLjA2My0uMDN6TTIzMi4xMjYgMjgzLjYybDU3LjQzOCA1MS4zNzUtLjA2My4zMTJjNS4xODUgNC41MDcgNS45NSAxMi4zMjggMS42MjUgMTcuNzVhMTIuODkyIDEyLjg5MiAwIDAgMS02LjY4NyA0LjQwNmwtLjA2My4yNS03My42MjUgMjEuMjVjLTMuNzQ3LTM0LjI2NSA0LjMyOS02Ny41NzMgMjEuMzc1LTk1LjM0M3ptMjU4LjE1Ny4wM2M4LjUzNCAxMy44MzMgMTQuOTk2IDI5LjI4MyAxOC44NDMgNDYuMDMyIDMuODAxIDE2LjU0OCA0Ljc1NSAzMy4wNjcgMy4xODggNDkuMDMxbC03NC0yMS4zMTItLjA2My0uMzEzYy02LjYyNi0xLjgxLTEwLjY5OS04LjU1MS05LjE1Ni0xNS4zMTJhMTIuNzg2IDEyLjc4NiAwIDAgMSA0LjA5NC02Ljg0NGwtLjAzMS0uMTU2IDU3LjEyNS01MS4xMjV6bS0xNDAuNjU3IDU1LjMxM2gyMy41MzJsMTQuNjI1IDE4LjI4Mi01LjI1IDIyLjgxMi0yMS4xMjUgMTAuMTU2LTIxLjE4OC0xMC4xODctNS4yNS0yMi44MTN6bTc1LjQzOCA2Mi41NjNjMS0uMDUgMS45OTUuMDQgMi45NjkuMjE5bC4xMjUtLjE1NyA3Ni4xNTYgMTIuODc1Yy0xMS4xNDYgMzEuMzE0LTMyLjQ3MyA1OC40NC02MC45NjkgNzYuNTk0bC0yOS41NjItNzEuNDA2LjA5My0uMTI1Yy0yLjcxNS02LjMxLjAwMi0xMy43MSA2LjI1LTE2LjcxOSAxLjYtLjc3IDMuMjcxLTEuMTk3IDQuOTM4LTEuMjgxem0tMTI3LjkwNi4zMTJjNS44MTEuMDgyIDExLjAyNCA0LjExNiAxMi4zNzUgMTAuMDMyLjYzMiAyLjc3LjMyNCA1LjUxMy0uNzIgNy45MzdsLjIyLjI4MS0yOS4yNSA3MC42ODhjLTI3LjM0OC0xNy41NDktNDkuMTMtNDMuODI0LTYwLjc4Mi03Ni4wNjNsNzUuNS0xMi44MTIuMTI1LjE1NmMuODQ1LS4xNTUgMS43MDEtLjIzIDIuNTMyLS4yMTl6bTYzLjc4IDMwLjk3YTEyLjc2NCAxMi43NjQgMCAwIDEgNi4wMzIgMS4yOGMyLjU2IDEuMjMzIDQuNTM3IDMuMTc0IDUuNzgxIDUuNWguMjgybDM3LjIxOCA2Ny4yNWExNTQuMjU2IDE1NC4yNTYgMCAwIDEtMTQuODc1IDQuMTU3Yy0yOC40NjQgNi40NjMtNTYuODM4IDQuNTA0LTgyLjUzLTQuMjVsMzcuMTI0LTY3LjEyNWguMDYzYTEyLjkxIDEyLjkxIDAgMCAxIDEwLjkwNi02LjgxM3onIHN0eWxlPSd0ZXh0LWluZGVudDowO3RleHQtYWxpZ246c3RhcnQ7bGluZS1oZWlnaHQ6bm9ybWFsO3RleHQtdHJhbnNmb3JtOm5vbmU7YmxvY2stcHJvZ3Jlc3Npb246dGI7bWFya2VyOm5vbmU7LWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjpTYW5zJyBmb250LXdlaWdodD0nNDAwJyBjb2xvcj0nIzAwMCcgZmlsbD0nI2ZmZicgc3Ryb2tlPScjZmZmJyBzdHJva2Utd2lkdGg9Jy4yNScgb3ZlcmZsb3c9J3Zpc2libGUnIGZvbnQtZmFtaWx5PSdTYW5zJy8+PC9zdmc+
 
     FactoryProject: |
-      ---
       apiVersion: in-cloud.io/v1alpha1
       kind: Factory
       metadata:
@@ -650,112 +649,107 @@ helm-inserter:
       spec:
         key: project
         urlsToFetch:
-        - "/api/clusters/{2}/k8s/apis/in-cloud.io/v1alpha1/projects/{6}"
+          - "/api/clusters/{2}/k8s/apis/in-cloud.io/v1alpha1/projects/{6}"
         data:
-        - type: antdRow
-          data:
-            id: 1
-            gutter:
-            - 24
-            - 24
-            style:
-              flexGrow: 1
-          children:
-          - type: antdCol
+          - type: antdRow
             data:
-              id: 2
-              span: 13
+              id: 1
+              gutter: [24, 24]
+              style:
+                flexGrow: 1
             children:
-            - type: ContentCard
-              data:
-                id: 21
-                style:
-                  flexGrow: 1
-              children:
-              - type: ProjectInfoCard
+              - type: antdCol
                 data:
-                  id: 211
-                  clusterNamePartOfUrl: "{2}"
-                  namespacePartOfUrl: "{6}"
-                  baseApiGroup: in-cloud.io
-                  baseApiVersion: v1alpha1
-                  baseProjectVersion: v1alpha1
-                  projectResourceName: projects
-                  mpResourceName: marketplacepanels
-                  baseprefix: openapi-ui
+                  id: 2
+                  span: 16
                 children:
-                - type: Spacer
-                  data:
-                    id: 2111
-                    "$space": 20
-                    "$samespace": true
-                - type: parsedText
-                  data:
-                    id: 2112
-                    text: "{reqs[0]['spec', 'description']}"
-                - type: Spacer
-                  data:
-                    id: 2113
-                    "$space": 24
-                    "$samespace": true
-                - type: antdFlex
-                  data:
-                    id: 2114
-                    gap: 14
-                    vertical: true
-                  children:
-                  - type: DefaultDiv
+                  - type: ContentCard
                     data:
-                      id: 211141
+                      id: 21
+                      title: "🎯 Project Summary"
+                      style:
+                        flexGrow: 1
                     children:
-                    - type: antdText
-                      data:
-                        id: 2111411
-                        type: secondary
-                        text: Developer Instruments
-                  - type: DefaultDiv
-                    data:
-                      id: 211142
-                    children:
-                    - type: antdFlex
-                      data:
-                        id: 2111421
-                        gap: 14
-                        wrap: true
-                      children:
-                      - type: antdButton
+                      - type: ProjectInfoCard
                         data:
-                          id: 21114211
-                          type: link
-                          href: "/"
-                          text: Test
-                      - type: antdButton
-                        data:
-                          id: 21114212
-                          type: link
-                          href: "/"
-                          text: Test
-          - type: antdCol
-            data:
-              id: 3
-              span: 11
-            children:
-            - type: ContentCard
-              data:
-                id: 31
-                style:
-                  flexGrow: 1
-              children:
-              - type: MarketplaceCard
+                          id: 211
+                          clusterNamePartOfUrl: "{2}"
+                          namespacePartOfUrl: "{6}"
+                          baseApiGroup: in-cloud.io
+                          baseApiVersion: v1alpha1
+                          baseProjectVersion: v1alpha1
+                          projectResourceName: projects
+                          mpResourceName: marketplacepanels
+                          baseprefix: openapi-ui
+                        children:
+                          - type: parsedText
+                            data:
+                              id: 2112
+                              text: "{reqs[0]['spec', 'description']}"
+                          - type: Spacer
+                            data:
+                              id: 2113
+                              "$space": 24
+                              "$samespace": true
+                          - type: antdFlex
+                            data:
+                              id: 2114
+                              vertical: true
+                              gap: 16
+                            children:
+                              - type: antdText
+                                data:
+                                  id: 21141
+                                  type: secondary
+                                  strong: true
+                                  text: "🛠 Developer Tools"
+                              - type: antdFlex
+                                data:
+                                  id: 21142
+                                  wrap: true
+                                  gap: 12
+                                children:
+                                  - type: antdButton
+                                    data:
+                                      id: 211421
+                                      text: "Open API Docs"
+                                      type: primary
+                                      href: "/docs"
+                                  - type: antdButton
+                                    data:
+                                      id: 211422
+                                      text: "Access Logs"
+                                      type: default
+                                      href: "/logs"
+                                  - type: antdButton
+                                    data:
+                                      id: 211423
+                                      text: "Debug Shell"
+                                      type: dashed
+                                      href: "/shell"
+              - type: antdCol
                 data:
-                  id: 311
-                  clusterNamePartOfUrl: "{2}"
-                  namespacePartOfUrl: "{6}"
-                  baseApiGroup: in-cloud.io
-                  baseApiVersion: v1alpha1
-                  mpResourceName: marketplacepanels
-                  mpResourceKind: MarketplacePanel
-                  baseprefix: openapi-ui
+                  id: 3
+                  span: 8
+                children:
+                  - type: ContentCard
+                    data:
+                      id: 31
+                      title: "🧩 Marketplace"
+                      style:
+                        flexGrow: 1
+                    children:
+                      - type: MarketplaceCard
+                        data:
+                          id: 311
+                          clusterNamePartOfUrl: "{2}"
+                          namespacePartOfUrl: "{6}"
+                          baseApiGroup: in-cloud.io
+                          baseApiVersion: v1alpha1
+                          mpResourceName: marketplacepanels
+                          mpResourceKind: MarketplacePanel
+                          baseprefix: openapi-ui
+
 
     TableUriMapping: |
       ---
@@ -914,3 +908,375 @@ helm-inserter:
         overrideType: in-cloud.io/v1alpha1/projects
         schema: {}
         strategy: merge
+
+    CCOStatefulSets: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: apps.v1.statefulsets
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .spec.replicas
+          name: Replicas
+          type: integer
+        - jsonPath: .status.unavailableReplicas
+          name: Unavailable Replicas
+          type: integer
+        - jsonPath: .status.conditions[?(@.type=="Available")].message
+          name: Available Message
+          type: String
+        - jsonPath: .status.conditions[?(@.type=="Available")].status
+          name: Available
+          type: Boolean
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: apps/v1/statefulsets
+
+    CCODeployments: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: apps.v1.deployments
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .spec.replicas
+          name: Replicas
+          type: integer
+        - jsonPath: .status.unavailableReplicas
+          name: Unavailable Replicas
+          type: integer
+        - jsonPath: .status.conditions[?(@.type=="Available")].message
+          name: Available Message
+          type: String
+        - jsonPath: .status.conditions[?(@.type=="Available")].status
+          name: Available
+          type: Boolean
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: apps/v1/deployments
+
+    CCOPods: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.pods
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .spec.nodeName
+          name: Node
+          type: string
+        - jsonPath: .spec.restartPolicy
+          name: Restart Policy
+          type: string
+        - jsonPath: .status.podIP
+          name: Pod IP
+          type: string
+        - jsonPath: .status.conditions[?(@.type=="ContainersReady")].status
+          name: Status Containers
+          type: string
+        - jsonPath: .status.conditions[?(@.type=="PodScheduled")].status
+          name: Status Scheduled
+          type: string
+        - jsonPath: .status.qosClass
+          name: QOS
+          type: string
+        - jsonPath: .status.phase
+          name: Phase
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        additionalPrinterColumnsUndefinedValues:
+        - key: Node
+          value: Unschedulable
+        - key: Pod IP
+          value: NotAllocated
+        overrideType: v1/pods
+
+    CCOResourceQuotas: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.resourcequotas
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .spec.hard["limits.cpu"]
+          name: Updated
+          type: string
+        - jsonPath: .spec.hard["requests.cpu"]
+          name: Updated
+          type: string
+        - jsonPath: .spec.hard["limits.memory"]
+          name: Updated
+          type: string
+        - jsonPath: .spec.hard["requests.memory"]
+          name: Updated
+          type: string
+        - jsonPath: .status.used["requests.memory"]
+          name: Used Memory
+          type: string
+        overrideType: v1/resourcequotas
+
+    CCOServices: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.services
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .status.loadBalancer.ingress[0].ip
+          name: LoadBalancer IP
+          type: string
+        - jsonPath: .spec.clusterIP
+          name: Cluster IP
+          type: string
+        - jsonPath: .spec.ports[*].port
+          name: Ports
+          type: integer[]
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: v1/services
+
+    CCOGateWays: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: networking.istio.io.v1.gateways
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: name
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: networking.istio.io/v1/gateways
+
+    CCOVirtualServices: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: networking.istio.io.v1.virtualservices
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: name
+          type: string
+        - jsonPath: .spec.gateways[0]
+          name: gateway
+          type: string
+        - jsonPath: .spec.hosts[0]
+          name: hostname
+          type: string
+        - jsonPath: .spec.http[0].route[0].destination.host
+          name: service
+          type: string
+        overrideType: networking.istio.io/v1/virtualservices
+
+    CCOConfigMaps: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.configmaps
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: v1/configmaps
+
+    CCOSecrets: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.secrets
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: v1/secrets
+
+    CCOPersistentVolumeClaims: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.persistentvolumeclaims
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .metadata.name
+          name: Name
+          type: string
+        - jsonPath: .status.phase
+          name: Status
+          type: string
+        - jsonPath: .spec.volumeName
+          name: Volume
+          type: string
+        - jsonPath: .spec.resources.requests.storage
+          name: Size
+          type: string
+        - jsonPath: .spec.accessModes[0]
+          name: Access mode
+          type: string
+        - jsonPath: .spec.storageClassName
+          name: Storage class
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        overrideType: v1/persistentvolumeclaims
+
+    CCOEvents: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: v1.events
+      spec:
+        additionalPrinterColumns:
+        - jsonPath: .type
+          name: Type
+          type: string
+        - jsonPath: .reason
+          name: Reason
+          type: string
+        - jsonPath: .involvedObject.kind
+          name: Object kind
+          type: string
+        - jsonPath: .involvedObject.name
+          name: Object name
+          type: string
+        - jsonPath: .firstTimestamp
+          name: First event time
+          type: string
+        - jsonPath: .lastTimestamp
+          name: Last event time
+          type: string
+        - jsonPath: .message
+          name: Message
+          type: string
+        overrideType: v1/events
+
+    CCOself: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: in-cloud.io.v1alpha.customcolumnsoverrides
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: name
+            type: string
+          - jsonPath: .spec.overrideType
+            name: override type
+            type: overrideType
+        overrideType: in-cloud.io/v1alpha1/customcolumnsoverrides
+
+
+    CustomFormsPrefillProject: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: projects
+      spec:
+        overrideType: in-cloud.io/v1alpha1/projects
+        values:
+        - path:
+          - metadata
+          - name
+          value: example
+        - path:
+          - spec
+          - businessName
+          value: Бизнес наименование
+        - path:
+          - spec
+          - description
+          value: Описание проекта
+        - path:
+          - spec
+          - prefix
+          value: Короткое бизнес наименование
+        - path:
+          - spec
+          - quotas
+          - k8s
+          - limits
+          - memory
+          value: 0
+        - path:
+          - spec
+          - quotas
+          - k8s
+          - requests
+          - memory
+          value: 0
+        - path:
+          - spec
+          - quotas
+          - k8s
+          - limits
+          - cpu
+          value: 0
+        - path:
+          - spec
+          - quotas
+          - k8s
+          - requests
+          - cpu
+          value: 0
+
+    CustomFormsPrefillInstances: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: instances
+      spec:
+        overrideType: in-cloud.io/v1alpha1/instances
+        values:
+        - path:
+          - metadata
+          - name
+          value: example
+        - path:
+          - spec
+          - description
+          value: Описание проекта
