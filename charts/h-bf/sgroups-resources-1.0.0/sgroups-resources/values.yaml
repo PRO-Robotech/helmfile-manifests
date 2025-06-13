@@ -29,8 +29,8 @@ appSpec:
           name: manager
           enabled: true
           image:
-            repository: "test"
-            tag: "test"
+            repository: sgroups/sgroups.k8s.network-policy
+            tag: v1.0.0-efc81f6e
 
           extraCommand:
             - /manager
