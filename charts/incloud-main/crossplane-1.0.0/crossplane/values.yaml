@@ -107,7 +107,7 @@ appSpec:
             ca-bundle-path: /tls/bundle-ca/root-certs.pem
             tls-server-certs-dir: /tls/server
             tls-client-certs-dir: /tls/client
-            enable-external-secret-stores: true
+            enable-external-secret-stores: false
             debug: true
 
           extraMetadataEnv:
