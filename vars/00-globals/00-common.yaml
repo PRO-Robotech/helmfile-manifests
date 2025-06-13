@@ -2,10 +2,10 @@ global:
   addresses:
     idp:
       schema: https
-      fqdn: dex.incloud.x5.ru
+      fqdn: dex.in-cloud.internal
     incloud:
       schema: https
-      fqdn: incloud.incloud.x5.ru
+      fqdn: incloud.in-cloud.internal
 
   dnsServers: []
   ntpServers: []
@@ -17,41 +17,41 @@ global:
 
   certManager:
     defaults:
-      duration:     2160h # 90d
-      renewBefore:  360h # 15d
+      duration: 2160h # 90d
+      renewBefore: 360h # 15d
 
   domains:
-    external: x5.ru
+    external: in-cloud.internal
 
   netbox:
     externalDB:
-      dbUrl:      netbox-postgresql
-      dbPort:     5432
-      dbName:     netbox
-      dbUser:     netbox
+      dbUrl: netbox-postgresql
+      dbPort: 5432
+      dbName: netbox
+      dbUser: netbox
       dbPassword: netbox
     superUser:
-      username:   admin
-      password:   admin
+      username: admin
+      password: admin
 
   sgroups:
     externalDB:
-      dbUrl:      sgroups-postgresql
-      dbPort:     5432
-      dbName:     sgroups
-      dbUser:     sgroups
+      dbUrl: sgroups-postgresql
+      dbPort: 5432
+      dbName: sgroups
+      dbUser: sgroups
       dbPassword: sgroups
 
   dex:
     externalDB:
-      dbUrl:      dex-postgresql
-      dbPort:     5432
-      dbName:     dex
-      dbUser:     dex
+      dbUrl: dex-postgresql
+      dbPort: 5432
+      dbName: dex
+      dbUser: dex
       dbPassword: dex
     adminUser:
-      username:   admin
-      password:   admin
+      username: admin
+      password: admin
 
   idp:
     clientID: incloud

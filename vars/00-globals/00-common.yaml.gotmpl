@@ -6,4 +6,4 @@ global:
   clusterFullName: {{ $clusterFullName }}
   domains:
     main: {{ printf "%s.%s" $clusterFullName $commonVar.global.domains.external }}
-    internal: {{ printf "svc.%s.incloud.%s" $clusterFullName $commonVar.global.domains.external }}
+    internal: {{ printf "svc.%s.%s" $clusterFullName $commonVar.global.domains.external }}

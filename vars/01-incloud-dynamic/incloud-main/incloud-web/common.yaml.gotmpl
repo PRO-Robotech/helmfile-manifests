@@ -778,7 +778,7 @@ helm-inserter:
                           baseprefix: openapi-ui
 
 
-    TableUriMapping: |
+    TableUriMappingInstance: |
       ---
       apiVersion: in-cloud.io/v1alpha1
       kind: TableUriMapping
@@ -789,9 +789,9 @@ helm-inserter:
         - metadata
         - name
         pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/in-cloud.io/v1alpha1/instances"
-        pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/{namespace}/api-table/apps/v1/deployments"
+        pathToNavigate: "/openapi-ui/{clusterName}/{namespace}-~recordValue~/{namespace}/api-table/apps/v1/deployments"
 
-    TableUriMapping: |
+    TableUriMappingProject: |
       ---
       apiVersion: in-cloud.io/v1alpha1
       kind: TableUriMapping

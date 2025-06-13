@@ -88,7 +88,7 @@ helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
 echo "--- deploy cilium"
 kubectl apply -f ${TMP_DIR}/cilium.yaml
 echo "--- waiting cilium"
-kubectl -n kube-system wait pod --selector="app.kubernetes.io/name=cilium-agent" --for=jsonpath="{.status.phase}"=Running
+kubectl -n kube-system wait ds cilium --for=jsonpath='{.status.numberAvailable}'=1 --timeout=180s
 
 
 echo ""
