@@ -666,7 +666,7 @@ helm-inserter:
                   - type: ContentCard
                     data:
                       id: 21
-                      title: "🎯 Project Summary"
+                      title: "🚀 Project Dashboard"
                       style:
                         flexGrow: 1
                     children:
@@ -682,51 +682,78 @@ helm-inserter:
                           mpResourceName: marketplacepanels
                           baseprefix: openapi-ui
                         children:
-                          - type: parsedText
-                            data:
-                              id: 2112
-                              text: "{reqs[0]['spec', 'description']}"
                           - type: Spacer
                             data:
                               id: 2113
                               "$space": 24
                               "$samespace": true
-                          - type: antdFlex
+
+                          - type: parsedText
+                            data:
+                              id: 2112
+                              text: "{reqs[0]['spec', 'description']}"
+
+                          - type: Spacer
                             data:
                               id: 2114
+                              "$space": 24
+                              "$samespace": true
+
+                          - type: antdFlex
+                            data:
+                              id: 2115
                               vertical: true
-                              gap: 16
+                              gap: 18
                             children:
                               - type: antdText
+                                children:
                                 data:
-                                  id: 21141
+                                  id: 21151
                                   type: secondary
                                   strong: true
-                                  text: "🛠 Developer Tools"
+                                  style:
+                                    fontSize: 16
+                                    color: "#8c8c8c"
+                                  text: "🛠 Developer Toolkit"
+
                               - type: antdFlex
                                 data:
-                                  id: 21142
+                                  id: 21152
                                   wrap: true
                                   gap: 12
                                 children:
                                   - type: antdButton
                                     data:
-                                      id: 211421
-                                      text: "Open API Docs"
+                                      id: 211521
+                                      text: "Documentation"
                                       type: primary
-                                      href: "/docs"
+                                      href: "https://docs.dobry-kot.ru"
+                                      icon: ""
+
                                   - type: antdButton
                                     data:
-                                      id: 211422
-                                      text: "Access Logs"
+                                      id: 211522
+                                      text: "Argocd"
                                       type: default
                                       href: "/logs"
+                                      icon: ""
+
                                   - type: antdButton
                                     data:
-                                      id: 211423
-                                      text: "Debug Shell"
+                                      id: 211523
+                                      text: "Vault"
                                       type: dashed
                                       href: "/shell"
+                                      icon: ""
+
+                                  - type: antdButton
+                                    data:
+                                      id: 211523
+                                      text: "Nexus"
+                                      type: dashed
+                                      href: "/shell"
+                                      icon: ""
+
               - type: antdCol
                 data:
                   id: 3
@@ -1197,7 +1224,7 @@ helm-inserter:
       apiVersion: in-cloud.io/v1alpha1
       kind: CustomColumnsOverride
       metadata:
-        name: in-cloud.io.v1alpha.customcolumnsoverrides
+        name: in-cloud.io.v1alpha1.customcolumnsoverrides
       spec:
         additionalPrinterColumns:
           - jsonPath: .metadata.name
@@ -1280,3 +1307,41 @@ helm-inserter:
           - spec
           - description
           value: Описание проекта
+
+    instanceCCO: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: instances.v1alpha1.b-cloud.io
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: in-cloud.io/v1alpha1/instances
+
+    projectCCO: |
+      ---
+      apiVersion: in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: projects.v1alpha1.b-cloud.io
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: in-cloud.io/v1alpha1/projects
