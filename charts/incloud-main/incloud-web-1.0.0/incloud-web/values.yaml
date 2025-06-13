@@ -97,6 +97,7 @@ appSpec:
             MARKETPLACE_RESOURCE_NAME:  marketplacepanels
             PROJECTS_API_GROUP:         in-cloud.io
             PROJECTS_RESOURCE_NAME:     projects
+            PROJECTS_VERSION:           v1alpha1
 
           extraPorts:
             http:
