@@ -25,10 +25,10 @@ spec:
                 fromFieldPath: metadata.name
                 toFieldPath: metadata.name
               - type: FromCompositeFieldPath
-                fromFieldPath: metadata.labels.project
+                fromFieldPath: spec.claimRef.namespace
                 toFieldPath: spec.projectName
               - type: FromCompositeFieldPath
-                fromFieldPath: metadata.labels.instance
+                fromFieldPath: spec.claimRef.name
                 toFieldPath: spec.instanceName
               - type: ToCompositeFieldPath
                 fromFieldPath: status
