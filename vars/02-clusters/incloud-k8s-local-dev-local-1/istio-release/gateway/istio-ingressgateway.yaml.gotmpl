@@ -18,6 +18,7 @@ helm-inserter:
               name: http
               protocol: HTTP
             hosts:
+              - "*.incloud-idp.{{ .Values.global.domains.internal }}"
               - "*.incloud-netbox.{{ .Values.global.domains.internal }}"
               - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
               - "*.incloud-web.{{ .Values.global.domains.internal }}"
@@ -26,6 +27,7 @@ helm-inserter:
               name: https
               protocol: HTTPS
             hosts:
+              - "*.incloud-idp.{{ .Values.global.domains.internal }}"
               - "*.incloud-netbox.{{ .Values.global.domains.internal }}"
               - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
               - "*.incloud-web.{{ .Values.global.domains.internal }}"
@@ -48,6 +50,7 @@ helm-inserter:
           kind: ClusterIssuer
           name: issuer-selfsigned
         dnsNames:
+          - "*.incloud-idp.{{ .Values.global.domains.internal }}"
           - "*.incloud-netbox.{{ .Values.global.domains.internal }}"
           - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
           - "*.incloud-web.{{ .Values.global.domains.internal }}"

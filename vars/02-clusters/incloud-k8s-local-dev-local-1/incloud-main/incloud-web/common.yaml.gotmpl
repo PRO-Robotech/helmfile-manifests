@@ -58,12 +58,11 @@ helm-inserter:
         name: {{ $.Release.Name }}-{{ .name }}-dr-local
         namespace: {{ $.Release.Namespace }}
       spec:
-        host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.{{ .baseDomain }}
+        host: istio-ingressgateway.incloud-istio.svc
         trafficPolicy:
           tls:
             insecureSkipVerify: true
             mode: SIMPLE
-            sni: {{ .api }} 
 
     {{ .name }}ExtDestinationRule: |
       ---
@@ -85,7 +84,7 @@ helm-inserter:
       apiVersion: networking.istio.io/v1
       kind: ServiceEntry
       metadata:
-        name: {{ $.Release.Name }}-{{ .name }}-external-se
+        name: {{ $.Release.Name }}-{{ .name }}-external
         namespace: {{ $.Release.Namespace }}
       spec:
         hosts:
@@ -102,52 +101,40 @@ helm-inserter:
         resolution: DNS
     {{- end }}
 
-    istioIngressGW: |
+    intServiceEntry: |
       ---
-      apiVersion: networking.istio.io/v1alpha3
-      kind: Gateway
+      apiVersion: networking.istio.io/v1
+      kind: ServiceEntry
       metadata:
-        annotations:
-          external-dns.alpha.kubernetes.io/hostname: "api.{{ $internalDomain }}"
-        name: incloud-istio-ingressgateway
-        namespace: {{ .Release.Namespace }}
+        name: {{ $.Release.Name }}-internal
+        namespace: {{ $.Release.Namespace }}
       spec:
-        selector:
-          istio: incloud-istio-ingressgateway
-        servers:
-          - port:
-              number: 80
-              name: http
-              protocol: HTTP
-            hosts:
-              - "*.{{ $internalDomain }}"
-          - port:
-              number: 443
-              name: https
-              protocol: HTTPS
-            hosts:
-              - "*.{{ $internalDomain }}"
-            tls:
-              mode: SIMPLE
-              credentialName: incloud-cert-tls
+        hosts:
+          - istio-ingressgateway.incloud-istio.svc
+          - kubernetes.default.svc
+        location: MESH_EXTERNAL
+        ports:
+          - number: 443
+            name: https
+            protocol: HTTPS
+          - number: 80
+            name: http
+            protocol: HTTP
+        resolution: DNS
 
-    incloudSelfSignedCert: |
+    intDestinationRule: |
       ---
-      apiVersion: cert-manager.io/v1
-      kind: Certificate
+      apiVersion: networking.istio.io/v1
+      kind: DestinationRule
       metadata:
-        name: incloud-cert
-        namespace: {{ .Release.Namespace }}
+        name: {{ $.Release.Name }}-kubernetes
+        namespace: {{ $.Release.Namespace }}
       spec:
-        duration: {{ .Values.global.certManager.defaults.duration }}
-        renewBefore: {{ .Values.global.certManager.defaults.renewBefore }}
-        issuerRef:
-          group: cert-manager.io
-          kind: ClusterIssuer
-          name: issuer-selfsigned
-        dnsNames:
-          - "*.{{ $internalDomain }}"
-        secretName: incloud-cert-tls
+        host: 'kubernetes.default.svc'
+        trafficPolicy:
+          tls:
+            insecureSkipVerify: true
+            mode: SIMPLE
 
     incloudVirtualService: |
       ---
@@ -160,7 +147,6 @@ helm-inserter:
         hosts:
         - test.com # {{ $webAddr }}
         gateways:
-        # - incloud-istio-ingressgateway
         - incloud-istio/istio-ingressgateway
         http:
         - name: incloud
@@ -182,9 +168,8 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - {{ $webAddr }}  #{{ $apiAddr }}
+        - '*'
         gateways:
-        # - incloud-istio-ingressgateway
         - incloud-istio/istio-ingressgateway
         http:
 
@@ -209,17 +194,17 @@ helm-inserter:
             uri: /
           route:
           - destination:
-              {{- if eq (.name) ($mainClusterName) }}
-              host: {{ .api }}
-              {{- else }}
-              host: incloud-istio-ingressgateway.{{ $.Release.Namespace }}.{{ .baseDomain }}
-              {{- end }}
               port:
                 number: 443
+          {{- if eq (.name) ($mainClusterName) }}
+              host: istio-ingressgateway.incloud-istio.svc
+          {{- else }}
+              host: {{ .api }}
             headers:
               request:
                 set:
                   Host: {{ .api }}
+          {{- end }}
         {{- end }}
 
         - name: clusterlist
