@@ -27,3 +27,6 @@ dependencies:
   - name: appSpec
     version: "*"
     repository: "file://../../../../charts/incloud-main/appspec-0.1.1/appspec"
+  - name: helm-inserter
+    version: "*"
+    repository: "file://../../../../charts/incloud-main/helm-inserter-0.2.5/helm-inserter"

@@ -1,5 +1,6 @@
 externalDatabase:
-  existingSecretKey: postgresql-password
+  existingSecretName: netbox-postgresql
+  existingSecretKey: password
 
 persistence:
   enabled: false
