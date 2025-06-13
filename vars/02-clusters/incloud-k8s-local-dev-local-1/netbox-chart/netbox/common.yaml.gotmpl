@@ -1,4 +1,4 @@
-{{- $mainDomain := printf "netbox.%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+{{- $mainDomain := printf "%s.%s.%s" .Release.Name .Release.Namespace .Values.global.domains.internal -}}
 
 helm-inserter:
   templates:
@@ -12,7 +12,7 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - "{{ .Release.Name }}.{{ $mainDomain }}"
+        - "{{ $mainDomain }}"
         gateways:
         - incloud-istio/istio-ingressgateway
         http:

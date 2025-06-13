@@ -1,6 +1,6 @@
-{{- $mainDomain := .Values.global.domains.external -}}
+{{- $mainDomain := .Values.global.domains.internal -}}
 {{- $clusterFullName := .Values.global.clusterFullName -}}
-{{- $hbfDomain  := printf "%s-%s-%s.%s" .Release.Name .Release.Namespace $clusterFullName $mainDomain }}
+{{- $hbfDomain  := printf "%s.%s.%s" .Release.Name .Release.Namespace $mainDomain }}
 
 domain: {{ $mainDomain }}
 
