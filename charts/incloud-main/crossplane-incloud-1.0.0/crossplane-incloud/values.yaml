@@ -76,6 +76,4 @@ environmentConfigs: {}
   # project-env:
   #   argocdToken: ""
 
-kubernetes:
-  createAddressGroup: true
-  createInstanceResourceQuota: true
+kubernetes: {}
