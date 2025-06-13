@@ -87,6 +87,8 @@ helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
   --set ipam.operator.clusterPoolIPv4MaskSize=24 > ${TMP_DIR}/cilium.yaml
 echo "--- deploy cilium"
 kubectl apply -f ${TMP_DIR}/cilium.yaml
+echo "--- waiting cilium"
+kubectl -n kube-system wait pod --selector="app.kubernetes.io/name=cilium-agent" --for=jsonpath="{.status.phase}"=Running
 
 
 echo ""
