@@ -5,8 +5,8 @@ LOCAL_CLUSTER_NAME="incloud-k8s-local-dev-local-1"
 echo "--- start minikube with CNI=cilium"
 minikube start \
   --cni=cilium \
-  --dns-domain=${LOCAL_CLUSTER_NAME}.incloud.x5.ru
-  # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.incloud.x5.ru" \
+  --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal
+  # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.in-cloud.internal" \
   # --extra-config=apiserver.oidc-username-claim=email \
   # --extra-config=apiserver.oidc-client-id=incloud \
 
@@ -61,7 +61,7 @@ roleRef:
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
-    name: admin@x5.ru
+    name: admin@in-cloud.internal
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -285,13 +285,13 @@ echo ""
 echo "--- INFO"
 echo "Если получить доступ к локальному веб-интерфесу, то нужно:"
 echo "1. Добавить запись в /etc/hosts:"
-echo "127.0.0.1 dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru"
+echo "127.0.0.1 dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 echo ""
 echo "2. Запустить проброс порта, выполнив команду:"
 echo "sudo kubectl -n incloud-istio port-forward svc/istio-ingressgateway 443:443"
 echo ""
 echo "3. После выполнения команды можно будет перейти по адресам:"
-# echo "  - https://dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru"
-# echo "  - https://netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru"
-# echo "  - https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru"
-echo "  - https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.incloud.x5.ru"
+# echo "  - https://dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+# echo "  - https://netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+# echo "  - https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "  - https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
