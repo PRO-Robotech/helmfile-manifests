@@ -1,0 +1,689 @@
+helm-inserter:
+  templates:
+    CCOAddressGroupBindings: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.addressgroupbindings
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .spec.serviceRef.name
+            name: ServiceName
+            type: string
+          - jsonPath: .spec.addressGroupRef.name
+            name: AddressGroup
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        additionalPrinterColumnsTrimLengths:
+          - key: AddressGroup
+            value: 63
+        overrideType: netguard.sgroups.io/v1alpha1/addressgroupbindings
+
+    CCOAddressGroupMapping: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.addressgroupportmappings
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .accessPorts.items[*].name
+            name: Services
+            type: string
+          - jsonPath: .accessPorts.items[*].ports.TCP[*].port
+            name: TCP Ports
+            type: string
+          - jsonPath: .accessPorts.items[*].ports.UDP[*].port
+            name: UDP Ports
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        additionalPrinterColumnsTrimLengths:
+          - key: Name
+            value: 63
+        overrideType: netguard.sgroups.io/v1alpha1/addressgroupportmappings
+
+    CCORuleS2S: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.rules2ses
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .spec.serviceLocalRef.name
+            name: ServiceAliasLocal
+            type: string
+          - jsonPath: .spec.serviceRef.name
+            name: ServiceAlias
+            type: string
+          - jsonPath: .spec.traffic
+            name: Traffic
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        additionalPrinterColumnsTrimLengths:
+          - key: Name
+            value: 63
+        overrideType: netguard.sgroups.io/v1alpha1/rules2ses
+
+    CCOServiceAliases: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.servicealiases
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .spec.serviceRef.name
+            name: ServiceName
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: netguard.sgroups.io/v1alpha1/servicealiases
+
+    CCOServices: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.services
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .spec.description
+            name: Description
+            type: string
+          - jsonPath: .spec.ingressPorts[?(@.protocol=="TCP")].port
+            name: Ingress TCP Ports
+            type: string
+          - jsonPath: .spec.ingressPorts[?(@.protocol=="UDP")].port
+            name: Ingress UDP Ports
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: netguard.sgroups.io/v1alpha1/services
+
+    CFOAddressGroupBindings: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.addressgroupbindings
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+          - - spec
+            - addressGroupRef
+            - apiVersion
+          - - spec
+            - addressGroupRef
+            - kind
+          - - spec
+            - serviceRef
+            - apiVersion
+          - - spec
+            - serviceRef
+            - kind
+        overrideType: netguard.sgroups.io/v1alpha1/addressgroupbindings
+        schema:
+          properties:
+            spec:
+              description: AddressGroupBindingSpec defines the desired state of AddressGroupBinding.
+              properties:
+                addressGroupRef:
+                  description: AddressGroupRef is a reference to the AddressGroup resource
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      enum:
+                        - provider.sgroups.io/v1alpha1
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      enum:
+                        - AddressGroup
+                      type: string
+                    name:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/addressgroups
+                      type: listInput
+                    namespace:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                      type: listInput
+                  required:
+                    - apiVersion
+                    - kind
+                    - name
+                  type: object
+                serviceRef:
+                  description: ServiceRef is a reference to the Service resource
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      enum:
+                        - netguard.sgroups.io/v1alpha1
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      enum:
+                        - Service
+                      type: string
+                    name:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/services
+                      type: listInput
+                    namespace:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                      type: listInput
+                  required:
+                    - apiVersion
+                    - kind
+                    - name
+                  type: object
+              required:
+                - addressGroupRef
+                - serviceRef
+              type: object
+        strategy: merge
+
+    CFORuleS2S: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.rules2ses
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+          - - spec
+            - serviceLocalRef
+            - apiVersion
+          - - spec
+            - serviceLocalRef
+            - kind
+          - - spec
+            - serviceRef
+            - apiVersion
+          - - spec
+            - serviceRef
+            - kind
+        overrideType: netguard.sgroups.io/v1alpha1/rules2ses
+        schema:
+          properties:
+            spec:
+              description: RuleS2SSpec defines the desired state of RuleS2S.
+              properties:
+                serviceLocalRef:
+                  description: ServiceLocalRef is a reference to the local service
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      enum:
+                        - netguard.sgroups.io/v1alpha1
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      enum:
+                        - ServiceAlias
+                      type: string
+                    name:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/servicealiases
+                      type: listInput
+                    namespace:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                      type: listInput
+                  required:
+                    - apiVersion
+                    - kind
+                    - name
+                  type: object
+                serviceRef:
+                  description: ServiceRef is a reference to the target service
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      enum:
+                        - netguard.sgroups.io/v1alpha1
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      enum:
+                        - ServiceAlias
+                      type: string
+                    name:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/servicealiases
+                      type: listInput
+                    namespace:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                      type: listInput
+                  required:
+                    - apiVersion
+                    - kind
+                    - name
+                  type: object
+              required:
+                - serviceLocalRef
+                - serviceRef
+                - traffic
+              type: object
+        strategy: merge
+
+    CFOServiceAliases: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.servicealiases
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+            - creationTimestamp
+          - - metadata
+            - namespace
+          - - metadata
+            - deletionGracePeriodSeconds
+          - - metadata
+            - deletionTimestamp
+          - - metadata
+            - finalizers
+          - - metadata
+            - generateName
+          - - metadata
+            - generation
+          - - metadata
+            - managedFields
+          - - metadata
+            - labels
+          - - metadata
+            - annotations
+          - - metadata
+            - ownerReferences
+          - - metadata
+            - resourceVersion
+          - - metadata
+            - selfLink
+          - - metadata
+            - uid
+          - - spec
+            - serviceRef
+            - apiVersion
+          - - spec
+            - serviceRef
+            - kind
+        overrideType: netguard.sgroups.io/v1alpha1/servicealiases
+        schema:
+          properties:
+            spec:
+              description: ServiceAliasSpec defines the desired state of ServiceAlias.
+              properties:
+                serviceRef:
+                  description:
+                    ServiceRef is a reference to the Service resource this
+                    alias points to
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      enum:
+                        - provider.sgroups.io/v1alpha1
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      enum:
+                        - Service
+                      type: string
+                    name:
+                      customProps:
+                        keysToLabel:
+                          - metadata
+                          - name
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/services
+                      type: listInput
+                    namespace:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                      type: listInput
+                  required:
+                    - apiVersion
+                    - kind
+                    - name
+                  type: object
+              required:
+                - serviceRef
+              type: object
+        strategy: merge
+
+    CFOServices: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.services
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+            - creationTimestamp
+          - - metadata
+            - namespace
+          - - metadata
+            - deletionGracePeriodSeconds
+          - - metadata
+            - deletionTimestamp
+          - - metadata
+            - finalizers
+          - - metadata
+            - generateName
+          - - metadata
+            - generation
+          - - metadata
+            - managedFields
+          - - metadata
+            - labels
+          - - metadata
+            - annotations
+          - - metadata
+            - ownerReferences
+          - - metadata
+            - resourceVersion
+          - - metadata
+            - selfLink
+          - - metadata
+            - uid
+          - - ruleS2SDstOwnRef
+          - - spec
+            - serviceRef
+            - apiVersion
+          - - spec
+            - serviceRef
+            - kind
+          - - addressGroups
+        overrideType: netguard.sgroups.io/v1alpha1/services
+        schema:
+          properties:
+            addressGroups:
+              description:
+                AddressGroupsSpec defines the address groups associated with
+                a Service.
+              properties:
+                items:
+                  description: Items contains the list of address groups
+                  items:
+                    description:
+                      NamespacedObjectReference extends ObjectReference with
+                      a Namespace field
+                    properties:
+                      apiVersion:
+                        description: APIVersion of the referenced object
+                        enum:
+                          - provider.sgroups.io/v1alpha1
+                        type: string
+                      kind:
+                        description: Kind of the referenced object
+                        enum:
+                          - AddressGroup
+                        type: string
+                      name:
+                        customProps:
+                          keysToLabel:
+                            - status
+                            - addressGroupName
+                          keysToValue:
+                            - metadata
+                            - name
+                          mode: tag
+                          valueUri: /api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/addressgroups
+                        type: listInput
+                      namespace:
+                        customProps:
+                          keysToLabel:
+                            - status
+                            - addressGroupName
+                          keysToValue:
+                            - metadata
+                            - name
+                          mode: tag
+                          valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                        type: listInput
+                    required:
+                      - apiVersion
+                      - kind
+                      - name
+                    type: object
+                  type: array
+              type: object
+        strategy: merge
+
+    CCPAddressGroupBindings: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.addressgroupbindings
+      spec:
+        overrideType: netguard.sgroups.io/v1alpha1/addressgroupbindings
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: dynamic-
+          - path:
+              - spec
+              - addressGroupRef
+              - apiVersion
+            value: provider.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - addressGroupRef
+              - kind
+            value: AddressGroup
+          - path:
+              - spec
+              - serviceRef
+              - apiVersion
+            value: netguard.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - serviceRef
+              - kind
+            value: Service
+
+    CCPRuleS2S: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.rules2ses
+      spec:
+        overrideType: netguard.sgroups.io/v1alpha1/rules2ses
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: dynamic-
+          - path:
+              - spec
+              - serviceLocalRef
+              - apiVersion
+            value: netguard.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - serviceLocalRef
+              - kind
+            value: ServiceAlias
+          - path:
+              - spec
+              - serviceRef
+              - apiVersion
+            value: netguard.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - serviceRef
+              - kind
+            value: ServiceAlias
+          - path:
+              - spec
+              - traffic
+            value: ingress
+
+    CCPServiceAliases: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.servicealiases
+      spec:
+        overrideType: netguard.sgroups.io/v1alpha1/servicealiases
+        values:
+          - path:
+              - spec
+              - serviceRef
+              - apiVersion
+            value: netguard.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - serviceRef
+              - kind
+            value: Service
+
+    CCPServices: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: netguard.sgroups.io.v1alpha1.services
+      spec:
+        overrideType: netguard.sgroups.io/v1alpha1/services
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: dynamic-
+          - path:
+              - spec
+              - description
+            value: опишите сервис

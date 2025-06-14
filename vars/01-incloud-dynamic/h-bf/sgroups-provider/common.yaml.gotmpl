@@ -1,0 +1,731 @@
+helm-inserter:
+  templates:
+    CCOAddressGroups: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.addressgroups
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: GenerateName
+            type: string
+          - jsonPath: .status.addressGroupName
+            name: AddressGroupName
+            type: string
+          - jsonPath: .networks.items[*].cidr
+            name: Networks
+            type: array
+          - jsonPath: .spec.defaultAction
+            name: Default Action
+            type: boolean
+          - jsonPath: .spec.trace
+            name: Trace
+            type: boolean
+          - jsonPath: .spec.logs
+            name: Logs
+            type: boolean
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: provider.sgroups.io/v1alpha1/addressgroups
+        additionalPrinterColumnsTrimLengths:
+          - key: GenerateName
+            value: 63
+          - key: AddressGroupName
+            value: 63
+
+    CCOieagagrules: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.ieagagrules
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .spec.addressGroupLocal.name
+            name: AddressGroupLocal
+            type: string
+          - jsonPath: .spec.addressGroup.name
+            name: AddressGroup
+            type: string
+          - jsonPath: .spec.transport
+            name: Transport
+            type: string
+          - jsonPath: .spec.ports[*].d
+            name: DST Ports
+            type: integer[]
+          - jsonPath: .spec.traffic
+            name: Traffic
+            type: string
+          - jsonPath: .spec.action
+            name: Action
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: provider.sgroups.io/v1alpha1/ieagagrules
+
+    CCOiecidragrules: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.iecidragrules
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .spec.addressGroup.name
+            name: AddressGroup
+            type: string
+          - jsonPath: .spec.cidr
+            name: CIDR
+            type: string
+          - jsonPath: .spec.transport
+            name: Transport
+            type: string
+          - jsonPath: .spec.ports[*].d
+            name: DST Ports
+            type: integer[]
+          - jsonPath: .spec.traffic
+            name: Traffic
+            type: string
+          - jsonPath: .spec.action
+            name: Action
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: provider.sgroups.io/v1alpha1/iecidragrules
+
+    CCONetworkBindings: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.networkbindings
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .spec.addressGroupRef.name
+            name: AddressGroupRef
+            type: string
+          - jsonPath: .spec.networkRef.name
+            name: NetworkRef
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: provider.sgroups.io/v1alpha1/networkbindings
+
+    CCONetworks: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomColumnsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.networks
+      spec:
+        additionalPrinterColumns:
+          - jsonPath: .metadata.name
+            name: Name
+            type: string
+          - jsonPath: .spec.cidr
+            name: CIDR
+            type: string
+          - jsonPath: .status.addressGroupRef.name
+            name: AddressGroup
+            type: string
+          - jsonPath: .status.bindingRef.name
+            name: AddressGroupBinding
+            type: string
+          - jsonPath: .status.conditions[?(@.type=="Ready")].status
+            name: Ready
+            type: Boolean
+          - jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        overrideType: provider.sgroups.io/v1alpha1/networks
+
+    CFPAddressGroups: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: provider.sgroups.io.v1alpha1.addressgroups
+      spec:
+        overrideType: provider.sgroups.io/v1alpha1/addressgroups
+        values:
+          - path:
+              - metadata
+              - name
+            value: example
+          - path:
+              - spec
+              - defaultAction
+            value: DROP
+          - path:
+              - spec
+              - logs
+            value: true
+          - path:
+              - spec
+              - trace
+            value: true
+
+    CFPieagagrules: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: provider.sgroups.io.v1alpha1.ieagagrules
+      spec:
+        overrideType: provider.sgroups.io/v1alpha1/ieagagrules
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: dynamic-
+          - path:
+              - spec
+              - action
+            value: ACCEPT
+          - path:
+              - spec
+              - addressGroup
+              - apiVersion
+            value: provider.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - addressGroup
+              - kind
+            value: AddressGroup
+          - path:
+              - spec
+              - addressGroupLocal
+              - apiVersion
+            value: provider.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - addressGroupLocal
+              - kind
+            value: AddressGroup
+          - path:
+              - spec
+              - cidr
+            value: ""
+          - path:
+              - spec
+              - traffic
+            value: INGRESS
+          - path:
+              - spec
+              - transport
+            value: TCP
+
+    CFPiecidragrules: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: provider.sgroups.io.v1alpha1.iecidragrules
+      spec:
+        overrideType: provider.sgroups.io/v1alpha1/iecidragrules
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: dynamic-
+          - path:
+              - spec
+              - action
+            value: ACCEPT
+          - path:
+              - spec
+              - addressGroup
+              - apiVersion
+            value: provider.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - addressGroup
+              - kind
+            value: AddressGroup
+          - path:
+              - spec
+              - cidr
+            value: ""
+          - path:
+              - spec
+              - traffic
+            value: INGRESS
+          - path:
+              - spec
+              - transport
+            value: TCP
+
+    CFPNetworkBindings: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: provider.sgroups.io.v1alpha1.networkbindings
+      spec:
+        overrideType: provider.sgroups.io/v1alpha1/networkbindings
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: network-binding-
+          - path:
+              - spec
+              - addressGroupRef
+              - apiVersion
+            value: provider.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - addressGroupRef
+              - kind
+            value: AddressGroup
+          - path:
+              - spec
+              - networkRef
+              - apiVersion
+            value: provider.sgroups.io/v1alpha1
+          - path:
+              - spec
+              - networkRef
+              - kind
+            value: Network
+
+    CFPNetworks: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsPrefill
+      metadata:
+        name: provider.sgroups.io.v1alpha1.networks
+      spec:
+        overrideType: provider.sgroups.io/v1alpha1/networks
+        values:
+          - path:
+              - metadata
+              - generateName
+            value: dynamic-
+          - path:
+              - spec
+              - cidr
+            value: 1.1.1.1/32
+
+    CFOAddressGroups: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.addressgroups
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+            - creationTimestamp
+          - - metadata
+            - deletionGracePeriodSeconds
+          - - metadata
+            - deletionTimestamp
+          - - metadata
+            - finalizers
+          - - metadata
+            - generateName
+          - - metadata
+            - generation
+          - - metadata
+            - managedFields
+          - - metadata
+            - labels
+          - - metadata
+            - annotations
+          - - metadata
+            - ownerReferences
+          - - metadata
+            - resourceVersion
+          - - metadata
+            - selfLink
+          - - metadata
+            - uid
+        overrideType: provider.sgroups.io/v1alpha1/addressgroups
+        schema: {}
+        strategy: merge
+
+    CFOieagagrules: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.ieagagrules
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+          - - spec
+            - logs
+          - - spec
+            - trace
+          - - spec
+            - priority
+          - - spec
+            - addressGroup
+            - apiVersion
+          - - spec
+            - addressGroup
+            - kind
+          - - spec
+            - addressGroupLocal
+            - apiVersion
+          - - spec
+            - addressGroupLocal
+            - kind
+          - - spec
+            - addressGroupLocal
+            - namespace
+        overrideType: provider.sgroups.io/v1alpha1/ieagagrules
+        schema:
+          properties:
+            spec:
+              description: IEAgAgRuleSpec defines the desired state of IEAgAgRule.
+              type: object
+              required:
+              - action
+              - addressGroup
+              - addressGroupLocal
+              - ports
+              - traffic
+              - transport
+              properties:
+                action:
+                  description: Rule action
+                  type: string
+                  enum:
+                  - ACCEPT
+                  - DROP
+                addressGroup:
+                  description: Reference to the address group
+                  type: object
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      type: string
+                    name:
+                      description: Name of the referenced object
+                      type: listInput
+                      customProps:
+                        keysToLabel:
+                        - metadata
+                        - name
+                        keysToValue:
+                        - metadata
+                        - name
+                        mode: tag
+                        valueUri: "/api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/addressgroups"
+                    namespace:
+                      description: Namespace of the referenced object
+                      type: listInput
+                      customProps:
+                        keysToLabel:
+                        - metadata
+                        - name
+                        keysToValue:
+                        - metadata
+                        - name
+                        mode: tag
+                        valueUri: "/api/clusters/{clusterName}/k8s/api/v1/namespaces"
+                addressGroupLocal:
+                  description: Reference to the local address group
+                  type: object
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      type: string
+                    name:
+                      description: Name of the referenced object
+                      type: listInput
+                      customProps:
+                        keysToLabel:
+                        - metadata
+                        - name
+                        keysToValue:
+                        - metadata
+                        - name
+                        mode: tag
+                        valueUri: "/api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/addressgroups"
+                    namespace:
+                      description: Namespace of the referenced object
+                      type: string
+                logs:
+                  description: Whether to enable logs
+                  type: boolean
+                ports:
+                  description: List of source and destination ports
+                  type: array
+                  items:
+                    description: AccPorts defines source and destination ports
+                    type: object
+                    required:
+                    - d
+                    properties:
+                      d:
+                        description: Destination port or port range
+                        type: string
+                priority:
+                  description: Rule priority
+                  type: object
+                  properties:
+                    value:
+                      description: Value of the priority
+                      type: integer
+                      format: int32
+                trace:
+                  description: Whether to enable trace
+                  type: boolean
+                traffic:
+                  description: Direction of traffic flow
+                  type: string
+                  enum:
+                  - INGRESS
+                  - EGRESS
+                transport:
+                  description: Transport protocol for the rule
+                  type: string
+                  enum:
+                  - TCP
+                  - UDP
+            
+        strategy: replace
+
+    CFOiecidragrules: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.iecidragrules
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+          - - spec
+            - logs
+          - - spec
+            - trace
+          - - spec
+            - priority
+          - - spec
+            - addressGroup
+            - apiVersion
+          - - spec
+            - addressGroup
+            - kind
+          - - spec
+            - addressGroup
+            - namespace
+        overrideType: provider.sgroups.io/v1alpha1/iecidragrules
+        schema:
+          properties:
+            spec:
+              description: IECidrAgRuleSpec defines the desired state of IECidrAgRule.
+              type: object
+              required:
+              - action
+              - addressGroup
+              - cidr
+              - ports
+              - traffic
+              - transport
+              properties:
+                action:
+                  description: RuleAction represents allowed actions for SgSgIcmpRule
+                  type: string
+                  enum:
+                  - ACCEPT
+                  - DROP
+                addressGroup:
+                  description: Reference to the address group
+                  type: object
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  properties:
+                    apiVersion:
+                      description: APIVersion of the referenced object
+                      type: string
+                    kind:
+                      description: Kind of the referenced object
+                      type: string
+                    name:
+                      description: Name of the referenced object
+                      type: listInput
+                      customProps:
+                        keysToLabel:
+                        - status
+                        - addressGroupName
+                        keysToValue:
+                        - metadata
+                        - name
+                        mode: tag
+                        valueUri: "/api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/addressgroups"
+                    namespace:
+                      description: Namespace of the referenced object
+                      type: string
+                cidr:
+                  description: CIDR notation for IP range, e.g., "192.168.0.0/16"
+                  type: string
+                logs:
+                  description: Whether to enable logs
+                  type: boolean
+                ports:
+                  description: List of source and destination ports
+                  type: array
+                  items:
+                    description: AccPorts defines source and destination ports
+                    type: object
+                    required:
+                    - d
+                    properties:
+                      d:
+                        description: Destination port or port range
+                        type: string
+                priority:
+                  description: Rule priority
+                  type: object
+                  properties:
+                    value:
+                      description: Value of the priority
+                      type: integer
+                      format: int32
+                trace:
+                  description: Whether to enable trace
+                  type: boolean
+                traffic:
+                  description: Direction of traffic flow
+                  type: string
+                  enum:
+                  - INGRESS
+                  - EGRESS
+                transport:
+                  description: Transport protocol for the rule
+                  type: string
+                  enum:
+                  - TCP
+                  - UDP
+
+        strategy: replace
+
+    CFONetworkBindings: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.networkbindings
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - networks
+          - - metadata
+          - - spec
+            - addressGroupRef
+            - apiVersion
+          - - spec
+            - addressGroupRef
+            - kind
+          - - spec
+            - networkRef
+            - apiVersion
+          - - spec
+            - networkRef
+            - kind
+        overrideType: provider.sgroups.io/v1alpha1/networkbindings
+        schema:
+          properties:
+            spec:
+              properties:
+                addressGroupRef:
+                  properties:
+                    name:
+                      customProps:
+                        keysToLabel:
+                          - status
+                          - addressGroupName
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/addressgroups
+                      type: listInput
+                networkRef:
+                  properties:
+                    name:
+                      customProps:
+                        criteria:
+                          keysToValue:
+                            - status
+                            - isBound
+                          type: equals
+                          value: false
+                        keysToLabel:
+                          - spec
+                          - cidr
+                        keysToValue:
+                          - metadata
+                          - name
+                        mode: tag
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/provider.sgroups.io/v1alpha1/namespaces/{namespace}/networks
+                      type: listInput
+        strategy: merge
+
+    CFONetworks: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: CustomFormsOverride
+      metadata:
+        name: provider.sgroups.io.v1alpha1.networks
+      spec:
+        hidden:
+          - - apiVersion
+          - - kind
+          - - status
+          - - metadata
+        overrideType: provider.sgroups.io/v1alpha1/networks
+        schema: {}
+        strategy: merge

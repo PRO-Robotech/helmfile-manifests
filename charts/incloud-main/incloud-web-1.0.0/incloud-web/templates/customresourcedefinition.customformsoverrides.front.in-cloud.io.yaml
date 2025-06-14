@@ -16,12 +16,8 @@ spec:
   scope: Cluster
   versions:
     - name: v1alpha1
-      served: true
-      storage: true
       schema:
         openAPIV3Schema:
-          type: object
-          required: [spec]
           properties:
             apiVersion:
               type: string
@@ -31,28 +27,12 @@ spec:
               type: object
             spec:
               type: object
-              required:
-                - overrideType
-                - strategy
-              properties:
-                overrideType:
-                  type: string
-                  description: "Fully qualified resource kind (e.g. in-cloud.io/v1alpha1/instances)"
-                strategy:
-                  type: string
-                  enum: ["merge", "replace"]
-                  description: "Form schema override strategy: merge with existing or fully replace"
-                hidden:
-                  type: array
-                  description: "List of field paths to hide in the UI (e.g. [['spec','spi']])"
-                  items:
-                    type: array
-                    items:
-                      type: string
-                schema:
-                  type: object
-                  x-kubernetes-preserve-unknown-fields: true
-                  additionalProperties: true
+              x-kubernetes-preserve-unknown-fields: true
+          required:
+          - spec
+          type: object
+      served: true
+      storage: true
       subresources:
         status: {}
 {{- end }}

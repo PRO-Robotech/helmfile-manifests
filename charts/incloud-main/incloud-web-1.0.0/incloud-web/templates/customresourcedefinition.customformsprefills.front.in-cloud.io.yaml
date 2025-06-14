@@ -15,12 +15,8 @@ spec:
   scope: Cluster
   versions:
     - name: v1alpha1
-      served: true
-      storage: true
       schema:
         openAPIV3Schema:
-          type: object
-          required: [spec]
           properties:
             apiVersion:
               type: string
@@ -30,27 +26,12 @@ spec:
               type: object
             spec:
               type: object
-              required: [overrideType, values]
-              properties:
-                overrideType:
-                  type: string
-                  description: "Fully qualified resource kind (e.g. in-cloud.io/v1alpha1/projects)"
-                values:
-                  type: array
-                  description: "List of field path-value pairs to prefill in the form"
-                  items:
-                    type: object
-                    required: [path, value]
-                    properties:
-                      path:
-                        type: array
-                        description: "JSON path as array of strings to target a field (e.g. ['spec', 'description'])"
-                        items:
-                          type: string
-                      value:
-                        description: "Prefilled value for the specified path"
-                        x-kubernetes-preserve-unknown-fields: true
+              x-kubernetes-preserve-unknown-fields: true
+          required:
+          - spec
+          type: object
+      served: true
+      storage: true
       subresources:
         status: {}
-
 {{- end }}

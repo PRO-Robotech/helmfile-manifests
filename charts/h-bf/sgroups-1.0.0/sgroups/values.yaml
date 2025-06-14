@@ -1,11 +1,10 @@
-
 domain: prorobotech.ru
 
-globalVolumeServerRun:               &globalVolumeServerRun               "/opt/h-bf/sgroups/server-run.sh"
-globalVolumeMigration:               &globalVolumeMigration               "/opt/h-bf/sgroups/migration.sh"
+globalVolumeServerRun: &globalVolumeServerRun "/opt/h-bf/sgroups/server-run.sh"
+globalVolumeMigration: &globalVolumeMigration "/opt/h-bf/sgroups/migration.sh"
 globalVolumeConfigurationServerFile: &globalVolumeConfigurationServerFile "/opt/h-bf/sgroups/server/config.yaml"
 globalVolumeconfigurationClientFile: &globalVolumeconfigurationClientFile "/opt/h-bf/sgroups/client/config.yaml"
-globalVolumeCertificate:             &globalVolumeCertificate             "/opt/h-bf/sgroups/tls"
+globalVolumeCertificate: &globalVolumeCertificate "/opt/h-bf/sgroups/tls"
 
 gateway:
   enabled: true
@@ -82,26 +81,26 @@ appSpec:
               format: json
               content:
                 logger:
-                    level: DEBUG
+                  level: DEBUG
                 metrics:
-                    enable: true
+                  enable: true
                 healthcheck:
-                    enable: true
+                  enable: true
                 server:
-                    endpoint: tcp://0.0.0.0:9006
-                    graceful-shutdown: 30s
-                    api-path-prefix: "apis/sgroups.io/v1"
+                  endpoint: tcp://0.0.0.0:9006
+                  graceful-shutdown: 30s
+                  api-path-prefix: "apis/sgroups.io/v1"
                 storage:
                   type: postgres
                 authn:
-                  type: tls
-                  tls:
-                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
-                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
-                    client:
-                      verify: skip
-                      ca-files: 
-                        - "/opt/h-bf/sgroups/tls/ca.crt"
+                  type: none
+                  # tls:
+                  #   key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                  #   cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                  #   client:
+                  #     verify: skip
+                  #     ca-files:
+                  #       - "/opt/h-bf/sgroups/tls/ca.crt"
 
       containers:
         server:
@@ -116,11 +115,11 @@ appSpec:
             - *globalVolumeServerRun
 
           extraEnv:
-            dbUser:       "dbUser"
-            dbPassword:   "dbPassword"
-            dbUrl:        "dbUrl"
-            dbPort:       "dbPort"
-            dbName:       "dbName"
+            dbUser: "dbUser"
+            dbPassword: "dbPassword"
+            dbUrl: "dbUrl"
+            dbPort: "dbPort"
+            dbName: "dbName"
             serverConfig: *globalVolumeConfigurationServerFile
 
           extraPorts:
@@ -143,7 +142,7 @@ appSpec:
 
             certificate:
               volumeMount:
-                path:  *globalVolumeCertificate
+                path: *globalVolumeCertificate
 
       initContainers:
         migration:
@@ -158,12 +157,12 @@ appSpec:
             - *globalVolumeMigration
 
           extraEnv:
-            dbUser:     "dbUser"
+            dbUser: "dbUser"
             dbPassword: "dbPassword"
-            dbUrl:      "dbUrl"
-            dbPort:     "dbPort"
-            dbName:     "dbName"
-            dbSchema:   "public"
+            dbUrl: "dbUrl"
+            dbPort: "dbPort"
+            dbName: "dbName"
+            dbSchema: "public"
 
           extraVolumeMounts:
             migration:
