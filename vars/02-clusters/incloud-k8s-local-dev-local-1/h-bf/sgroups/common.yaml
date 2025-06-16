@@ -2,5 +2,20 @@ appSpec:
   applications:
     server:
       replicas: 1
+      containers:
+        server:
+          image:
+            # repository: sgroups/sgroups.server
+            tag: "arm64-e0d3789b"
+      initContainers:
+        migration:
+          image:
+            # repository: sgroups/sgroups.goose
+            tag: "arm64-e0d3789b"
     web:
       replicas: 1
+      containers:
+        web:
+          image:
+            # repository: sgroups/sgroups.ui
+            tag: "arm64-ad071d36"
