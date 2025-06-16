@@ -1,0 +1,9 @@
+appSpec:
+  applications:
+    netguard:
+      containers:
+        manager:
+          image:
+            # repository: sgroups/sgroups.k8s.netguard
+            tag: arm64-b305283f
+ 

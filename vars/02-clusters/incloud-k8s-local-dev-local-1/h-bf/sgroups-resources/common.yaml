@@ -1,0 +1,9 @@
+
+appSpec:
+  applications:
+    sgroupsresources:
+      containers:
+        manager:
+          image:
+            # repository: sgroups/sgroups.k8s.network-policy
+            tag: arm64-f0117285
