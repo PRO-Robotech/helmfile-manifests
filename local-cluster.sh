@@ -30,6 +30,7 @@ export \
   CLUSTER_AREA=local \
   CLUSTER_INDEX=1
 
+
 echo ""
 echo "--- create admin role & admin user"
 kubectl apply -f - <<EOF
