@@ -11,9 +11,9 @@ appSpec:
       tolerations:
         - key: node-role.kubernetes.io/data-plane
           effect: NoSchedule
-        - key: node-role.kubernetes.io/b-cloud-infra
+        - key: node-role.kubernetes.io/in-cloud-infra
           effect: NoSchedule
-        - key: node-role.kubernetes.io/b-cloud-client
+        - key: node-role.kubernetes.io/in-cloud-client
           effect: NoSchedule
 
       service:
@@ -188,13 +188,13 @@ appSpec:
               volumeMount:
                 path: /tls/server
 
-# Сертификаты CA, server, client выпускаются с помощью CertManager, однако
-# сертификаты для провайдеров и функций выпускаются на самим crossplane'ом
-# из поля ca.crt в секрете CA (crossplane-root-ca), который является CA для 
-# выпускаемого CA и соответсвенно выпускаемсые crossplane'ом сертификаты не
-# валидные.
-# Решение: Создать сертификат, куда будет перенесено поле tls.crt из CA,
-# выпущенного CertManager'ом в ca.crt crossplane-root-ca
+      # Сертификаты CA, server, client выпускаются с помощью CertManager, однако
+      # сертификаты для провайдеров и функций выпускаются на самим crossplane'ом
+      # из поля ca.crt в секрете CA (crossplane-root-ca), который является CA для
+      # выпускаемого CA и соответсвенно выпускаемсые crossplane'ом сертификаты не
+      # валидные.
+      # Решение: Создать сертификат, куда будет перенесено поле tls.crt из CA,
+      # выпущенного CertManager'ом в ca.crt crossplane-root-ca
       initContainers:
         syncca:
           name: syncca
@@ -228,9 +228,9 @@ appSpec:
       tolerations:
         - key: node-role.kubernetes.io/data-plane
           effect: NoSchedule
-        - key: node-role.kubernetes.io/b-cloud-infra
+        - key: node-role.kubernetes.io/in-cloud-infra
           effect: NoSchedule
-        - key: node-role.kubernetes.io/b-cloud-client
+        - key: node-role.kubernetes.io/in-cloud-client
           effect: NoSchedule
 
       service:
@@ -259,7 +259,7 @@ appSpec:
             - crossplane
             - rbac
             - start
-          
+
           extraArgs:
             provider-clusterrole: crossplane-rbacmanager:allowed-provider-permissions
 

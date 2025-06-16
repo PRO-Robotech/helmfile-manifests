@@ -632,7 +632,7 @@ helm-inserter:
         description: Ресурс создающий экземпляр информационной системы.
         name: Instances
         type: nonCrd
-        apiGroup: front.in-cloud.io
+        apiGroup: in-cloud.io
         apiVersion: v1alpha1
         typeName: instances
         disabled: false
@@ -675,12 +675,16 @@ helm-inserter:
                           id: 211
                           clusterNamePartOfUrl: "{2}"
                           namespacePartOfUrl: "{6}"
-                          baseApiGroup: in-cloud.io
+                          baseApiGroup: front.in-cloud.io
                           baseApiVersion: v1alpha1
+                          baseProjectApiGroup: in-cloud.io
                           baseProjectVersion: v1alpha1
                           projectResourceName: projects
                           mpResourceName: marketplacepanels
                           baseprefix: openapi-ui
+                          accessGroups:
+                            - foo
+                            - bar          
                         children:
                           - type: Spacer
                             data:
@@ -771,7 +775,7 @@ helm-inserter:
                           id: 311
                           clusterNamePartOfUrl: "{2}"
                           namespacePartOfUrl: "{6}"
-                          baseApiGroup: in-cloud.io
+                          baseApiGroup: front.in-cloud.io
                           baseApiVersion: v1alpha1
                           mpResourceName: marketplacepanels
                           mpResourceKind: MarketplacePanel
@@ -1314,7 +1318,7 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomColumnsOverride
       metadata:
-        name: instances.v1alpha1.b-cloud.io
+        name: instances.v1alpha1.in-cloud.io
       spec:
         additionalPrinterColumns:
           - jsonPath: .metadata.name
@@ -1333,7 +1337,7 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomColumnsOverride
       metadata:
-        name: projects.v1alpha1.b-cloud.io
+        name: projects.v1alpha1.in-cloud.io
       spec:
         additionalPrinterColumns:
           - jsonPath: .metadata.name
@@ -1346,3 +1350,526 @@ helm-inserter:
             name: Age
             type: date
         overrideType: in-cloud.io/v1alpha1/projects
+
+
+    BCIInsideApisCluster: |
+      ---
+      # inside apis
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0011-000000000001
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/apis"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+
+    BCIInsideApisNamespace: |
+      ---
+      # inside apis: namespaced
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0011-000000000002
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/apis"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+
+    BCIInsideCRDByApiCluster: |
+      ---
+      # inside apis: crds by api
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0011-000000000003
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: crds-by-api
+          label: "CRDs by API: {apiGroup}/{apiVersion}"
+
+    BCIInsideCRDByApiNamespace: |
+      ---
+      # inside apis: crds by api: namespaced
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0011-000000000004
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: crds-by-api
+          label: "CRD by API: {apiGroup}/{apiVersion}"
+
+    BCIInsideApisByApiCluster: |
+      ---
+      # inside apis: apis by api
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0011-000000000005
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/apis-by-api/:apiGroup/:apiVersion/"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: apis-by-api
+          label: "APIs by API: {apiGroup}/{apiVersion}"
+
+    BCIInsideApisByApiNamespace: |
+      ---
+      # inside apis: apis by api: namespaced
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0011-000000000006
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/apis-by-api/:apiGroup/:apiVersion/"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: apis-by-api
+          label: "APIs by API: {apiGroup}/{apiVersion}"
+
+    BCIFormApisNamespace: |
+      ---
+      # form apis project
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000011
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-namespaced-typename
+          label: Create
+
+    BCIFormApisNamespaceEdit: |
+      ---
+      # form apis project: edit
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000012
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-namespaced-typename
+          label: Update {entryName}
+
+    BCIFormBuiltinNamespace: |
+      ---
+      # form builtin project
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000021
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/builtin-table/{typeName}"
+        - key: create-builtin-res-namespaced-typename
+          label: Create
+
+    BCIFormBuiltinNamespaceEdit: |
+      ---
+      # form builtin project: edit
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000023
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/builtin-table/{typeName}"
+        - key: create-builtin-res-namespaced-typename
+          label: Update {entryName}
+
+    BCIFormCRDNamespace: |
+      ---
+      # form crds project
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000031
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-namespaced-typename
+          label: Create
+
+    BCIFormCRDNamespaceEdit: |
+      ---
+      # form crds project: edit
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000033
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-namespaced-typename
+          label: Update {entryName}
+
+    BCICRDTableNamespace: |
+      ---
+      # crd table project
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000042
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: crd
+          label: "{crdName}"
+
+    BCIApiTableNamespace: |
+      ---
+      # api table project
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000044
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/api-table/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: noncrd
+          label: "{typeName}"
+
+    BCIBuiltinTableNamespace: |
+      ---
+      # builtin table project
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000045
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/builtin-table/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: namespace
+          label: "{namespace}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
+        - key: builtin
+          label: "{typeName}"
+
+    BCIFormApistCluster: |
+      ---
+      # form apis cluster
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0001-000000000011
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-typename
+          label: Create
+
+    BCIFormApisClusterEdit: |
+      ---
+      # form apis cluster: edit
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0001-000000000012
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: create-api-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/{namespace}/api-table/{apiGroup}/{apiVersion}/{typeName}"
+        - key: create-api-res-typename
+          label: Update {entryName}
+
+    BCIFormBuiltinCluster: |
+      ---
+      # form builtin cluster
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0001-000000000021
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/forms/builtin/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/builtin-table/{typeName}"
+        - key: create-builtin-res-typename
+          label: Create
+
+    BCIFormBuiltinClusterEdit: |
+      ---
+      # form builtin cluster: edit
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0001-000000000023
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/forms/builtin/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: create-builtin-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/builtin-table/{typeName}"
+        - key: create-builtin-res-typename
+          label: Update {entryName}
+
+    BCIFormCRDCluster: |
+      ---
+      # form crd cluster
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0001-000000000031
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-typename
+          label: Create
+
+    BCIFormCRDClusterEdit: |
+      ---
+      # form crd cluster: edit
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0001-000000000033
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: create-crd-res-namespaced-table
+          label: "{typeName}"
+          link: "/openapi-ui/inside/{clusterName}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
+        - key: create-crd-res-typename
+          label: Update {entryName}
+    
+    BCICrdTableCluster: |
+      ---
+      # crd table cluster
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000101
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: crd
+          label: "{crdName}"
+
+    BCIApiTableCluster: |
+      ---
+      # api table cluster
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000102
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/api-table/:apiGroup/:apiVersion/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: noncrd
+          label: "{typeName}"
+
+    BCITableCluster: |
+      ---
+      # builtin table cluster
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: BreadcrumbInside
+      metadata:
+        name: 00000001-0000-0000-0000-000000000103
+      spec:
+        pathToMatch: "/openapi-ui/inside/:clusterName/builtin-table/:typeName"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: "In-Cloud: inside"
+          link: "/openapi-ui/inside"
+        - key: cluster
+          label: "{clusterName}"
+          link: "/openapi-ui/inside/{clusterName}/apis"
+        - key: builtin
+          label: "{typeName}"
