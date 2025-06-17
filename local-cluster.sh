@@ -247,7 +247,6 @@ do
   kubectl -n incloud-web apply -f ${TMP_DIR}/incloud-web.yaml
 done
 
-
 echo ""
 echo "--- templating crossplane"
 helmfile \
