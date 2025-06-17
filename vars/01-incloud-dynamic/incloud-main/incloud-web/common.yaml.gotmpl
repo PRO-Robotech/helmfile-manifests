@@ -29,8 +29,39 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+        - key: projects
+          label: "Projects"
+
+    BreadcrumbInstanceList: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: Breadcrumb
+      metadata:
+        name: instance-list
+      spec:
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/in-cloud.io/v1alpha1/instances"
+        breadcrumbItems:
+        - key: In-Cloud
+          label: In-Cloud
+          link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
+        - key: cluster
+          label: "{clusterName}"
+        - key: projects
+          label: "Projects"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: project
+          label: "{namespace}"
+          link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
+        - key: instances
+          label: "instances"
 
     BreadcrumbProject: |
       ---
@@ -44,8 +75,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -62,8 +99,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -80,8 +123,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -104,15 +153,24 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: create-api-res-namespaced-table
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/{apiGroup}/{apiVersion}/{typeName}"
@@ -131,8 +189,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -155,15 +219,24 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: create-api-res-namespaced-table
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/{apiGroup}/{apiVersion}/{typeName}"
@@ -183,8 +256,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -193,7 +272,7 @@ helm-inserter:
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/builtin-table/{typeName}"
         - key: create-builtin-res-namespaced-typename
-          label: Create
+          label: Create3
 
     BreadcrumbInstanceBuildIn: |
       ---
@@ -207,20 +286,23 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
           link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
+          link: "/openapi-ui/clusters/{clusterName}"
         - key: project
-          label: "{syntheticProject}"
-          link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
-        - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: create-builtin-res-namespaced-table
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/builtin-table/{typeName}"
         - key: create-builtin-res-namespaced-typename
-          label: Create
+          label: Create4
 
     BreadcrumbProjectBuildInEdit: |
       ---
@@ -234,8 +316,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -244,7 +332,7 @@ helm-inserter:
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/builtin-table/{typeName}"
         - key: create-builtin-res-namespaced-typename
-          label: Update {entryName}
+          label: Update3 {entryName}
 
     BreadcrumbInstanceBuildInEdit: |
       ---
@@ -258,20 +346,29 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: create-builtin-res-namespaced-table
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/builtin-table/{typeName}"
         - key: create-builtin-res-namespaced-typename
-          label: Update {entryName}
+          label: Update4 {entryName}
 
     BreadcrumbProjectCRDForm: |
       ---
@@ -280,13 +377,19 @@ helm-inserter:
       metadata:
         name: project-crd-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -295,7 +398,7 @@ helm-inserter:
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
         - key: create-crd-res-namespaced-typename
-          label: Create
+          label: Create5
 
     BreadcrumbInstanceCRDForm: |
       ---
@@ -310,20 +413,29 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: create-crd-res-namespaced-table
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
         - key: create-crd-res-namespaced-typename
-          label: Create
+          label: Create6
 
     BreadcrumbProjectCRDEdit: |
       ---
@@ -337,8 +449,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -347,7 +465,7 @@ helm-inserter:
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
         - key: create-crd-res-namespaced-typename
-          label: Update {entryName}
+          label: Update5 {entryName}
 
     BreadcrumbInstanceCRDEdit: |
       ---
@@ -361,20 +479,29 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: create-crd-res-namespaced-table
           label: "{typeName}"
           link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/crd-table/{apiGroup}/{apiVersion}/v1/{typeName}.{apiGroup}"
         - key: create-crd-res-namespaced-typename
-          label: Update {entryName}
+          label: Update6 {entryName}
 
     BreadcrumbInstanceCRDTable: |
       ---
@@ -388,15 +515,24 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: crd
           label: "{crdName}"
 
@@ -413,15 +549,24 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: noncrd
           label: "{typeName}"
 
@@ -437,15 +582,24 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{syntheticProject}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{syntheticProject}"
+        - key: instances
+          label: "Instances"
+          link: "/openapi-ui/{clusterName}/{syntheticProject}/api-table/in-cloud.io/v1alpha1/instances"
         - key: instance
           label: "{namespace}"
-          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/apps/v1/deployments"
+          link: "/openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services"
         - key: builtin
           label: "{typeName}"
 
@@ -461,8 +615,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -483,8 +643,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -505,8 +671,14 @@ helm-inserter:
         - key: In-Cloud
           label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: project
           label: "{namespace}"
@@ -524,10 +696,16 @@ helm-inserter:
         pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName"
         breadcrumbItems:
         - key: in-cloud
-          label: in-cloud
+          label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: create-api-res-typename
           label: Create
@@ -542,10 +720,16 @@ helm-inserter:
         pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
         - key: in-cloud
-          label: in-cloud
+          label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
+          link: "/openapi-ui/clusters/{clusterName}"
+        - key: projects
+          label: "Projects"
           link: "/openapi-ui/clusters/{clusterName}"
         - key: create-api-res-typename
           label: Update {entryName}
@@ -560,8 +744,11 @@ helm-inserter:
         pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName"
         breadcrumbItems:
         - key: in-cloud
-          label: in-cloud
+          label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
           link: "/openapi-ui/clusters/{clusterName}"
@@ -578,8 +765,11 @@ helm-inserter:
         pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
         - key: in-cloud
-          label: in-cloud
+          label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
           link: "/openapi-ui/clusters/{clusterName}"
@@ -596,8 +786,11 @@ helm-inserter:
         pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/"
         breadcrumbItems:
         - key: in-cloud
-          label: in-cloud
+          label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
           link: "/openapi-ui/clusters/{clusterName}"
@@ -614,8 +807,11 @@ helm-inserter:
         pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
         - key: in-cloud
-          label: in-cloud
+          label: In-Cloud
           link: "/openapi-ui"
+        - key: clusterList
+          label: "Cluster List"
+          link: "/openapi-ui/clusters"
         - key: cluster
           label: "{clusterName}"
           link: "/openapi-ui/clusters/{clusterName}"
@@ -793,7 +989,7 @@ helm-inserter:
         - metadata
         - name
         pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/in-cloud.io/v1alpha1/instances"
-        pathToNavigate: "/openapi-ui/{clusterName}/{namespace}-~recordValue~/{namespace}/api-table/apps/v1/deployments"
+        pathToNavigate: "/openapi-ui/{clusterName}/{namespace}-~recordValue~/{namespace}/api-table/netguard.sgroups.io/v1alpha1/services"
 
     TableUriMappingProject: |
       ---
@@ -1385,7 +1581,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
 
     BCIInsideCRDByApiCluster: |
       ---
@@ -1423,7 +1619,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: crds-by-api
           label: "CRD by API: {apiGroup}/{apiVersion}"
@@ -1464,7 +1660,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: apis-by-api
           label: "APIs by API: {apiGroup}/{apiVersion}"
@@ -1486,7 +1682,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: create-api-res-namespaced-table
           label: "{typeName}"
@@ -1511,7 +1707,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: create-api-res-namespaced-table
           label: "{typeName}"
@@ -1536,7 +1732,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: create-builtin-res-namespaced-table
           label: "{typeName}"
@@ -1561,7 +1757,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: create-builtin-res-namespaced-table
           label: "{typeName}"
@@ -1586,7 +1782,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: create-crd-res-namespaced-table
           label: "{typeName}"
@@ -1611,7 +1807,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: create-crd-res-namespaced-table
           label: "{typeName}"
@@ -1636,7 +1832,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: crd
           label: "{crdName}"
@@ -1658,7 +1854,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: noncrd
           label: "{typeName}"
@@ -1680,7 +1876,7 @@ helm-inserter:
           label: "{clusterName}"
           link: "/openapi-ui/inside/{clusterName}/apis"
         - key: namespace
-          label: "{namespace}"
+          label: "namespace: {namespace}"
           link: "/openapi-ui/inside/{clusterName}/{namespace}/apis"
         - key: builtin
           label: "{typeName}"
