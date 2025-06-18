@@ -43,4 +43,4 @@ tmp/*
 test.sh
 
 # creds
-vars/02-clusters/incloud-k8s-local-dev-local-1/argo-cd/common.yaml
+vars/02-clusters/incloud-k8s-local-dev-local-1/argoproj/argo-cd/common.yaml
