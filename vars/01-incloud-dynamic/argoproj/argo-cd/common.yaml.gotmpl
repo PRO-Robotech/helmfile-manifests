@@ -1,0 +1,100 @@
+{{- $mainDomain := printf "%s.%s.%s" .Release.Name .Release.Namespace .Values.global.domains.internal -}}
+
+configs:
+  cm:
+    oidc.config: |
+      name: dex
+      issuer: {{ .Values.global.addresses.idp.schema }}://{{ .Values.global.addresses.idp.fqdn }}
+      clientId: {{ .Values.global.idp.clientID }}
+      clientSecret: {{ .Values.global.idp.clientSecret }}
+      requestedScopes:
+        - groups
+        - openid
+        - profile
+        - email
+
+  credentialTemplates:
+    private-repo:
+      url: "{{ .Values.global.addresses.git.schema }}://{{ .Values.global.addresses.git.fqdn }}/PRO-Robotech"
+      username: {{ .Values.global.argocd.git.username }}
+      password: {{ .Values.global.argocd.git.password }}
+
+  params:
+    applicationsetcontroller.allowed.scm.providers: "{{ .Values.global.addresses.git.schema }}://{{ .Values.global.addresses.git.fqdn }}"
+
+  secret:
+    argocdServerAdminPassword: {{ .Values.global.argocd.argocdServerAdminPassword }}
+
+global:
+  domain: "{{ $mainDomain }}"
+
+repoServer:
+  initContainers:
+    - name: download-argocd-vault-plugin
+      image: "dmkolbin/dowloader"
+      command: [sh, -c]
+      args:
+        - >-
+          curl -Lk -o /custom-tools/argocd-vault-plugin https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.18.1/argocd-vault-plugin_1.18.1_linux_amd64 &&
+          chmod +x /custom-tools/argocd-vault-plugin
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
+    - name: download-helmfile
+      image: "dmkolbin/dowloader"
+      command: [sh, -c]
+      args:
+        - >-
+          curl -Lk -o /tmp/helmfile.tar.gz https://github.com/helmfile/helmfile/releases/download/v0.171.0/helmfile_0.171.0_linux_amd64.tar.gz &&
+          tar -xzf /tmp/helmfile.tar.gz -C /tmp &&
+          cp /tmp/helmfile /custom-tools/helmfile &&
+          chmod +x /custom-tools/helmfile
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
+    - name: download-kustomize
+      image: "dmkolbin/dowloader"
+      command: [sh, -c]
+      args:
+        - >-
+          curl -Lk -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz &&
+          tar -xzf /tmp/kustomize.tar.gz -C /tmp &&
+          cp /tmp/kustomize /custom-tools/kustomize &&
+          chmod +x /custom-tools/kustomize
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
+
+helm-inserter:
+  templates:
+    argocdVS: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: argocd-{{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+          - "{{ $mainDomain }}"
+        gateways:
+          - incloud-istio/istio-ingressgateway
+        http:
+          - name: argocd-{{ .Release.Name }}
+            match:
+              - uri:
+                  prefix: /
+            route:
+              - destination:
+                  host: argocd-server
+                  port:
+                    number: 80
+        tls:
+        - match:
+          - sniHosts:
+            - "{{ $mainDomain }}"
+          route:
+          - destination:
+              host: argocd-server
+              port:
+                number: 443

@@ -28,7 +28,9 @@ export \
   CLUSTER_NAME=incloud-k8s-local \
   CLUSTER_ENV=dev \
   CLUSTER_AREA=local \
-  CLUSTER_INDEX=1
+  CLUSTER_INDEX=1 \
+  ARGOCD_APPLICATION_BRANCH=main \
+  ARGOCD_APPLICATION_REPO="https://github.com/PRO-Robotech/helmfile-manifests.git" \
 
 echo ""
 echo "--- create admin role & admin user"
@@ -86,204 +88,561 @@ helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
 echo "--- deploy cilium"
 kubectl apply -f ${TMP_DIR}/cilium.yaml
 echo "--- waiting cilium"
-kubectl -n kube-system wait ds cilium --for=jsonpath='{.status.numberAvailable}'=1 --timeout=180s
 
 
 echo ""
-echo "--- templating cert-manager"
+echo "--- templating argocd"
 helmfile \
   -e dev \
   --kube-version=${K8S_VERSION} \
-  -l incloud-collections=cert-manager \
-  template > ${TMP_DIR}/cert-manager.yaml incloud-collections: "cert-manager"
-echo "--- deploy cert-manager"
-kubectl create ns incloud-cert-manager
-kubectl apply -f ${TMP_DIR}/cert-manager.yaml
-echo "----- waiting finish cert-manager startupapicheck"
-kubectl -n incloud-cert-manager wait job/cert-manager-startupapicheck --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
-kubectl apply -f ${TMP_DIR}/cert-manager.yaml
-echo "----- waiting run cert-manager webhook"
-kubectl -n incloud-cert-manager wait deployment/cert-manager-webhook --for=jsonpath='{.status.readyReplicas}'=1 --timeout=180s
-kubectl apply -f ${TMP_DIR}/cert-manager.yaml # деплоит сертификаты, которые в прошлую итерацию не создались из-за не работающей валидации
-
-
-echo ""
-echo "--- templating istio"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=istio \
-  template > ${TMP_DIR}/istio.yaml
-echo "--- deploy istio"
-kubectl create ns incloud-istio
-kubectl -n incloud-istio apply -f ${TMP_DIR}/istio.yaml
-echo "--- waiting run istiod"
-kubectl -n incloud-istio wait deployment/istiod --for=jsonpath='{.status.readyReplicas}'=1 --timeout=180s
+  -l incloud-collections=argocd \
+  template > ${TMP_DIR}/argocd.yaml
+echo "--- deploy argocd"
+kubectl create ns incloud-argocd
+kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=180s
 for i in {1..2}
 do
-  kubectl -n incloud-istio apply -f ${TMP_DIR}/istio.yaml
+  kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
 done
 
 
 echo ""
-echo "--- templating dex"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=dex \
-  template > ${TMP_DIR}/dex.yaml
-echo "--- deploy dex"
-kubectl create ns incloud-idp
-for i in {1..3}
-do
-  kubectl -n incloud-idp apply -f ${TMP_DIR}/dex.yaml
-done
+echo "--- create argocd app: cert-manager"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-cert-manager
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=cert-manager --namespace="incloud-cert-manager"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: CERT_MANAGER_VERSION
+        value: ${CERT_MANAGER_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} CERT_MANAGER_VERSION=${CERT_MANAGER_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating netbox"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=netbox \
-  template > ${TMP_DIR}/netbox.yaml
-echo "--- deploy netbox"
-kubectl create ns incloud-netbox
-for i in {1..3}
-do
-  kubectl -n incloud-netbox apply -f ${TMP_DIR}/netbox.yaml
-done
+echo "--- create argocd app: istio"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-istio
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=istio --namespace="incloud-istio"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: ISTIO_VERSION
+        value: ${ISTIO_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating sgroups"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=sgroups \
-  template > ${TMP_DIR}/sgroups.yaml
-echo "--- deploy sgroups"
-kubectl create ns incloud-sgroups
-for i in {1..3}
-do
-  kubectl -n incloud-sgroups apply -f ${TMP_DIR}/sgroups.yaml
-done
+echo "--- create argocd app: dex"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dex
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-idp
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=dex --namespace="incloud-idp"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: ISTIO_VERSION
+        value: ${ISTIO_VERSION}
+      - name: POSTGRES_VERSION
+        value: ${POSTGRES_VERSION}
+      - name: DEX_VERSION
+        value: ${DEX_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION} POSTGRES_VERSION=${POSTGRES_VERSION} DEX_VERSION=${DEX_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating sgroups-provider"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=sgroups-provider \
-  template > ${TMP_DIR}/sgroups-provider.yaml
-echo "--- deploy sgroups-provider"
-kubectl create ns incloud-sgroups
-for i in {1..3}
-do
-  kubectl -n incloud-sgroups apply -f ${TMP_DIR}/sgroups-provider.yaml
-done
+echo "--- create argocd app: netbox"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: netbox
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-netbox
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=netbox --namespace="incloud-netbox"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: ISTIO_VERSION
+        value: ${ISTIO_VERSION}
+      - name: POSTGRES_VERSION
+        value: ${POSTGRES_VERSION}
+      - name: NETBOX_VERSION
+        value: ${NETBOX_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION} POSTGRES_VERSION=${POSTGRES_VERSION} NETBOX_VERSION=${NETBOX_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating sgroups-resources"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=sgroups-resources \
-  template > ${TMP_DIR}/sgroups-resources.yaml
-echo "--- deploy sgroups-resources"
-kubectl create ns incloud-sgroups
-for i in {1..3}
-do
-  kubectl -n incloud-sgroups apply -f ${TMP_DIR}/sgroups-resources.yaml
-done
+echo "--- create argocd app: sgroups"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sgroups
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-sgroups
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=sgroups --namespace="incloud-sgroups"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: ISTIO_VERSION
+        value: ${ISTIO_VERSION}
+      - name: POSTGRES_VERSION
+        value: ${POSTGRES_VERSION}
+      - name: SGROUPS_VERSION
+        value: ${SGROUPS_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION} POSTGRES_VERSION=${POSTGRES_VERSION} SGROUPS_VERSION=${SGROUPS_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating sgroups-to-nft"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=to-nft \
-  template > ${TMP_DIR}/sgroups-to-nft.yaml
-echo "--- deploy sgroups-to-nft"
-kubectl create ns incloud-sgroups
-for i in {1..3}
-do
-  kubectl -n incloud-sgroups apply -f ${TMP_DIR}/sgroups-to-nft.yaml
-done
+echo "--- create argocd app: sgroups-provider"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sgroups-provider
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-sgroups
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=sgroups-provider --namespace="incloud-sgroups"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: SGROUPS_PROVIDER_VERSION
+        value: ${SGROUPS_PROVIDER_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} SGROUPS_PROVIDER_VERSION=${SGROUPS_PROVIDER_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating netguard"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=netguard \
-  template > ${TMP_DIR}/netguard.yaml
-echo "--- deploy netguard"
-kubectl create ns incloud-sgroups
-for i in {1..3}
-do
-  kubectl -n incloud-sgroups apply -f ${TMP_DIR}/netguard.yaml
-done
+echo "--- create argocd app: sgroups-resources"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sgroups-resources
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-sgroups
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=sgroups-resources --namespace="incloud-sgroups"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: SGROUPS_RESOURCES_VERSION
+        value: ${SGROUPS_RESOURCES_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} SGROUPS_RESOURCES_VERSION=${SGROUPS_RESOURCES_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating incloud-web"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=incloud-web \
-  template > ${TMP_DIR}/incloud-web.yaml
-echo "--- deploy incloud-web"
-kubectl create ns incloud-web
-for i in {1..3}
-do
-  kubectl -n incloud-web apply -f ${TMP_DIR}/incloud-web.yaml
-done
+echo "--- create argocd app: sgroups-to-nft"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: to-nft
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-sgroups
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=to-nft --namespace="incloud-sgroups"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: TO_NFT_VERSION
+        value: ${TO_NFT_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} TO_NFT_VERSION=${TO_NFT_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating crossplane"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=crossplane \
-  template > ${TMP_DIR}/crossplane.yaml
-echo "--- deploy crossplane"
-kubectl create ns incloud-crossplane
-kubectl -n incloud-crossplane apply -f ${TMP_DIR}/crossplane.yaml
-kubectl -n incloud-crossplane wait deployment/crossplane-crossplane --for=jsonpath='{.status.readyReplicas}'=1 --timeout=180s
-for i in {1..2}
-do
-  kubectl -n incloud-crossplane apply -f ${TMP_DIR}/crossplane.yaml --server-side
-  sleep 10
-done
+echo "--- create argocd app: sgroups-netguard"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: netguard
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-sgroups
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=netguard --namespace="incloud-sgroups"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: NETGUARD_VERSION
+        value: ${NETGUARD_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} NETGUARD_VERSION=${NETGUARD_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
-echo "--- templating crossplane-incloud"
-helmfile \
-  -e dev \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=crossplane-incloud \
-  template > ${TMP_DIR}/crossplane-incloud.yaml
-echo "--- deploy crossplane-incloud"
-kubectl create ns incloud-crossplane
-for i in {1..10}
-do
-  kubectl -n incloud-crossplane apply -f ${TMP_DIR}/crossplane-incloud.yaml && break
-  sleep 30
-done
+echo "--- create argocd app: incloud-web"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: incloud-web
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-web
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=incloud-web --namespace="incloud-web"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: ISTIO_VERSION
+        value: ${ISTIO_VERSION}
+      - name: INCLOUD_WEB_VERSION
+        value: ${INCLOUD_WEB_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION} INCLOUD_WEB_VERSION=${INCLOUD_WEB_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
+
+
+echo ""
+echo "--- create argocd app: crossplane"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-crossplane
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=crossplane --namespace="incloud-crossplane"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: CROSSPLANE_VERSION
+        value: ${CROSSPLANE_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CROSSPLANE_VERSION} CROSSPLANE_VERSION=${CROSSPLANE_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
+
+
+echo ""
+echo "--- create argocd app: crossplane-incloud"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-incloud
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-crossplane
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e dev -l bcloud-collections=crossplane-incloud --namespace="incloud-crossplane"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: CROSSPLANE_INCLOUD_VERSION
+        value: ${CROSSPLANE_INCLOUD_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CROSSPLANE_VERSION} CROSSPLANE_INCLOUD_VERSION=${CROSSPLANE_INCLOUD_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
+
 
 echo ""
 echo ""
 echo "--- INFO"
 echo "Если получить доступ к локальному веб-интерфесу, то нужно:"
 echo "1. Добавить запись в /etc/hosts:"
-echo "127.0.0.1 dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "127.0.0.1 argocd.incloud-argocd.svc.incloud-k8s-local-dev-local-1.in-cloud.internal dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 echo ""
 echo "2. Запустить проброс порта, выполнив команду:"
 echo "sudo kubectl -n incloud-istio port-forward svc/istio-ingressgateway 443:443"
@@ -292,4 +651,5 @@ echo "3. После выполнения команды можно будет п
 # echo "  - https://dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 # echo "  - https://netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 # echo "  - https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "  - https://argocd.incloud-argocd.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 echo "  - https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"

@@ -6,6 +6,12 @@ global:
     incloud:
       schema: https
       fqdn: incloud.in-cloud.internal
+    git:
+      schema: ""
+      fqdn: ""
+    vault:
+      schema: ""
+      fqdn: ""
 
   dnsServers: []
   ntpServers: []
@@ -59,3 +65,9 @@ global:
 
   gatekeeper:
     encryptionKey: d633e36d18abd96ea64f1d4059c25d14
+
+  argocd:
+    git:
+      username: ""
+      password: ""
+    argocdServerAdminPassword: ""
