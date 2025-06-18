@@ -7,3 +7,10 @@ appSpec:
           image:
             # repository: sgroups/sgroups.k8s.network-policy
             tag: arm64-f0117285
+          extraResources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
