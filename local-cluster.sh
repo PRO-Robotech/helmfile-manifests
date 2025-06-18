@@ -645,7 +645,7 @@ EOF
 
 
 echo ""
-echo ""
+echo "---------"
 echo "--- INFO"
 echo "Чтобы получить доступ к локальным веб-интерфесам, нужно:"
 echo "1. Добавить запись в /etc/hosts:"
@@ -669,7 +669,15 @@ echo "ArgoCD: https://argocd.incloud-argocd.svc.incloud-k8s-local-dev-local-1.in
 echo "Учетная запись по-умолчанию:"
 echo "username: admin"
 echo "password: admin"
+echo "Так же доступ к веб-интерфейсу ArgoCD можно получить по адресу: https://localhost:8080"
+echo "Для этого нужно выполнить команду: kubectl -n incloud-argocd port-forward svc/argocd-server 8080:443"
+
+
 echo ""
-echo "ОБЯЗАТЕЛЬНО к прочтению!"
+echo "---------"
+echo "--- ОБЯЗАТЕЛЬНО к прочтению!"
 echo "Необходимо указать ваши логин/токен от GitHub в настройках ArgoCD, иначе не будут работать приложения, которые используют GitHub как источник."
-echo "Их можно указать в файле vars/02-clusters/incloud-k8s-local-dev-local-1/argoproj/argo-cd/argocd.yaml.example и переименовав файл в argocd.yaml (Этот игнорируется через .gitignore)"
+echo "Для этого нужно:"
+echo "  - Перейти в директорию: cd vars/02-clusters/incloud-k8s-local-dev-local-1/argoproj/argo-cd"
+echo "  - Скопировать файл argocd.yaml.example в argocd.yaml"
+echo "  - Открыть файл argocd.yaml в редакторе и указать ваши учетные данные GitHub (нужно сгенерировать личный токен с правами на чтение репозиториев)"
