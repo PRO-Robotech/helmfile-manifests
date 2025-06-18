@@ -1,15 +1,7 @@
-# Файл добавлен в .gitignore
-
 configs:
   cm:
     reposerver.default.cache.expiration: 0h15m0s
     reposerver.repo.cache.expiration: 0h15m0s
-
-  credentialTemplates:
-    private-repo:
-      url: "https://github.com/PRO-Robotech/helmfile-manifests"
-      username: ""
-      password: ""
 
   secret:
     argocdServerAdminPassword: "$2a$10$pFh3DS3IO88UfefjEIcNo.Ndj3MpmsUNFZQ1Xgy6T8ljWN08Hw6.S" #admin
