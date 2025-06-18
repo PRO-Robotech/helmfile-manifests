@@ -32,7 +32,7 @@ export \
   CLUSTER_ENV=dev \
   CLUSTER_AREA=local \
   CLUSTER_INDEX=1 \
-  ARGOCD_APPLICATION_BRANCH=main \
+  ARGOCD_APPLICATION_BRANCH="$(git branch --show-current)" \
   ARGOCD_APPLICATION_REPO="https://github.com/PRO-Robotech/helmfile-manifests.git"
 
 echo ""
@@ -95,8 +95,11 @@ kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 -
 
 
 echo ""
+echo "--- install istio CRDs"
+kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
+
+
 echo ""
-echo "Обязательно укажите свой Access Token для доступа к репозиторию в файле: vars/02-clusters/${LOCAL_CLUSTER_NAME}/argo-cd/common.yaml"
 echo "--- templating argocd"
 helmfile \
   -e ${CLUSTER_ENV} \
@@ -108,51 +111,7 @@ kubectl create ns incloud-argocd
 kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
 kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
 kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-
-
-echo ""
-echo "--- create argocd app: argocd"
-kubectl apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: argocd
-  namespace: incloud-argocd
-spec:
-  destination:
-    namespace: incloud-idp
-    server: https://kubernetes.default.svc
-  project: default
-  source:
-    path: .
-    plugin:
-      env:
-      - name: helmfile_args
-        value: -e ${CLUSTER_ENV} -l incloud-collections=argocd --namespace="incloud-argocd"
-      - name: CLUSTER_AREA
-        value: ${CLUSTER_AREA}
-      - name: CLUSTER_ENV
-        value: ${CLUSTER_ENV}
-      - name: CLUSTER_INDEX
-        value: "${CLUSTER_INDEX}"
-      - name: CLUSTER_NAME
-        value: ${CLUSTER_NAME}
-      - name: ISTIO_VERSION
-        value: ${ISTIO_VERSION}
-      - name: ARGOCD_VERSION
-        value: ${ARGOCD_VERSION}
-      - name: helmfile_envs
-        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION} ARGOCD_VERSION=${ARGOCD_VERSION}
-      name: helmfile-with-args
-    repoURL: ${ARGOCD_APPLICATION_REPO}
-    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
-EOF
+kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
 
 
 echo ""
@@ -711,3 +670,6 @@ echo "Учетная запись по-умолчанию:"
 echo "username: admin"
 echo "password: admin"
 echo ""
+echo "ОБЯЗАТЕЛЬНО к прочтению!"
+echo "Необходимо указать ваши логин/токен от GitHub в настройках ArgoCD, иначе не будут работать приложения, которые используют GitHub как источник."
+echo "Их можно указать в файле vars/02-clusters/incloud-k8s-local-dev-local-1/argoproj/argo-cd/argocd.yaml.example и переименовав файл в argocd.yaml (Этот игнорируется через .gitignore)"
