@@ -94,9 +94,9 @@ echo "--- waiting cilium"
 kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 --timeout=180s
 
 
-echo ""
-echo "--- install istio CRDs"
-kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
+# echo ""
+# echo "--- install istio CRDs"
+# kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
 
 
 echo ""
