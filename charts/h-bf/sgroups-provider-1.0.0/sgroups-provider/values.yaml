@@ -13,7 +13,7 @@ appSpec:
       tolerations:
         - key: node-role.kubernetes.io/data-plane
           effect: NoSchedule
-        - key: node-role.kubernetes.io/b-cloud-infra
+        - key: node-role.kubernetes.io/in-cloud-infra
           effect: NoSchedule
 
       extraPriorityClassName: system-cluster-critical

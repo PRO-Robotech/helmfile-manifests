@@ -19,7 +19,7 @@ echo "Kubernetes version: ${K8S_VERSION}"
 
 INCLOUD_COMPONENTS_VERSION=$(cat vars/02-clusters/${LOCAL_CLUSTER_NAME}/${LOCAL_CLUSTER_NAME}.yaml | sed -n 's/.*incloudComponentsVersion:[[:space:]]*\(v[0-9.]*\).*/\1/p')
 INCLOUD_COMPONENTS_VERSION_FILE="releases.d/incloud-releases/${INCLOUD_COMPONENTS_VERSION}.yaml"
-echo "DEBUG: B-Cloud components version file: ${INCLOUD_COMPONENTS_VERSION_FILE}"
+echo "DEBUG: in-cloud components version file: ${INCLOUD_COMPONENTS_VERSION_FILE}"
 
 cat ${INCLOUD_COMPONENTS_VERSION_FILE} | sed -E 's/^([A-Za-z0-9_]+):[[:space:]]*([^[:space:]]+).*/export \1="\2"/' > ${TMP_DIR}/components_versions.env
 source ${TMP_DIR}/components_versions.env
@@ -29,7 +29,6 @@ export \
   CLUSTER_ENV=dev \
   CLUSTER_AREA=local \
   CLUSTER_INDEX=1
-
 
 echo ""
 echo "--- create admin role & admin user"
@@ -84,8 +83,6 @@ echo "--- templating cilium"
 helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
   --namespace kube-system \
   --set operator.replicas=1 \
-  --set ipam.operator.clusterPoolIPv4PodCIDRList="10.244.0.0/16" \
-  --set ipam.operator.clusterPoolIPv4MaskSize=24 > ${TMP_DIR}/cilium.yaml
 echo "--- deploy cilium"
 kubectl apply -f ${TMP_DIR}/cilium.yaml
 echo "--- waiting cilium"
@@ -246,6 +243,7 @@ for i in {1..3}
 do
   kubectl -n incloud-web apply -f ${TMP_DIR}/incloud-web.yaml
 done
+
 
 echo ""
 echo "--- templating crossplane"
