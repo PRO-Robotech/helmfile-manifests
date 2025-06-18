@@ -1,0 +1,301 @@
+applicationSet:
+  allowAnyNamespace: true
+  metrics:
+    enabled: true
+
+configs:
+  cm:
+    application.resourceTrackingMethod: annotation
+    reposerver.default.cache.expiration: 8h0m0s
+    reposerver.repo.cache.expiration: 8h0m0s
+    resource.compareoptions: |
+      ignoreAggregatedRoles: true
+    resource.customizations.ignoreDifferences.admissionregistration.k8s.io_MutatingWebhookConfiguration: |
+      jqPathExpressions:
+      - '.webhooks[]?.clientConfig.caBundle'
+    resource.customizations.ignoreDifferences.admissionregistration.k8s.io_ValidatingWebhookConfiguration: |
+      jqPathExpressions:
+      - '.webhooks[]?.clientConfig.caBundle'
+    resource.customizations.ignoreDifferences.all: |
+      jqPathExpressions:
+      - '.spec.template.spec.containers[].volumeMounts[] | select(.name == "ssl-certs")'
+      - '.spec.template.spec.volumes[] | select(.name == "ssl-certs")'
+      - '.spec.template.spec.securityContext'
+      - '.spec.template.spec.containers[].securityContext'
+      - '.spec.template.spec.initContainers[].securityContext'
+      - '.spec.replicas'
+    resource.customizations.ignoreDifferences.kyverno.io_ClusterPolicy: |
+      jqPathExpressions:
+      - '.spec.rules[] | select(.name|test("autogen-."))'
+    resource.customizations.ignoreDifferences.kyverno.io_Policy: |
+      jqPathExpressions:
+      - '.spec.rules[] | select(.name|test("autogen-."))'
+
+  cmp:
+    create: true
+    plugins:
+      argocd-vault-plugin-helm-with-args:
+        allowConcurrency: true
+        lockRepo: false
+        discover:
+          find:
+            command:
+              - bash
+              - '-c'
+              - |
+                if [ -n "${ARGOCD_ENV_helm_args}" ]; then
+                  find . -name 'Chart.yaml' &&
+                  find . -name 'values.yaml';
+                fi
+        generate:
+          command:
+            - bash
+            - '-c'
+            - |
+              helm template "${ARGOCD_APP_NAME}" --include-crds -n "${ARGOCD_APP_NAMESPACE}" ${ARGOCD_ENV_helm_args} -f <(echo "${ARGOCD_ENV_ARGOCD_ENV_HELM_VALUES}") . |
+              argocd-vault-plugin generate -s argocd-system:vault-configuration -
+
+      argocd-vault-plugin-helm-with-values:
+        allowConcurrency: true
+        lockRepo: false
+        discover:
+          find:
+            command:
+              - bash
+              - '-c'
+              - |
+                if [ -z "${ARGOCD_ENV_helm_args}" ] && [ -n "${ARGOCD_ENV_ARGOCD_ENV_HELM_VALUES+set}" ] ; then
+                  find . -name 'Chart.yaml' &&
+                  find . -name 'values.yaml';
+                fi
+        generate:
+          command:
+            - bash
+            - '-c'
+            - |
+              helm template "${ARGOCD_APP_NAME}" --include-crds -n "${ARGOCD_APP_NAMESPACE}" -f <(echo "${ARGOCD_ENV_ARGOCD_ENV_HELM_VALUES}") . |
+              argocd-vault-plugin generate -s argocd-system:vault-configuration -
+
+      argocd-vault-plugin-helmfile-with-args:
+        allowConcurrency: true
+        lockRepo: false
+        generate:
+          command:
+            - bash
+            - '-c'
+            - |
+              export $(echo $ARGOCD_ENV_helmfile_envs) && helmfile ${ARGOCD_ENV_helmfile_args} -n ${ARGOCD_APP_NAMESPACE} template |
+              argocd-vault-plugin generate -s argocd-system:vault-configuration -
+
+      argocd-vault-plugin-kustomize:
+        allowConcurrency: true
+        lockRepo: false
+        discover:
+          find:
+            command:
+              - find
+              - "."
+              - -name
+              - kustomization.yaml
+        generate:
+          command:
+            - sh
+            - '-c'
+            - "kustomize build . | argocd-vault-plugin generate -"
+
+      helmfile-with-args:
+        allowConcurrency: true
+        lockRepo: false
+        generate:
+          command:
+            - bash
+            - '-c'
+            - |
+              export $(echo $ARGOCD_ENV_helmfile_envs) && helmfile ${ARGOCD_ENV_helmfile_args} -n ${ARGOCD_APP_NAMESPACE} template
+
+  credentialTemplates:
+    private-repo:
+      type: git
+
+  params:
+    application.namespaces: '*'
+    applicationsetcontroller.namespaces: '*'
+
+  secret:
+    argocdServerAdminPasswordMtime: "2025-03-01T10:00:00"
+
+controller:
+  metrics:
+    enabled: true
+  replicas: 1
+dex:
+  enabled: false
+  exporter:
+    enabled: false
+
+global:
+  priorityClassName: system-cluster-critical
+
+notifications:
+  metrics:
+    enabled: true
+redis:
+  exporter:
+    enabled: true
+
+repoServer:
+  envFrom:
+    - secretRef:
+        name: vault-configuration
+
+  extraContainers:
+    - name: argocd-vault-plugin-helm-with-args
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: "quay.io/argoproj/argocd:v2.14.15"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: argocd-vault-plugin-helm-with-args.yaml
+          name: cmp-plugin
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
+        - name: custom-tools
+          subPath: helmfile
+          mountPath: /usr/local/bin/helmfile
+        - name: custom-tools
+          subPath: kustomize
+          mountPath: /usr/local/bin/kustomize
+
+    - name: argocd-vault-plugin-helm-with-values
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: "quay.io/argoproj/argocd:v2.14.15"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: argocd-vault-plugin-helm-with-values.yaml
+          name: cmp-plugin
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
+        - name: custom-tools
+          subPath: helmfile
+          mountPath: /usr/local/bin/helmfile
+        - name: custom-tools
+          subPath: kustomize
+          mountPath: /usr/local/bin/kustomize
+
+    - name: argocd-vault-plugin-kustomize
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: "quay.io/argoproj/argocd:v2.14.15"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: argocd-vault-plugin-kustomize.yaml
+          name: cmp-plugin
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
+        - name: custom-tools
+          subPath: helmfile
+          mountPath: /usr/local/bin/helmfile
+        - name: custom-tools
+          subPath: kustomize
+          mountPath: /usr/local/bin/kustomize
+
+    - name: helmfile-with-args
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: "quay.io/argoproj/argocd:v2.14.15"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: helmfile-with-args.yaml
+          name: cmp-plugin
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
+        - name: custom-tools
+          subPath: helmfile
+          mountPath: /usr/local/bin/helmfile
+        - name: custom-tools
+          subPath: kustomize
+          mountPath: /usr/local/bin/kustomize
+
+    - name: argocd-vault-plugin-helmfile-with-args
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: "quay.io/argoproj/argocd:v2.14.15"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: argocd-vault-plugin-helmfile-with-args.yaml
+          name: cmp-plugin
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
+        - name: custom-tools
+          subPath: helmfile
+          mountPath: /usr/local/bin/helmfile
+        - name: custom-tools
+          subPath: kustomize
+          mountPath: /usr/local/bin/kustomize
+
+  metrics:
+    enabled: true
+  rbac:
+    - apiGroups: ["*"]
+      resources: ["*"]
+      verbs: ["*"]
+  replicas: 1
+  volumeMounts:
+    - mountPath: /usr/local/bin/argocd-vault-plugin
+      name: custom-tools
+      subPath: argocd-vault-plugin
+    - mountPath: /usr/local/bin/helmfile
+      name: custom-tools
+      subPath: helmfile
+    - mountPath: /usr/local/bin/kustomize
+      name: custom-tools
+      subPath: kustomize
+  volumes:
+    - configMap:
+        name: argocd-cmp-cm
+      name: cmp-plugin
+    - name: custom-tools
+      emptyDir: {}
+
+server:
+  ingress:
+    enabled: false
+  metrics:
+    enabled: true
+  replicas: 1

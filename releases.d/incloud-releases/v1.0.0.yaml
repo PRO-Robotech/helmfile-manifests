@@ -1,4 +1,5 @@
 ### COMMUNITY CHARTS
+ARGOCD_VERSION:                                   8.0.9
 CERT_MANAGER_VERSION:                             v1.17.2
 CILIUM_VERSION:                                   1.17.4
 COREDNS_VERSION:                                  1.42.1
