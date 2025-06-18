@@ -6,3 +6,10 @@ appSpec:
           image:
             # repository: sgroups/sgroups.k8s.provider
             tag: "arm64-a2302dd7"
+          extraResources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
