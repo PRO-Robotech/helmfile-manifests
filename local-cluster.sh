@@ -5,7 +5,10 @@ LOCAL_CLUSTER_NAME="incloud-k8s-local-dev-local-1"
 echo "--- start minikube with CNI=cilium"
 minikube start \
   --cni=cilium \
-  --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal
+  --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal \
+  --driver=docker \
+  --cpus=2 \
+  --memory=6144
   # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.in-cloud.internal" \
   # --extra-config=apiserver.oidc-username-claim=email \
   # --extra-config=apiserver.oidc-client-id=incloud \
@@ -19,7 +22,7 @@ echo "Kubernetes version: ${K8S_VERSION}"
 
 INCLOUD_COMPONENTS_VERSION=$(cat vars/02-clusters/${LOCAL_CLUSTER_NAME}/${LOCAL_CLUSTER_NAME}.yaml | sed -n 's/.*incloudComponentsVersion:[[:space:]]*\(v[0-9.]*\).*/\1/p')
 INCLOUD_COMPONENTS_VERSION_FILE="releases.d/incloud-releases/${INCLOUD_COMPONENTS_VERSION}.yaml"
-echo "DEBUG: in-cloud components version file: ${INCLOUD_COMPONENTS_VERSION_FILE}"
+echo "DEBUG: In-Cloud components version file: ${INCLOUD_COMPONENTS_VERSION_FILE}"
 
 cat ${INCLOUD_COMPONENTS_VERSION_FILE} | sed -E 's/^([A-Za-z0-9_]+):[[:space:]]*([^[:space:]]+).*/export \1="\2"/' > ${TMP_DIR}/components_versions.env
 source ${TMP_DIR}/components_versions.env
@@ -30,7 +33,7 @@ export \
   CLUSTER_AREA=local \
   CLUSTER_INDEX=1 \
   ARGOCD_APPLICATION_BRANCH=main \
-  ARGOCD_APPLICATION_REPO="https://github.com/PRO-Robotech/helmfile-manifests.git" \
+  ARGOCD_APPLICATION_REPO="https://github.com/PRO-Robotech/helmfile-manifests.git"
 
 echo ""
 echo "--- create admin role & admin user"
@@ -88,23 +91,68 @@ helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
 echo "--- deploy cilium"
 kubectl apply -f ${TMP_DIR}/cilium.yaml
 echo "--- waiting cilium"
+kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 --timeout=180s
 
 
 echo ""
+echo ""
+echo "Обязательно укажите свой Access Token для доступа к репозиторию в файле: vars/02-clusters/${LOCAL_CLUSTER_NAME}/argo-cd/common.yaml"
 echo "--- templating argocd"
 helmfile \
-  -e dev \
+  -e ${CLUSTER_ENV} \
   --kube-version=${K8S_VERSION} \
   -l incloud-collections=argocd \
   template > ${TMP_DIR}/argocd.yaml
 echo "--- deploy argocd"
 kubectl create ns incloud-argocd
 kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=180s
-for i in {1..2}
-do
-  kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-done
+kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
+kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+
+
+echo ""
+echo "--- create argocd app: argocd"
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: incloud-argocd
+spec:
+  destination:
+    namespace: incloud-idp
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: .
+    plugin:
+      env:
+      - name: helmfile_args
+        value: -e ${CLUSTER_ENV} -l incloud-collections=argocd --namespace="incloud-argocd"
+      - name: CLUSTER_AREA
+        value: ${CLUSTER_AREA}
+      - name: CLUSTER_ENV
+        value: ${CLUSTER_ENV}
+      - name: CLUSTER_INDEX
+        value: "${CLUSTER_INDEX}"
+      - name: CLUSTER_NAME
+        value: ${CLUSTER_NAME}
+      - name: ISTIO_VERSION
+        value: ${ISTIO_VERSION}
+      - name: ARGOCD_VERSION
+        value: ${ARGOCD_VERSION}
+      - name: helmfile_envs
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} ISTIO_VERSION=${ISTIO_VERSION} ARGOCD_VERSION=${ARGOCD_VERSION}
+      name: helmfile-with-args
+    repoURL: ${ARGOCD_APPLICATION_REPO}
+    targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
 
 
 echo ""
@@ -125,7 +173,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=cert-manager --namespace="incloud-cert-manager"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=cert-manager --namespace="incloud-cert-manager"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -168,7 +216,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=istio --namespace="incloud-istio"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=istio --namespace="incloud-istio"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -211,7 +259,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=dex --namespace="incloud-idp"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=dex --namespace="incloud-idp"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -258,7 +306,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=netbox --namespace="incloud-netbox"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=netbox --namespace="incloud-netbox"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -305,7 +353,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=sgroups --namespace="incloud-sgroups"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=sgroups --namespace="incloud-sgroups"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -352,7 +400,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=sgroups-provider --namespace="incloud-sgroups"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=sgroups-provider --namespace="incloud-sgroups"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -395,7 +443,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=sgroups-resources --namespace="incloud-sgroups"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=sgroups-resources --namespace="incloud-sgroups"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -438,7 +486,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=to-nft --namespace="incloud-sgroups"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=to-nft --namespace="incloud-sgroups"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -481,7 +529,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=netguard --namespace="incloud-sgroups"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=netguard --namespace="incloud-sgroups"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -524,7 +572,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=incloud-web --namespace="incloud-web"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=incloud-web --namespace="incloud-web"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -569,7 +617,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=crossplane --namespace="incloud-crossplane"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=crossplane --namespace="incloud-crossplane"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -612,7 +660,7 @@ spec:
     plugin:
       env:
       - name: helmfile_args
-        value: -e dev -l bcloud-collections=crossplane-incloud --namespace="incloud-crossplane"
+        value: -e ${CLUSTER_ENV} -l incloud-collections=crossplane-incloud --namespace="incloud-crossplane"
       - name: CLUSTER_AREA
         value: ${CLUSTER_AREA}
       - name: CLUSTER_ENV
@@ -640,7 +688,7 @@ EOF
 echo ""
 echo ""
 echo "--- INFO"
-echo "Если получить доступ к локальному веб-интерфесу, то нужно:"
+echo "Чтобы получить доступ к локальным веб-интерфесам, нужно:"
 echo "1. Добавить запись в /etc/hosts:"
 echo "127.0.0.1 argocd.incloud-argocd.svc.incloud-k8s-local-dev-local-1.in-cloud.internal dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 echo ""
@@ -649,7 +697,17 @@ echo "sudo kubectl -n incloud-istio port-forward svc/istio-ingressgateway 443:44
 echo ""
 echo "3. После выполнения команды можно будет перейти по адресам:"
 # echo "  - https://dex.incloud-idp.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
-# echo "  - https://netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
-# echo "  - https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
-echo "  - https://argocd.incloud-argocd.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
-echo "  - https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "Netbox: https://netbox.incloud-netbox.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "Учетная запись по-умолчанию:"
+echo "username: admin"
+echo "password: admin"
+echo ""
+echo "Sgroups: https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo ""
+echo "In-Cloud: https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo ""
+echo "ArgoCD: https://argocd.incloud-argocd.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "Учетная запись по-умолчанию:"
+echo "username: admin"
+echo "password: admin"
+echo ""

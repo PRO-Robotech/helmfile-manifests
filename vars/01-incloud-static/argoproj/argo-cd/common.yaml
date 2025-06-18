@@ -127,7 +127,7 @@ configs:
 controller:
   metrics:
     enabled: true
-  replicas: 1
+  replicas: 3
 dex:
   enabled: false
   exporter:
@@ -145,8 +145,8 @@ redis:
 
 repoServer:
   envFrom:
-    - secretRef:
-        name: vault-configuration
+    # - secretRef:
+    #     name: vault-configuration
 
   extraContainers:
     - name: argocd-vault-plugin-helm-with-args
@@ -275,7 +275,7 @@ repoServer:
     - apiGroups: ["*"]
       resources: ["*"]
       verbs: ["*"]
-  replicas: 1
+  replicas: 3
   volumeMounts:
     - mountPath: /usr/local/bin/argocd-vault-plugin
       name: custom-tools
@@ -298,4 +298,4 @@ server:
     enabled: false
   metrics:
     enabled: true
-  replicas: 1
+  replicas: 3
