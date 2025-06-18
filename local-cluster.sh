@@ -7,7 +7,7 @@ minikube start \
   --cni=cilium \
   --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal \
   --driver=docker \
-  --cpus=2 \
+  --cpus=3 \
   --memory=6144
   # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.in-cloud.internal" \
   # --extra-config=apiserver.oidc-username-claim=email \
