@@ -4,7 +4,7 @@ providers:
       spec:
         serviceAccountTemplate:
           metadata:
-            name: {{ .Release.Name }}-crossplane
+            name: {{ .Release.Name }}-kubernetes-provider
 
 helm-inserter:
   templates:
@@ -12,7 +12,7 @@ helm-inserter:
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: {{ .Release.Name }}-crossplane
+        name: {{ .Release.Name }}-kubernetes-provider
         namespace: {{ .Release.Namespace }}
 
     k8sProviderClusterRoleBinding: |
@@ -23,7 +23,7 @@ helm-inserter:
         name: {{ .Release.Name }}-provider-kubernetes-cluster-admin
       subjects:
         - kind: ServiceAccount
-          name: {{ .Release.Name }}-crossplane
+          name: {{ .Release.Name }}-kubernetes-provider
           namespace: {{ .Release.Namespace }}
       roleRef:
         kind: ClusterRole
