@@ -3,9 +3,9 @@ appSpec:
     sgroupsprovider:
       containers:
         manager:
-          image:
-            # repository: sgroups/sgroups.k8s.provider
-            # tag: ""
+          # image:
+          #   repository: sgroups/sgroups.k8s.provider
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m

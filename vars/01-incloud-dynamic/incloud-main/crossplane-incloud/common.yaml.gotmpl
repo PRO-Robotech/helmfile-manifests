@@ -1,0 +1,31 @@
+providers:
+  kubernetes:
+    runtimeConfig:
+      spec:
+        serviceAccountTemplate:
+          metadata:
+            name: {{ .Release.Name }}-kubernetes-provider
+
+helm-inserter:
+  templates:
+    k8sProviderServiceAccount: |
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: {{ .Release.Name }}-kubernetes-provider
+        namespace: {{ .Release.Namespace }}
+
+    k8sProviderClusterRoleBinding: |
+      ---
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: {{ .Release.Name }}-provider-kubernetes-cluster-admin
+      subjects:
+        - kind: ServiceAccount
+          name: {{ .Release.Name }}-kubernetes-provider
+          namespace: {{ .Release.Namespace }}
+      roleRef:
+        kind: ClusterRole
+        name: cluster-admin
+        apiGroup: rbac.authorization.k8s.io

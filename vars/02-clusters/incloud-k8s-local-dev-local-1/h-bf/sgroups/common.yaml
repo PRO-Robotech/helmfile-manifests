@@ -4,9 +4,9 @@ appSpec:
       replicas: 1
       containers:
         server:
-          image:
-            # repository: sgroups/sgroups.server
-            # tag: ""
+          # image:
+          #   repository: sgroups/sgroups.server
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m
@@ -16,9 +16,9 @@ appSpec:
               memory: 128Mi
       initContainers:
         migration:
-          image:
-            # repository: sgroups/sgroups.goose
-            tag: ""
+          # image:
+          #   repository: sgroups/sgroups.goose
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m
@@ -31,9 +31,9 @@ appSpec:
       replicas: 1
       containers:
         web:
-          image:
-            # repository: sgroups/sgroups.ui
-            # tag: ""
+          # image:
+          #   repository: sgroups/sgroups.ui
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m

@@ -3,9 +3,9 @@ appSpec:
     netguard:
       containers:
         manager:
-          image:
-            # repository: sgroups/sgroups.k8s.netguard
-            # tag: ""
+          # image:
+          #   repository: sgroups/sgroups.k8s.netguard
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m
