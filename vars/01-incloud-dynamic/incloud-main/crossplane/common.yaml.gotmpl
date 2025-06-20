@@ -1,14 +1,3 @@
-{{- $clusterArea          := (env "CLUSTER_AREA") -}}
-{{- $clusterEnv           := (env "CLUSTER_ENV") -}}
-{{- $clusterIndex         := (env "CLUSTER_INDEX") -}}
-{{- $clusterName          := (env "CLUSTER_NAME") -}}
-
-cluster:
-  name:         {{ $clusterName }}
-  environment:  {{ $clusterEnv }}
-  area:         {{ $clusterArea }}
-  index:        {{ $clusterIndex }}
-
 providers:
   kubernetes:
     runtimeConfig:
