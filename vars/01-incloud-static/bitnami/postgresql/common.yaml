@@ -1,0 +1,7 @@
+primary:
+  persistence:
+    enabled: true
+    size: 8Gi
+readReplicas:
+  persistence:
+    enabled: false

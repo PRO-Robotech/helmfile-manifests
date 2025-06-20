@@ -9,6 +9,10 @@ primary:
       hostPath:
         path: /opt/kubernetes/volumes/{{ $.Release.Namespace }}/{{ $.Release.Name }}
         type: Directory
-readReplicas:
-  persistence:
-    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
