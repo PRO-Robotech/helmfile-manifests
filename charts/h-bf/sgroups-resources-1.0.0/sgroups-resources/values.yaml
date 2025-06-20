@@ -30,7 +30,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.k8s.network-policy
-            tag: v1.0.0-efc81f6e
+            tag: v1.0.1-c837cc52
 
           extraCommand:
             - /manager

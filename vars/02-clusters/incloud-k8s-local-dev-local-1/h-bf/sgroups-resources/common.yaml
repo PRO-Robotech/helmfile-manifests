@@ -6,7 +6,7 @@ appSpec:
         manager:
           image:
             # repository: sgroups/sgroups.k8s.network-policy
-            tag: arm64-f0117285
+            # tag: ""
           extraResources:
             limits:
               cpu: 200m

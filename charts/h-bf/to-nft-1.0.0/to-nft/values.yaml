@@ -98,7 +98,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.to-nft
-            tag: "v2.0.0-694f55d2"
+            tag: v2.0.1-4f340ab0
 
           extraCommand:
             - ./bin/to-nft

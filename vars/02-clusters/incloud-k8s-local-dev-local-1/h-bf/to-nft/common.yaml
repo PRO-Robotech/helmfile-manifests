@@ -3,6 +3,9 @@ appSpec:
     agent:
       containers:
         agent:
+          # image:
+          #   repository: sgroups/sgroups.to-nft
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m
