@@ -68,6 +68,8 @@ providers:
         kind: ProviderConfig
         metadata:
           name: kubernetes-provider-config
+          annotations:
+            argocd.argoproj.io/sync-wave: "1"
         spec:
           credentials:
             source: InjectedIdentity
