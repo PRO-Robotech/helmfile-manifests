@@ -2,12 +2,12 @@
 
 helm-inserter:
   templates:
-    SGVS: |
+    SGWebVS: |
       ---
       apiVersion: networking.istio.io/v1alpha3
       kind: VirtualService
       metadata:
-        name: {{ $.Release.Name }}
+        name: {{ $.Release.Name }}-web-vs
         namespace: {{ $.Release.Namespace }}
       spec:
         hosts:
@@ -35,6 +35,19 @@ helm-inserter:
               uri: /client
               authority: {{ $mainDomain }}
 
+    SGServerVS: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ $.Release.Name }}-server-vs
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        hosts:
+          - {{ $mainDomain }}
+        gateways:
+          - incloud-istio/istio-ingressgateway
+        http:
           - name: server
             match:
               - uri:
