@@ -169,7 +169,7 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - '*'
+        - "*.{{ .Release.Namespace}}.{{ .Values.global.domains.internal }}"
         gateways:
         - incloud-istio/istio-ingressgateway
         http:

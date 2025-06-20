@@ -681,7 +681,7 @@ echo "password: admin"
 echo ""
 echo "Sgroups: https://sgroups.incloud-sgroups.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
 echo ""
-echo "In-Cloud: https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal"
+echo "In-Cloud: https://incloud.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal/openapi-ui"
 
 
 echo ""
