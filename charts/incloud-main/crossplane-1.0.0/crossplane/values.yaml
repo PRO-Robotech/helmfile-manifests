@@ -1,3 +1,63 @@
+
+functions:
+  function-patch-and-transform:
+    package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.8.2
+    runtimeConfig:
+      spec:
+        deploymentTemplate:
+          spec:
+            selector: {}
+            template:
+              spec:
+                containers: []
+                tolerations:
+                  - key: node-role.kubernetes.io/data-plane
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/in-cloud-infra
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/in-cloud-client
+                    effect: NoSchedule
+
+  function-go-templating:
+    package: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.10.0
+    runtimeConfig:
+      spec:
+        deploymentTemplate:
+          spec:
+            selector: {}
+            template:
+              spec:
+                containers: []
+                tolerations:
+                  - key: node-role.kubernetes.io/data-plane
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/in-cloud-infra
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/in-cloud-client
+                    effect: NoSchedule
+
+providers:
+  kubernetes:
+    package: xpkg.upbound.io/upbound/provider-kubernetes:v0.17.1
+    packagePullPolicy: IfNotPresent
+    revisionActivationPolicy: Automatic
+    revisionHistoryLimit: 1
+    runtimeConfig:
+      spec:
+        deploymentTemplate:
+          spec:
+            selector: {}
+            template:
+              spec:
+                containers: []
+                tolerations:
+                  - key: node-role.kubernetes.io/data-plane
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/in-cloud-infra
+                    effect: NoSchedule
+                  - key: node-role.kubernetes.io/in-cloud-client
+                    effect: NoSchedule
+
 appSpec:
   applications:
     crossplane:

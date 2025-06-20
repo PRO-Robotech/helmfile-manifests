@@ -4,75 +4,15 @@ cluster:
   area: area
   index: 1
 
-functions:
-  function-patch-and-transform:
-    package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.8.2
-    runtimeConfig:
-      spec:
-        deploymentTemplate:
-          spec:
-            selector: {}
-            template:
-              spec:
-                containers: []
-                tolerations:
-                  - key: node-role.kubernetes.io/data-plane
-                    effect: NoSchedule
-                  - key: node-role.kubernetes.io/in-cloud-infra
-                    effect: NoSchedule
-                  - key: node-role.kubernetes.io/in-cloud-client
-                    effect: NoSchedule
-
-  function-go-templating:
-    package: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.10.0
-    runtimeConfig:
-      spec:
-        deploymentTemplate:
-          spec:
-            selector: {}
-            template:
-              spec:
-                containers: []
-                tolerations:
-                  - key: node-role.kubernetes.io/data-plane
-                    effect: NoSchedule
-                  - key: node-role.kubernetes.io/in-cloud-infra
-                    effect: NoSchedule
-                  - key: node-role.kubernetes.io/in-cloud-client
-                    effect: NoSchedule
-
-providers:
+providerConfigs:
   kubernetes:
-    package: xpkg.upbound.io/upbound/provider-kubernetes:v0.17.1
-    packagePullPolicy: IfNotPresent
-    revisionActivationPolicy: Automatic
-    revisionHistoryLimit: 1
-    runtimeConfig:
-      spec:
-        deploymentTemplate:
-          spec:
-            selector: {}
-            template:
-              spec:
-                containers: []
-                tolerations:
-                  - key: node-role.kubernetes.io/data-plane
-                    effect: NoSchedule
-                  - key: node-role.kubernetes.io/in-cloud-infra
-                    effect: NoSchedule
-                  - key: node-role.kubernetes.io/in-cloud-client
-                    effect: NoSchedule
-    providerConfigs:
-      main:
-        apiVersion: kubernetes.crossplane.io/v1alpha1
-        kind: ProviderConfig
-        metadata:
-          name: kubernetes-provider-config
-          annotations:
-            argocd.argoproj.io/sync-wave: "1"
-        spec:
-          credentials:
-            source: InjectedIdentity
+    apiVersion: kubernetes.crossplane.io/v1alpha1
+    kind: ProviderConfig
+    metadata:
+      name: kubernetes-provider-config
+    spec:
+      credentials:
+        source: InjectedIdentity
 
 environmentConfigs: {}
   # project-env:

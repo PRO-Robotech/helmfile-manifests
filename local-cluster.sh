@@ -1,32 +1,32 @@
 #!/bin/bash
 
 
-echo "!!!ОБЯЗАТЕЛЬНО к прочтению!!!"
-echo "Необходимо указать ваши логин/токен от GitHub в настройках ArgoCD, иначе на локальном стенде не будут развернуты приложения."
-echo "Для этого нужно:"
-echo "  - Перейти в директорию:"
-echo "      cd vars/02-clusters/incloud-k8s-local-dev-local-1/argoproj/argo-cd"
-echo "  - Скопировать файл argocd.yaml.example в argocd.yaml:"
-echo "      cp argocd.yaml.example argocd.yaml"
-echo "  - Открыть файл argocd.yaml в редакторе и указать ваши учетные данные GitHub (нужно сгенерировать личный токен с правами на чтение репозиториев)"
-echo ""
+# echo "!!!ОБЯЗАТЕЛЬНО к прочтению!!!"
+# echo "Необходимо указать ваши логин/токен от GitHub в настройках ArgoCD, иначе на локальном стенде не будут развернуты приложения."
+# echo "Для этого нужно:"
+# echo "  - Перейти в директорию:"
+# echo "      cd vars/02-clusters/incloud-k8s-local-dev-local-1/argoproj/argo-cd"
+# echo "  - Скопировать файл argocd.yaml.example в argocd.yaml:"
+# echo "      cp argocd.yaml.example argocd.yaml"
+# echo "  - Открыть файл argocd.yaml в редакторе и указать ваши учетные данные GitHub (нужно сгенерировать личный токен с правами на чтение репозиториев)"
+# echo ""
 
 
-read -p "Нажмите Enter для продолжения или Ctrl+C для выхода... " input
+# read -p "Нажмите Enter для продолжения или Ctrl+C для выхода... " input
 
 
 LOCAL_CLUSTER_NAME="incloud-k8s-local-dev-local-1"
 
-echo "--- start minikube with CNI=cilium"
-minikube start \
-  --cni=cilium \
-  --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal \
-  --driver=docker \
-  --cpus=3 \
-  --memory=6144
-  # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.in-cloud.internal" \
-  # --extra-config=apiserver.oidc-username-claim=email \
-  # --extra-config=apiserver.oidc-client-id=incloud \
+# echo "--- start minikube with CNI=cilium"
+# minikube start \
+#   --cni=cilium \
+#   --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal \
+#   --driver=docker \
+#   --cpus=3 \
+#   --memory=6144
+#   # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.in-cloud.internal" \
+#   # --extra-config=apiserver.oidc-username-claim=email \
+#   # --extra-config=apiserver.oidc-client-id=incloud \
 
 TMP_DIR=$(mktemp -d -p /tmp)
 echo "DEBUG: tmp directory: ${TMP_DIR} "
@@ -110,23 +110,36 @@ kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 -
 
 
 # echo ""
-# echo "--- install istio CRDs"
-# kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
+# echo "--- templating cilium"
+# helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
+#   --namespace kube-system \
+#   --set operator.replicas=1 \
+#   --set ipam.operator.clusterPoolIPv4PodCIDRList="10.244.0.0/16" \
+#   --set ipam.operator.clusterPoolIPv4MaskSize=24 > ${TMP_DIR}/cilium.yaml
+# echo "--- deploy cilium"
+# kubectl apply -f ${TMP_DIR}/cilium.yaml
+# echo "--- waiting cilium"
+# kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 --timeout=180s
 
 
-echo ""
-echo "--- templating argocd"
-helmfile \
-  -e ${CLUSTER_ENV} \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=argocd \
-  template > ${TMP_DIR}/argocd.yaml
-echo "--- deploy argocd"
-kubectl create ns incloud-argocd
-kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
-kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
+# # echo ""
+# # echo "--- install istio CRDs"
+# # kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
+
+
+# echo ""
+# echo "--- templating argocd"
+# helmfile \
+#   -e ${CLUSTER_ENV} \
+#   --kube-version=${K8S_VERSION} \
+#   -l incloud-collections=argocd \
+#   template > ${TMP_DIR}/argocd.yaml
+# echo "--- deploy argocd"
+# kubectl create ns incloud-argocd
+# kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+# kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
+# kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+# kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
 
 
 echo ""

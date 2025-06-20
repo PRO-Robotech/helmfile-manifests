@@ -24,7 +24,7 @@ spec:
                 name: ""
               spec:
                 providerConfigRef:
-                  name: {{ $.Values.providers.kubernetes.providerConfigs.main.metadata.name }}
+                  name: {{ $.Values.providerConfigs.kubernetes.metadata.name }}
                 forProvider:
                   manifest:
                     apiVersion: v1
