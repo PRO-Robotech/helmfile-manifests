@@ -4,9 +4,9 @@ appSpec:
     sgroupsresources:
       containers:
         manager:
-          image:
-            # repository: sgroups/sgroups.k8s.network-policy
-            # tag: ""
+          # image:
+          #   repository: sgroups/sgroups.k8s.network-policy
+          #   tag: ""
           extraResources:
             limits:
               cpu: 200m

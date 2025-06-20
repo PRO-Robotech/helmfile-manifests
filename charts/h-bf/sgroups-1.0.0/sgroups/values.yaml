@@ -203,7 +203,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.ui
-            tag: "v4.1.6-a7f09504"
+            tag: v4.1.6-a7f09504
 
           extraCommand:
             - /bin/bash
