@@ -23,7 +23,8 @@ minikube start \
   --dns-domain=${LOCAL_CLUSTER_NAME}.in-cloud.internal \
   --driver=docker \
   --cpus=3 \
-  --memory=6144
+  --memory=6144 \
+  -p=incloud
   # --extra-config=apiserver.oidc-issuer-url="https://dex.incloud-idp.svc.${LOCAL_CLUSTER_NAME}.in-cloud.internal" \
   # --extra-config=apiserver.oidc-username-claim=email \
   # --extra-config=apiserver.oidc-client-id=incloud \
