@@ -4,6 +4,8 @@ apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
   name: {{ $functionName | lower }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   package: {{ $functionValues.package }}
   {{- with $functionValues.runtimeConfig }}
@@ -17,6 +19,8 @@ apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
   name: {{ $functionName | lower }}-drc
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   {{ .spec | toYaml | nindent 2 }}
   {{- end }}

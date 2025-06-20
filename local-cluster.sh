@@ -606,7 +606,7 @@ spec:
       - name: CROSSPLANE_VERSION
         value: ${CROSSPLANE_VERSION}
       - name: helmfile_envs
-        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CROSSPLANE_VERSION} CROSSPLANE_VERSION=${CROSSPLANE_VERSION}
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} CROSSPLANE_VERSION=${CROSSPLANE_VERSION}
       name: helmfile-with-args
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
@@ -616,6 +616,7 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+    - Replace=true
 EOF
 
 
@@ -649,7 +650,7 @@ spec:
       - name: CROSSPLANE_INCLOUD_VERSION
         value: ${CROSSPLANE_INCLOUD_VERSION}
       - name: helmfile_envs
-        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CROSSPLANE_VERSION} CROSSPLANE_INCLOUD_VERSION=${CROSSPLANE_INCLOUD_VERSION}
+        value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} CROSSPLANE_INCLOUD_VERSION=${CROSSPLANE_INCLOUD_VERSION}
       name: helmfile-with-args
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
@@ -658,7 +659,12 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
+    - Validate=false
     - CreateNamespace=true
+    retry:
+      limit: 10
+      backoff:
+        duration: 10s
 EOF
 
 
