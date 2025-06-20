@@ -1,0 +1,14 @@
+primary:
+  persistence:
+    enabled: false
+  extraVolumeMounts:
+    - mountPath: /bitnami/postgresql
+      name: data
+  extraVolumes:
+    - name: data
+      hostPath:
+        path: /opt/kubernetes/volumes/{{ $.Release.Namespace }}/{{ $.Release.Name }}
+        type: Directory
+readReplicas:
+  persistence:
+    enabled: false
