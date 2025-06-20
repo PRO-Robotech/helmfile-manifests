@@ -108,7 +108,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.server
-            tag: "v2.0.0-694f55d2"
+            tag: v2.0.1-4f340ab0
 
           extraCommand:
             - /bin/sh
@@ -150,7 +150,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.goose
-            tag: "v2.0.0-694f55d2"
+            tag: v2.0.1-4f340ab0
 
           extraCommand:
             - /bin/sh
@@ -203,7 +203,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.ui
-            tag: "v4.1.5-1c5bd967"
+            tag: "v4.1.6-a7f09504"
 
           extraCommand:
             - /bin/bash

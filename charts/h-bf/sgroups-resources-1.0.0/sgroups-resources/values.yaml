@@ -4,37 +4,33 @@ sgroup:
 
 appSpec:
   applications:
-    sgroupsprovider:
+    sgroupsresources:
       enabled: true
       type: Deployment
-      name: sgroupsprovider
+      name: sgroupsresources
       replicas: 1
 
       tolerations:
         - key: node-role.kubernetes.io/data-plane
           effect: NoSchedule
-        - key: node-role.kubernetes.io/in-cloud-infra
+        - key: node-role.kubernetes.io/b-cloud-infra
           effect: NoSchedule
 
       extraPriorityClassName: system-cluster-critical
 
       volumes:
-        certificate:
-          volume:
-            mode: secret
-            name: sgroupsprovider-certificate
         controllerManagerConfig:
           volume:
             mode: configMap
-            name: sgroupsprovider-config
+            name: sgroupsresources-config
 
       containers:
         manager:
           name: manager
           enabled: true
           image:
-            repository: sgroups/sgroups.k8s.provider
-            tag: "v1.0.2-ae61c444"
+            repository: sgroups/sgroups.k8s.network-policy
+            tag: v1.0.1-c837cc52
 
           extraCommand:
             - /manager
@@ -43,14 +39,9 @@ appSpec:
             health-probe-bind-address: ":8081"
             leader-elect: true
             metrics-bind-address: 127.0.0.1:8080
-            webhook-bind-port: 8443
             config: /config.yaml
-            webhook-cert-path: /etc/certs
 
           extraPorts:
-            https:
-              containerPort: 8443
-              protocol: TCP
             metrics:
               containerPort: 8080
               protocol: TCP
@@ -78,9 +69,6 @@ appSpec:
             periodSeconds: 10
 
           extraVolumeMounts:
-            certificate:
-              volumeMount:
-                path: /etc/certs
             controllerManagerConfig:
               volumeMount:
                 path: /config.yaml
