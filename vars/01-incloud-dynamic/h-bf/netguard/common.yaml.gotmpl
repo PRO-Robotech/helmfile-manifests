@@ -106,7 +106,7 @@ helm-inserter:
       metadata:
         name: v1alpha1.proxy.netguard.io
         annotations:
-          cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-certificate"
+          cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-apisvcgateway"
       spec:
         group: proxy.netguard.io
         version: v1alpha1
