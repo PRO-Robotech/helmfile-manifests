@@ -42,7 +42,7 @@ helm-inserter:
         namespace: {{ $.Release.Namespace }}
       spec:
         selector:
-          istio: {{ .Release.Name }}-apisvc-istio-ingressgateway
+          istio: {{ .Release.Name }}-istio-apisvcgateway
         servers:
           - port:
               number: 443
@@ -73,7 +73,7 @@ helm-inserter:
                   Content-Type: "application/json"
             match:
             - uri:
-                exact: apis/proxy.sgroups.io/v1alpha1
+                exact: /apis/proxy.sgroups.io/v1alpha1
             directResponse:
               status: 200
               body:
