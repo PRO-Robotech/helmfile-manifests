@@ -165,3 +165,21 @@ helm-inserter:
                         "traffic": "ingress"
                       }
                   }
+
+    APIService: |
+      ---
+      apiVersion: apiregistration.k8s.io/v1
+      kind: APIService
+      metadata:
+        name: v1alpha1.proxy.sgroups.io
+        annotations:
+          cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-server-tls"
+      spec:
+        group: proxy.sgroups.io
+        version: v1alpha1
+        groupPriorityMinimum: 16700
+        versionPriority: 15
+        service:
+          namespace: incloud-istio
+          name: istio-ingressgateway
+          port: 443
