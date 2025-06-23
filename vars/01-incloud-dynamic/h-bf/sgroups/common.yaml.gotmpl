@@ -166,5 +166,5 @@ helm-inserter:
         versionPriority: 15
         service:
           namespace: {{ $.Release.Namespace }}
-          name: apisvc-gateway
+          name: {{ $.Release.Name }}-istio-apisvcgateway
           port: 443
