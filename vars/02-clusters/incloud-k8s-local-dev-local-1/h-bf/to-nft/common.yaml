@@ -2,6 +2,18 @@ appSpec:
   applications:
     agent:
       enabled: true
+      volumes:
+        configurationClientFile:
+          volume:
+            mode: configMap
+            name: client-config
+            payload:
+              format: json
+              content:
+                extapi:
+                  svc:
+                    sgroups:
+                      api-path-prefix: apis/proxy.sgroups.io/v1alpha1
       containers:
         agent:
           # image:

@@ -1,5 +1,122 @@
 helm-inserter:
   templates:
+    APIServiceVS: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ $.Release.Name }}-apisvc-vsvc
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        hosts:
+          - "*"
+        gateways:
+          - apisvc-gateway
+        http:
+          - match:
+            - uri:
+                prefix: /apis/proxy.netguard.io/v1alpha1
+              method:
+                exact: GET
+            headers:
+              response:
+                set:
+                  Content-Type: "application/json"
+            directResponse:
+              status: 200
+              body:
+                string: |
+                  {
+                    "kind": "APIResourceList",
+                    "apiVersion": "v1alpha1",
+                    "groupVersion": "netguard.sgroups.io/v1alpha1",
+                    "resources": [
+                      {
+                        "name": "addressgroupbindings",
+                        "singularName": "addressgroupbinding",
+                        "namespaced": true,
+                        "kind": "addressgroupbinding",
+                        "verbs": [
+                          "delete",
+                          "deletecollection",
+                          "get",
+                          "list",
+                          "create"
+                        ]
+                      },
+                      {
+                        "name": "sync",
+                        "singularName": "sync",
+                        "namespaced": true,
+                        "kind": "sync",
+                        "verbs": [
+                          "delete",
+                          "deletecollection",
+                          "get",
+                          "list",
+                          "create"
+                        ]
+                      }
+                    ]
+                  }
+
+          - match:
+            - uri:
+                prefix: /apis/proxy.netguard.io/v1alpha1/namespaces/sgroups/addressgroupbindings/api-to-database-binding
+              method:
+                exact: GET
+            headers:
+              response:
+                set:
+                  Content-Type: "application/json"
+            directResponse:
+              status: 200
+              body:
+                string: |
+                  {
+                      "apiVersion": "netguard.sgroups.io/v1alpha1",
+                      "kind": "AddressGroupBinding",
+                      "metadata": {
+                          "labels": {
+                              "app.kubernetes.io/name": "sgroups-k8s-netguard",
+                              "app.kubernetes.io/managed-by": "kustomize"
+                          },
+                          "name": "api-to-database-binding",
+                          "namespace": "sgroups"
+                      },
+                      "spec": {
+                          "serviceRef": {
+                              "apiVersion": "netguard.sgroups.io/v1alpha1",
+                              "kind": "Service",
+                              "name": "api-service"
+                          },
+                          "addressGroupRef": {
+                              "apiVersion": "provider.sgroups.io/v1alpha1",
+                              "kind": "AddressGroup",
+                              "name": "database-servers",
+                              "namespace": "database"
+                          }
+                      }
+                  }
+
+    APIService: |
+      ---
+      apiVersion: apiregistration.k8s.io/v1
+      kind: APIService
+      metadata:
+        name: v1alpha1.proxy.netguard.io
+        annotations:
+          cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-certificate"
+      spec:
+        group: proxy.netguard.io
+        version: v1alpha1
+        groupPriorityMinimum: 16700
+        versionPriority: 15
+        service:
+          namespace: {{ $.Release.Namespace }}
+          name: {{ $.Release.Name }}-istio-apisvcgateway
+          port: 443
+
     CCOAddressGroupBindings: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
