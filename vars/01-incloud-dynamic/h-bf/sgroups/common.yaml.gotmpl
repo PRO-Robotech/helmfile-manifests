@@ -39,7 +39,7 @@ helm-inserter:
       kind: Gateway
       metadata:
         name: apisvc-gateway
-        namespace: sgroups
+        namespace: {{ $.Release.Namespace }}
       spec:
         selector:
           istio: {{ .Release.Name }}-apisvc-istio-ingressgateway
