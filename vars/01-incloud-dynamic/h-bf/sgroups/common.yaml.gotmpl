@@ -33,6 +33,27 @@ appSpec:
 
 helm-inserter:
   templates:
+    APIServiceCert: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: {{ $.Release.Name }}-apisvcgateway
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        commonName: {{ .Release.Name }}-istio-apisvcgateway
+        dnsNames:
+          - {{ .Release.Name }}-istio-apisvcgateway
+          - {{ .Release.Name }}-istio-apisvcgateway.{{ $.Release.Namespace }}
+          - {{ .Release.Name }}-istio-apisvcgateway.{{ $.Release.Namespace }}.svc
+        issuerRef:
+          group: cert-manager.io
+          kind: Issuer
+          name: {{ $.Release.Name }}
+        usages:
+          - server auth
+        secretName: {{ $.Release.Name }}-apisvcgateway
+
     APIServiceGW: |
       ---
       apiVersion: networking.istio.io/v1alpha3
@@ -52,7 +73,7 @@ helm-inserter:
               - "*"
             tls:
               mode: SIMPLE
-              credentialName: {{ $.Release.Name }}-server-tls
+              credentialName: {{ $.Release.Name }}-apisvcgateway
 
     APIServiceVS: |
       ---
