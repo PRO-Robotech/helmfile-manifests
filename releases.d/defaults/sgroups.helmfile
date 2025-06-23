@@ -28,3 +28,13 @@
     - template: localCharts
   labels:
     incloud-collections: "sgroups"
+
+- name: sgroups-istio-apisvcgateway
+  namespace: incloud-sgroups
+  skipDeps: true
+  chart: charts/istio-release/gateway-{{ env "ISTIO_VERSION" }}/gateway
+  version: '{{ env "ISTIO_VERSION" }}'
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "sgroups"
