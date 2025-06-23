@@ -2,6 +2,23 @@ appSpec:
   applications:
     server:
       replicas: 1
+      volumes:
+        configurationServerFile:
+          volume:
+            mode: configMap
+            name: server-config
+            payload:
+              format: json
+              content:
+                authn:
+                  type: tls
+                  tls:
+                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                    client:
+                      verify: cert-required
+                      ca-files:
+                        - "/opt/h-bf/sgroups/tls/ca.crt"
       containers:
         server:
           # image:

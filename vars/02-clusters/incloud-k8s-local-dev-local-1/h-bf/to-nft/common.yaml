@@ -1,6 +1,7 @@
 appSpec:
   applications:
     agent:
+      enabled: true
       containers:
         agent:
           # image:
