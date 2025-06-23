@@ -18,7 +18,7 @@ appSpec:
                     key-file: "/opt/h-bf/sgroups/tls/tls.key"
                     cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
                     client:
-                      verify: certs-required
+                      verify: skip
                       ca-files:
                         - "/opt/h-bf/sgroups/tls/ca.crt"
       containers:
