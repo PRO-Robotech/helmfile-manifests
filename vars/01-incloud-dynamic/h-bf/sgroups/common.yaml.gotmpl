@@ -67,13 +67,15 @@ helm-inserter:
         gateways:
           - apisvc-gateway
         http:
-          - headers:
+          - match:
+            - uri:
+                prefix: /apis/proxy.sgroups.io/v1alpha1
+              method:
+                exact: GET
+            headers:
               response:
                 set:
                   Content-Type: "application/json"
-            match:
-            - uri:
-                exact: /apis/proxy.sgroups.io/v1alpha1
             directResponse:
               status: 200
               body:
@@ -112,13 +114,15 @@ helm-inserter:
                     ]
                   }
 
-          - headers:
+          - match:
+            - uri:
+                prefix: /apis/proxy.sgroups.io/v1alpha1/namespaces/sgroups/rules-s2c-ie/rules-test-1
+              method:
+                exact: GET
+            headers:
               response:
                 set:
                   Content-Type: "application/json"
-            match:
-            - uri:
-                exact: /apis/proxy.sgroups.io/v1alpha1/namespaces/sgroups/rules-s2c-ie/rules-test-1
             directResponse:
               status: 200
               body:
