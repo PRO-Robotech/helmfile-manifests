@@ -59,3 +59,20 @@ helm-inserter:
                   host: {{ $.Release.Name }}-server
                   port:
                     number: 9006
+
+    APIService: |
+      apiVersion: apiregistration.k8s.io/v1
+      kind: APIService
+      metadata:
+        name: v1.sgroups.io
+        annotations:
+          cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-server-tls"
+      spec:
+        group: sgroups.io
+        version: v1
+        groupPriorityMinimum: 16700
+        versionPriority: 15
+        service:
+          namespace: incloud-istio
+          name: istio-ingressgateway
+          port: 443
