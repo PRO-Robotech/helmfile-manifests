@@ -33,7 +33,29 @@ appSpec:
 
 helm-inserter:
   templates:
+    APIServiceGW: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: Gateway
+      metadata:
+        name: apisvc-gateway
+        namespace: sgroups
+      spec:
+        selector:
+          istio: {{ .Release.Name }}-apisvc-istio-ingressgateway
+        servers:
+          - port:
+              number: 443
+              name: https
+              protocol: HTTPS
+            hosts:
+              - "*"
+            tls:
+              mode: SIMPLE
+              credentialName: {{ $.Release.Name }}-server-tls
+
     APIService: |
+      ---
       apiVersion: apiregistration.k8s.io/v1
       kind: APIService
       metadata:
@@ -47,5 +69,5 @@ helm-inserter:
         versionPriority: 15
         service:
           namespace: {{ $.Release.Namespace }}
-          name: istio-ingressgateway
+          name: apisvc-gateway
           port: 443
