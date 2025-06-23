@@ -10,6 +10,8 @@ appSpec:
             payload:
               format: json
               content:
+                server:
+                  api-path-prefix: apis/proxy.sgroups.io/v1alpha1
                 authn:
                   type: tls
                   tls:

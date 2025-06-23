@@ -54,17 +54,75 @@ helm-inserter:
               mode: SIMPLE
               credentialName: {{ $.Release.Name }}-server-tls
 
+    APIServiceVS: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: apisvc-vsvc
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        hosts:
+        - "*"
+        gateways:
+        - apisvc-gateway
+        http:
+        - headers:
+            response:
+              set:
+                Content-Type: "application/json"
+          match:
+          - uri:
+              exact: apis/proxy.sgroups.io/v1alpha1
+          directResponse:
+            status: 200
+            body:
+              string: |
+                {
+                  "kind": "APIResourceList",
+                  "apiVersion": "v1alpha1",
+                  "groupVersion": "sgroups.io/v1alpha1",
+                  "resources": [
+                    {
+                      "name": "rules-s2c-ie",
+                      "singularName": "rules-s2c-ie",
+                      "namespaced": true,
+                      "kind": "rules-s2c-ie",
+                      "verbs": [
+                        "delete",
+                        "deletecollection",
+                        "get",
+                        "list",
+                        "create"
+                      ]
+                    },
+                    {
+                      "name": "sync",
+                      "singularName": "sync",
+                      "namespaced": true,
+                      "kind": "sync",
+                      "verbs": [
+                        "delete",
+                        "deletecollection",
+                        "get",
+                        "list",
+                        "create"
+                      ]
+                    }
+                  ]
+                }
+
     APIService: |
       ---
       apiVersion: apiregistration.k8s.io/v1
       kind: APIService
       metadata:
-        name: v1.sgroups.io
+        name: v1alpha1.sgroups.io
         annotations:
           cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-server-tls"
       spec:
-        group: sgroups.io
-        version: v1
+        group: proxy.sgroups.io
+        version: v1alpha1
         groupPriorityMinimum: 16700
         versionPriority: 15
         service:
