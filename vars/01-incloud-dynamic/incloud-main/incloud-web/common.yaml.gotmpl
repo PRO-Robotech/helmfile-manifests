@@ -2075,7 +2075,7 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Sidebar
       metadata:
-        name: incloud-instances-sidebar
+        name: instance-elements
       spec:
         menuItems:
           - key: hbf
@@ -2110,52 +2110,12 @@ helm-inserter:
                 link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
         pathToMatch: "openapi-ui/:clusterName/:namespace/:syntheticProject/api-table/*"
 
-    InstancesSidebar2: |
-      ---
-      apiVersion: front.in-cloud.io/v1alpha1
-      kind: Sidebar
-      metadata:
-        name: incloud-instances-sidebar2
-      spec:
-        menuItems:
-          - key: hbf
-            label: HBF
-            children:
-              - key: networks
-                label: Networks
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networks
-              - key: addressgroups
-                label: AddressGroups
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/addressgroups
-              - key: networkbindings
-                label: NetworkBindings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networkbindings
-              - key: ieagagrules
-                label: RuleAG2AG
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
-              - key: services
-                label: Services
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services
-              - key: servicealiases
-                label: ServiceAliases
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
-              - key: addressgroupbindings
-                label: AddressGroupBindings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
-              - key: rules2ses
-                label: RuleS2S
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
-              - key: addressgroupportmappings
-                label: AddressGroupPortMappings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
-        pathToMatch: "openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/*"
-
     InstancesSidebar3: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Sidebar
       metadata:
-        name: incloud-instances-sidebar3
+        name: project-elements
       spec:
         menuItems:
           - key: hbf
@@ -2163,69 +2123,109 @@ helm-inserter:
             children:
               - key: networks
                 label: Networks
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networks
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/networks
               - key: addressgroups
                 label: AddressGroups
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/addressgroups
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/addressgroups
               - key: networkbindings
                 label: NetworkBindings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networkbindings
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/networkbindings
               - key: ieagagrules
                 label: RuleAG2AG
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
               - key: services
                 label: Services
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/services
               - key: servicealiases
                 label: ServiceAliases
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
               - key: addressgroupbindings
                 label: AddressGroupBindings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
               - key: rules2ses
                 label: RuleS2S
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
               - key: addressgroupportmappings
                 label: AddressGroupPortMappings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
+                link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
         pathToMatch: "openapi-ui/:clusterName/:syntheticProject/api-table/*"
 
-    InstancesSidebar4: |
-      ---
-      apiVersion: front.in-cloud.io/v1alpha1
-      kind: Sidebar
-      metadata:
-        name: incloud-instances-sidebar4
-      spec:
-        menuItems:
-          - key: hbf
-            label: HBF
-            children:
-              - key: networks
-                label: Networks
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networks
-              - key: addressgroups
-                label: AddressGroups
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/addressgroups
-              - key: networkbindings
-                label: NetworkBindings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networkbindings
-              - key: ieagagrules
-                label: RuleAG2AG
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
-              - key: services
-                label: Services
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services
-              - key: servicealiases
-                label: ServiceAliases
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
-              - key: addressgroupbindings
-                label: AddressGroupBindings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
-              - key: rules2ses
-                label: RuleS2S
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
-              - key: addressgroupportmappings
-                label: AddressGroupPortMappings
-                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
-        pathToMatch: "openapi-ui/clusters/:clusterName"
+#    InstancesSidebar4: |
+#      ---
+#      apiVersion: front.in-cloud.io/v1alpha1
+#      kind: Sidebar
+#      metadata:
+#        name: incloud-instances-sidebar4
+#      spec:
+#        menuItems:
+#          - key: hbf
+#            label: HBF
+#            children:
+#              - key: networks
+#                label: Networks
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networks
+#              - key: addressgroups
+#                label: AddressGroups
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/addressgroups
+#              - key: networkbindings
+#                label: NetworkBindings
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networkbindings
+#              - key: ieagagrules
+#                label: RuleAG2AG
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
+#              - key: services
+#                label: Services
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services
+#              - key: servicealiases
+#                label: ServiceAliases
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
+#              - key: addressgroupbindings
+#                label: AddressGroupBindings
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
+#              - key: rules2ses
+#                label: RuleS2S
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
+#              - key: addressgroupportmappings
+#                label: AddressGroupPortMappings
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
+#        pathToMatch: "openapi-ui/clusters/:clusterName"
+
+#    InstancesSidebar2: |
+#      ---
+#      apiVersion: front.in-cloud.io/v1alpha1
+#      kind: Sidebar
+#      metadata:
+#        name: incloud-instances-sidebar2
+#      spec:
+#        menuItems:
+#          - key: hbf
+#            label: HBF
+#            children:
+#              - key: networks
+#                label: Networks
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networks
+#              - key: addressgroups
+#                label: AddressGroups
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/addressgroups
+#              - key: networkbindings
+#                label: NetworkBindings
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/networkbindings
+#              - key: ieagagrules
+#                label: RuleAG2AG
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
+#              - key: services
+#                label: Services
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/services
+#              - key: servicealiases
+#                label: ServiceAliases
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
+#              - key: addressgroupbindings
+#                label: AddressGroupBindings
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
+#              - key: rules2ses
+#                label: RuleS2S
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
+#              - key: addressgroupportmappings
+#                label: AddressGroupPortMappings
+#                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
+#        pathToMatch: "openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/*"
