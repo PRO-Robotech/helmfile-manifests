@@ -75,6 +75,20 @@ helm-inserter:
               mode: SIMPLE
               credentialName: {{ $.Release.Name }}-apisvcgateway
 
+    intDestinationRule: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: DestinationRule
+      metadata:
+        name: {{ $.Release.Name }}-sgroups
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        host: '{{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc'
+        trafficPolicy:
+          tls:
+            insecureSkipVerify: true
+            mode: SIMPLE
+
     APIServiceVS: |
       ---
       apiVersion: networking.istio.io/v1alpha3
@@ -99,6 +113,7 @@ helm-inserter:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
                   port:
                     number: 9006
+
           - name: sgroups
             match:
               - uri:
@@ -110,6 +125,7 @@ helm-inserter:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
                   port:
                     number: 9006
+
           - match:
             - uri:
                 prefix: /openapi/v2
