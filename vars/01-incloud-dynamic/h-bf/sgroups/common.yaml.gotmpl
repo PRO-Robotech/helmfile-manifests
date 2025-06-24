@@ -99,7 +99,6 @@ helm-inserter:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
                   port:
                     number: 9006
-            grpc: {}
           - name: sgroups
             match:
               - headers:
@@ -229,6 +228,17 @@ helm-inserter:
                       }
                     ]
                   }
+
+          - name: hbf.v2.sgroups.SecGroupService
+            match:
+              - headers:
+                  content-type:
+                    exact: application/grpc
+            route:
+              - destination:
+                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                  port:
+                    number: 9006
 
     APIService: |
       ---
