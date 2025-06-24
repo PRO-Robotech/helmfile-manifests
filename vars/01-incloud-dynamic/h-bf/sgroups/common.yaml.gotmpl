@@ -66,7 +66,7 @@ helm-inserter:
           istio: {{ .Release.Name }}-istio-apisvcgateway
         servers:
           - port:
-              number: 443
+              number: 9008
               name: grpc
               protocol: GRPC
             hosts:
