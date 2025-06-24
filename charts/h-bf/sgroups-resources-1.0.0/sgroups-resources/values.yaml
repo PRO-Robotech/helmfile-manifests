@@ -1,6 +1,5 @@
-sgroup:
-  grpcAddress: sgroups-server.incloud-sgroups.svc:9006
-  log_level: debug
+globalVolumeconfigurationClientFile: &globalVolumeconfigurationClientFile "/opt/h-bf/sgroups/client/config.yaml"
+globalVolumeCertificate:             &globalVolumeCertificate             "/opt/h-bf/sgroups/tls"
 
 appSpec:
   applications:
@@ -19,10 +18,33 @@ appSpec:
       extraPriorityClassName: system-cluster-critical
 
       volumes:
-        controllerManagerConfig:
+        certificate:
+          volume:
+            mode: secret
+            name: sgroupsresources-certificate
+        configurationClientFile:
           volume:
             mode: configMap
-            name: sgroupsresources-config
+            name: client-config
+            payload:
+              format: json
+              content:
+                app:
+                  name: 'sgroups-k8s-network-policy'
+                  version: '1.0.2'
+                settings:
+                  sgroup_grpc_address: "sgroups-server.incloud-sgroups.svc:9006"
+                authn:
+                  type: tls
+                  tls:
+                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                    client:
+                      verify: skip
+                      ca-files:
+                        - "/opt/h-bf/sgroups/tls/ca.crt"
+                logger:
+                  log-level: "DEBUG"
 
       containers:
         manager:
@@ -30,7 +52,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.k8s.network-policy
-            tag: v1.0.1-c837cc52
+            tag: 2-tls-config-55626cf5
 
           extraCommand:
             - /manager
@@ -39,7 +61,7 @@ appSpec:
             health-probe-bind-address: ":8081"
             leader-elect: true
             metrics-bind-address: 127.0.0.1:8080
-            config: /config.yaml
+            config: *globalVolumeconfigurationClientFile
 
           extraPorts:
             metrics:
@@ -69,8 +91,11 @@ appSpec:
             periodSeconds: 10
 
           extraVolumeMounts:
-            controllerManagerConfig:
+            certificate:
               volumeMount:
-                path: /config.yaml
+                path: *globalVolumeCertificate
+            configurationClientFile:
+              volumeMount:
+                path: *globalVolumeconfigurationClientFile
                 spec:
-                  subPath: config.yaml
+                  subPath: client-config
