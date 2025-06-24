@@ -33,7 +33,7 @@ appSpec:
                   name: 'sgroups-k8s-network-policy'
                   version: '1.0.2'
                 settings:
-                  sgroup_grpc_address: "sgroups-server.incloud-sgroups.svc:9006"
+                  sgroup-grpc-address: "sgroups-server.incloud-sgroups.svc:9006"
                 authn:
                   type: tls
                   tls:
