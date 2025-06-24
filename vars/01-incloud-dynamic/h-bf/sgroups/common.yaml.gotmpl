@@ -143,32 +143,32 @@ helm-inserter:
                     "definitions": {
                       "v1alpha1.APIResourceList": {
                         "type": "object",
+                        "required": ["apiVersion", "kind", "groupVersion", "resources"],
                         "properties": {
-                          "apiVersion": {
-                            "type": "string"
-                          },
-                          "kind": {
-                            "type": "string"
-                          },
+                          "apiVersion": {"type": "string"},
+                          "kind": {"type": "string"},
+                          "groupVersion": {"type": "string"},
                           "resources": {
                             "type": "array",
-                            "items": {
-                              "$ref": "#/definitions/v1alpha1.APIResource"
-                            }
+                            "items": {"$ref": "#/definitions/v1alpha1.APIResource"}
                           }
                         }
                       },
                       "v1alpha1.APIResource": {
                         "type": "object",
+                        "required": ["name", "kind", "verbs"],
                         "properties": {
-                          "name": {
-                            "type": "string"
+                          "name": {"type": "string"},
+                          "singularName": {"type": "string"},
+                          "namespaced": {"type": "boolean"},
+                          "kind": {"type": "string"},
+                          "verbs": {
+                            "type": "array",
+                            "items": {"type": "string"}
                           },
-                          "namespaced": {
-                            "type": "boolean"
-                          },
-                          "kind": {
-                            "type": "string"
+                          "shortNames": {
+                            "type": "array",
+                            "items": {"type": "string"}
                           }
                         }
                       }
