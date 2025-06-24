@@ -17,6 +17,6 @@ source ${TMP_DIR}/components_versions.env
 
 helmfile \
   -e ${CLUSTER_ENV} \
-  -l incloud-collections=sgroups \
+  -l incloud-collections=sgroups-resources \
   --kube-version=${K8S_VERSION} \
   template
