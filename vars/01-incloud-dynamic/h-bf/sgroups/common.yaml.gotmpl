@@ -67,14 +67,14 @@ helm-inserter:
         servers:
           - port:
               number: 443
-              name: https
-              protocol: HTTPS
+              name: grpc
+              protocol: GRPC
             hosts:
               - "*"
           - port:
               number: 443
-              name: grpc
-              protocol: GRPC
+              name: https
+              protocol: HTTPS
             hosts:
               - "*"
             tls:
