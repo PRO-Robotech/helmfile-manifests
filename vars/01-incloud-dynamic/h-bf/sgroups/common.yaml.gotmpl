@@ -89,7 +89,23 @@ helm-inserter:
             insecureSkipVerify: true
             mode: SIMPLE
 
-    APIServiceVS: |
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: sgroups-server-entry
+  namespace: incloud-sgroups
+spec:
+  hosts:
+    - sgroups-server.incloud-sgroups.svc
+  location: MESH_INTERNAL
+  ports:
+    - name: grpc
+      number: 9006
+      protocol: GRPC
+  resolution: DNS
+
+
+    APIServiceVS: | sgroups-server.incloud-sgroups.svc
       ---
       apiVersion: networking.istio.io/v1alpha3
       kind: VirtualService
@@ -101,15 +117,15 @@ helm-inserter:
           - "*"
         gateways:
           - apisvc-gateway
+
         http:
           - name: hbf.v2.sgroups.SecGroupService
             match:
               - uri:
                   prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
-            headers:
-              response:
-                set:
-                  Content-Type: "application/grpc"
+                headers:
+                  content-type:
+                    exact: application/grpc
             route:
               - destination:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
@@ -139,6 +155,19 @@ helm-inserter:
                         "singularName": "SecGroupService",
                         "namespaced": false,
                         "kind": "SecGroupService",
+                        "verbs": [
+                          "delete",
+                          "deletecollection",
+                          "get",
+                          "list",
+                          "create"
+                        ]
+                      },
+                      {
+                        "name": "grpc.reflection.v1alpha.ServerReflection",
+                        "singularName": "SecGroupService",
+                        "namespaced": false,
+                        "kind": "ServerReflection",
                         "verbs": [
                           "delete",
                           "deletecollection",
