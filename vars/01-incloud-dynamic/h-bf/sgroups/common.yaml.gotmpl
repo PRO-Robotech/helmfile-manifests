@@ -108,6 +108,75 @@ helm-inserter:
                     number: 9006
           - match:
             - uri:
+                prefix: /openapi/v2
+              method:
+                exact: GET
+            headers:
+              response:
+                set:
+                  Content-Type: "application/json"
+            directResponse:
+              status: 200
+              body:
+                string: |
+                  {
+                    "swagger": "2.0",
+                    "info": {
+                      "title": "proxy.sgroups.io/v1alpha1",
+                      "version": "v1alpha1"
+                    },
+                    "paths": {
+                      "/apis/proxy.sgroups.io/v1alpha1/": {
+                        "get": {
+                          "description": "List available resources",
+                          "responses": {
+                            "200": {
+                              "description": "OK",
+                              "schema": {
+                                "$ref": "#/definitions/v1alpha1.APIResourceList"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "definitions": {
+                      "v1alpha1.APIResourceList": {
+                        "type": "object",
+                        "properties": {
+                          "apiVersion": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "resources": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/v1alpha1.APIResource"
+                            }
+                          }
+                        }
+                      },
+                      "v1alpha1.APIResource": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "namespaced": {
+                            "type": "boolean"
+                          },
+                          "kind": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+
+          - match:
+            - uri:
                 prefix: /apis/proxy.sgroups.io/v1alpha1
               method:
                 exact: GET
