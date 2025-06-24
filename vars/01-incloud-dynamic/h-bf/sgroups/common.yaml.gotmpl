@@ -100,7 +100,7 @@ helm-inserter:
         namespace: incloud-sgroups
       spec:
         hosts:
-          - sgroups-server.incloud-sgroups.svc
+          - '{{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc'
         location: MESH_INTERNAL
         ports:
           - name: grpc
