@@ -102,8 +102,13 @@ helm-inserter:
             grpc: {}
           - name: sgroups
             match:
+              - headers:
+                  content-type:
+                    exact: application/grpc
               - uri:
                   prefix: /apis/proxy.sgroups.io/v1alpha1/
+            rewrite:
+              uri: /
             route:
               - destination:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
