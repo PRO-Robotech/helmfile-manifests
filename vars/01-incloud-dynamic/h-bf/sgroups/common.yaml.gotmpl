@@ -89,23 +89,26 @@ helm-inserter:
             insecureSkipVerify: true
             mode: SIMPLE
 
-apiVersion: networking.istio.io/v1
-kind: ServiceEntry
-metadata:
-  name: sgroups-server-entry
-  namespace: incloud-sgroups
-spec:
-  hosts:
-    - sgroups-server.incloud-sgroups.svc
-  location: MESH_INTERNAL
-  ports:
-    - name: grpc
-      number: 9006
-      protocol: GRPC
-  resolution: DNS
 
 
-    APIServiceVS: | sgroups-server.incloud-sgroups.svc
+    SE: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: ServiceEntry
+      metadata:
+        name: sgroups-server-entry
+        namespace: incloud-sgroups
+      spec:
+        hosts:
+          - sgroups-server.incloud-sgroups.svc
+        location: MESH_INTERNAL
+        ports:
+          - name: grpc
+            number: 9006
+            protocol: GRPC
+        resolution: DNS
+
+    APIServiceVS: |
       ---
       apiVersion: networking.istio.io/v1alpha3
       kind: VirtualService
