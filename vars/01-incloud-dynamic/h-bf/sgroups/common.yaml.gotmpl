@@ -101,9 +101,6 @@ helm-inserter:
                     number: 9006
           - name: sgroups
             match:
-              - headers:
-                  content-type:
-                    exact: application/grpc
               - uri:
                   prefix: /apis/proxy.sgroups.io/v1alpha1/
             rewrite:
@@ -230,10 +227,8 @@ helm-inserter:
                   }
 
           - name: sg-grpc
-            match:
-              - headers:
-                  content-type:
-                    exact: application/grpc
+            - uri:
+                prefix: /
             route:
               - destination:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
