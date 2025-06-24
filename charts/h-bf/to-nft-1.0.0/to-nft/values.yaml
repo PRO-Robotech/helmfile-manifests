@@ -61,7 +61,7 @@ appSpec:
                           cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
                           server:
                             verify: true
-                            ca-files: 
+                            ca-files:
                               - "/opt/h-bf/sgroups/tls/ca.crt"
                 netlink:
                   watcher: #netlink watcher

@@ -1,6 +1,5 @@
-sgroup:
-  grpcAddress: sgroups-server.incloud-sgroups.svc:9006
-  log_level: debug
+globalVolumeconfigurationClientFile: &globalVolumeconfigurationClientFile "/opt/h-bf/sgroups/client/config.yaml"
+globalVolumeCertificate:             &globalVolumeCertificate             "/opt/h-bf/sgroups/tls"
 
 appSpec:
   applications:
@@ -23,10 +22,29 @@ appSpec:
           volume:
             mode: secret
             name: sgroupsprovider-certificate
-        controllerManagerConfig:
+        configurationClientFile:
           volume:
             mode: configMap
-            name: sgroupsprovider-config
+            name: client-config
+            payload:
+              format: json
+              content:
+                app:
+                  name: 'sgroups-k8s-provider'
+                  version: '1.0.3'
+                settings:
+                  sgroup-grpc-address: "sgroups-server.incloud-sgroups.svc:9006"
+                authn:
+                  type: tls
+                  tls:
+                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                    client:
+                      verify: skip
+                      ca-files:
+                        - "/opt/h-bf/sgroups/tls/ca.crt"
+                logger:
+                  log-level: "DEBUG"
 
       containers:
         manager:
@@ -34,7 +52,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.k8s.provider
-            tag: "v1.0.2-ae61c444"
+            tag: "v1.0.3-d8d3d5c8"
 
           extraCommand:
             - /manager
@@ -44,8 +62,8 @@ appSpec:
             leader-elect: true
             metrics-bind-address: 127.0.0.1:8080
             webhook-bind-port: 8443
-            config: /config.yaml
-            webhook-cert-path: /etc/certs
+            config: *globalVolumeconfigurationClientFile
+            webhook-cert-path: *globalVolumeCertificate
 
           extraPorts:
             https:
@@ -80,9 +98,9 @@ appSpec:
           extraVolumeMounts:
             certificate:
               volumeMount:
-                path: /etc/certs
-            controllerManagerConfig:
+                path: *globalVolumeCertificate
+            configurationClientFile:
               volumeMount:
-                path: /config.yaml
+                path: *globalVolumeconfigurationClientFile
                 spec:
-                  subPath: config.yaml
+                  subPath: client-config
