@@ -160,6 +160,7 @@ helm-inserter:
       metadata:
         name: v1alpha1.proxy.sgroups.io
         annotations:
+          apiregistration.k8s.io/skip-openapi-validation: "true"
           cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ $.Release.Name }}-apisvcgateway"
       spec:
         group: proxy.sgroups.io
