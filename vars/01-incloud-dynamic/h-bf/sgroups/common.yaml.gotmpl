@@ -88,6 +88,15 @@ helm-inserter:
         gateways:
           - apisvc-gateway
         http:
+          - name: hbf.v2.sgroups.SecGroupService
+            match:
+              - uri:
+                  prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
+            route:
+              - destination:
+                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                  port:
+                    number: 9006
           - name: sgroups
             match:
               - uri:
