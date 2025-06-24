@@ -106,6 +106,10 @@ helm-inserter:
             match:
               - uri:
                   prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
+            headers:
+              response:
+                set:
+                  Content-Type: "application/grpc"
             #rewrite:
             #  uri: /hbf.v2.sgroups.SecGroupService
             route:
@@ -114,86 +118,86 @@ helm-inserter:
                   port:
                     number: 9006
 
-          - name: sgroups
-            match:
-              - uri:
-                  prefix: /apis/proxy.sgroups.io/v1alpha1/
-            # rewrite:
-            #   uri: /
-            route:
-              - destination:
-                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
-                  port:
-                    number: 9006
+          # - name: sgroups
+          #   match:
+          #     - uri:
+          #         prefix: /apis/proxy.sgroups.io/v1alpha1/
+          #   # rewrite:
+          #   #   uri: /
+          #   route:
+          #     - destination:
+          #         host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+          #         port:
+          #           number: 9006
 
-          - match:
-            - uri:
-                prefix: /openapi/v2
-              method:
-                exact: GET
-            headers:
-              response:
-                set:
-                  Content-Type: "application/json"
-            directResponse:
-              status: 200
-              body:
-                string: |
-                  {
-                    "swagger": "2.0",
-                    "info": {
-                      "title": "proxy.sgroups.io/v1alpha1",
-                      "version": "v1alpha1"
-                    },
-                    "paths": {
-                      "/apis/proxy.sgroups.io/v1alpha1/": {
-                        "get": {
-                          "description": "List available resources",
-                          "responses": {
-                            "200": {
-                              "description": "OK",
-                              "schema": {
-                                "$ref": "#/definitions/v1alpha1.APIResourceList"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "definitions": {
-                      "v1alpha1.APIResourceList": {
-                        "type": "object",
-                        "required": ["apiVersion", "kind", "groupVersion", "resources"],
-                        "properties": {
-                          "apiVersion": {"type": "string"},
-                          "kind": {"type": "string"},
-                          "groupVersion": {"type": "string"},
-                          "resources": {
-                            "type": "array",
-                            "items": {"$ref": "#/definitions/v1alpha1.APIResource"}
-                          }
-                        }
-                      },
-                      "v1alpha1.APIResource": {
-                        "type": "object",
-                        "required": ["name", "kind", "verbs"],
-                        "properties": {
-                          "name": {"type": "string"},
-                          "singularName": {"type": "string"},
-                          "namespaced": {"type": "boolean"},
-                          "kind": {"type": "string"},
-                          "verbs": {
-                            "type": "array",
-                            "items": {"type": "string"}
-                          },
-                          "shortNames": {
-                            "type": "array",
-                            "items": {"type": "string"}
-                          }
-                        }
-                      }
-                    }
-                  }
+          # - match:
+          #   - uri:
+          #       prefix: /openapi/v2
+          #     method:
+          #       exact: GET
+          #   headers:
+          #     response:
+          #       set:
+          #         Content-Type: "application/json"
+          #   directResponse:
+          #     status: 200
+          #     body:
+          #       string: |
+          #         {
+          #           "swagger": "2.0",
+          #           "info": {
+          #             "title": "proxy.sgroups.io/v1alpha1",
+          #             "version": "v1alpha1"
+          #           },
+          #           "paths": {
+          #             "/apis/proxy.sgroups.io/v1alpha1/": {
+          #               "get": {
+          #                 "description": "List available resources",
+          #                 "responses": {
+          #                   "200": {
+          #                     "description": "OK",
+          #                     "schema": {
+          #                       "$ref": "#/definitions/v1alpha1.APIResourceList"
+          #                     }
+          #                   }
+          #                 }
+          #               }
+          #             }
+          #           },
+          #           "definitions": {
+          #             "v1alpha1.APIResourceList": {
+          #               "type": "object",
+          #               "required": ["apiVersion", "kind", "groupVersion", "resources"],
+          #               "properties": {
+          #                 "apiVersion": {"type": "string"},
+          #                 "kind": {"type": "string"},
+          #                 "groupVersion": {"type": "string"},
+          #                 "resources": {
+          #                   "type": "array",
+          #                   "items": {"$ref": "#/definitions/v1alpha1.APIResource"}
+          #                 }
+          #               }
+          #             },
+          #             "v1alpha1.APIResource": {
+          #               "type": "object",
+          #               "required": ["name", "kind", "verbs"],
+          #               "properties": {
+          #                 "name": {"type": "string"},
+          #                 "singularName": {"type": "string"},
+          #                 "namespaced": {"type": "boolean"},
+          #                 "kind": {"type": "string"},
+          #                 "verbs": {
+          #                   "type": "array",
+          #                   "items": {"type": "string"}
+          #                 },
+          #                 "shortNames": {
+          #                   "type": "array",
+          #                   "items": {"type": "string"}
+          #                 }
+          #               }
+          #             }
+          #           }
+          #         }
 
           - match:
             - uri:
@@ -208,29 +212,17 @@ helm-inserter:
               status: 200
               body:
                 string: |
+                # hbf.v2.sgroups.SecGroupService/SyncStatus
                   {
                     "kind": "APIResourceList",
-                    "apiVersion": "v1alpha1",
-                    "groupVersion": "sgroups.io/v1alpha1",
+                    "apiVersion": "v1",
+                    "groupVersion": "proxy.sgroups.io/v1alpha1",
                     "resources": [
                       {
-                        "name": "rules-s2c-ie",
-                        "singularName": "rules-s2c-ie",
-                        "namespaced": true,
-                        "kind": "rules-s2c-ie",
-                        "verbs": [
-                          "delete",
-                          "deletecollection",
-                          "get",
-                          "list",
-                          "create"
-                        ]
-                      },
-                      {
-                        "name": "sync",
-                        "singularName": "sync",
-                        "namespaced": true,
-                        "kind": "sync",
+                        "name": "hbf.v2.sgroups.SecGroupService",
+                        "singularName": "SecGroupService",
+                        "namespaced": false,
+                        "kind": "SecGroupService",
                         "verbs": [
                           "delete",
                           "deletecollection",
