@@ -66,12 +66,6 @@ helm-inserter:
           istio: {{ .Release.Name }}-istio-apisvcgateway
         servers:
           - port:
-              number: 9008
-              name: grpc
-              protocol: GRPC
-            hosts:
-              - "*"
-          - port:
               number: 443
               name: https
               protocol: HTTPS
@@ -105,6 +99,7 @@ helm-inserter:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
                   port:
                     number: 9006
+            grpc: {}
           - name: sgroups
             match:
               - uri:
