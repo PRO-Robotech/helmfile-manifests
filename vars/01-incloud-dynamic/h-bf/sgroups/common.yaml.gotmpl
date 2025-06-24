@@ -106,8 +106,8 @@ helm-inserter:
             match:
               - uri:
                   prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
-            rewrite:
-              uri: /hbf.v2.sgroups.SecGroupService
+            #rewrite:
+            #  uri: /hbf.v2.sgroups.SecGroupService
             route:
               - destination:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
@@ -118,8 +118,8 @@ helm-inserter:
             match:
               - uri:
                   prefix: /apis/proxy.sgroups.io/v1alpha1/
-            rewrite:
-              uri: /
+            # rewrite:
+            #   uri: /
             route:
               - destination:
                   host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
