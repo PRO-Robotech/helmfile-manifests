@@ -45,7 +45,7 @@ appSpec:
                     def-daial-duration: 10s
                     sgroups:
                       dial-duration: 3s
-                      address: release-name-server:9006
+                      address: sgroups-server:9006
                       sync-status:
                         interval: 3s #mandatory
                         push: true
