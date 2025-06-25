@@ -22,7 +22,7 @@ appSpec:
                           key-file: "/opt/h-bf/sgroups/tls/tls.key"
                           cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
                           server:
-                            verify: false
+                            verify: true
                             ca-files:
                               - "/opt/h-bf/sgroups/tls/ca.crt"
                               - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
