@@ -125,3 +125,20 @@ appSpec:
             privileged: true
             runAsNonRoot: false
             runAsUser: 0
+
+        debug:
+          name: debug
+          enabled: true
+          image:
+            repository: nicolaka/netshoot
+            tag: "v0.13"
+
+          extraCommand:
+            - sleep
+            - infinity
+
+          extraSecurityContext:
+            allowPrivilegeEscalation: true
+            privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
