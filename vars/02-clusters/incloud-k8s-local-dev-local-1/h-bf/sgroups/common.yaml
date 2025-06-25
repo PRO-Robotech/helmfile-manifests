@@ -22,7 +22,6 @@ appSpec:
                       verify: skip
                       ca-files:
                         - "/opt/h-bf/sgroups/tls/ca.crt"
-                        - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
       containers:
         server:
           # image:
