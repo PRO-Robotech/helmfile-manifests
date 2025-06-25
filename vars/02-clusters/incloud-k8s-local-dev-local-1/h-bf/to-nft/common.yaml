@@ -19,8 +19,8 @@ appSpec:
                       authn:
                         type: tls
                         tls:
-                          key-file: "/opt/h-bf/sgroups/tls/tls.key"
-                          cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                          key-file: ""
+                          cert-file: ""
                           server:
                             verify: true
                             ca-files:
