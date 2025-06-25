@@ -17,7 +17,7 @@ appSpec:
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1/
                       address: sgroups-istio-apisvcgateway:443
                       authn:
-                        # type: none
+                        type: tls
                         tls:
                           key-file: "/opt/h-bf/sgroups/tls/tls.key"
                           cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
