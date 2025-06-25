@@ -13,9 +13,9 @@ appSpec:
                 extapi:
                   svc:
                     sgroups:
-                      use-json-codec: true
+                      use-json-codec: false
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1/sgroups
-                      address: 29.64.0.1:443
+                      address: 77.73.233.27:6443
                       authn:
                         tls:
                           server:
