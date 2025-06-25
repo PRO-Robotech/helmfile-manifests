@@ -130,6 +130,16 @@ helm-inserter:
                 port:
                   number: 9006
 
+        - match:
+            - uri:
+                prefix: /apis/proxy.sgroups.io/v1alpha1/sgroups
+          name: hbf.v2.sgroups
+          route:
+            - destination:
+                host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                port:
+                  number: 9006
+
         - directResponse:
             body:
               string: |
@@ -149,16 +159,6 @@ helm-inserter:
                 exact: GET
               uri:
                 exact: /apis/proxy.sgroups.io/v1alpha1
-
-        - match:
-            - uri:
-                prefix: /apis/proxy.sgroups.io/v1alpha1/sgroups
-          name: hbf.v2.sgroups
-          route:
-            - destination:
-                host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
-                port:
-                  number: 9006
 
     APIService: |
       ---
