@@ -122,6 +122,36 @@ helm-inserter:
         http:
         - match:
             - uri:
+                prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
+          name: hbf.v2.sgroups.SecGroupService
+          route:
+            - destination:
+                host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                port:
+                  number: 9006
+
+        - directResponse:
+            body:
+              string: |
+                {
+                  "kind": "APIResourceList",
+                  "apiVersion": "v1",
+                  "groupVersion": "proxy.sgroups.io/v1alpha1",
+                  "resources": []
+                }
+            status: 200
+          headers:
+            response:
+              set:
+                Content-Type: application/json
+          match:
+            - method:
+                exact: GET
+              uri:
+                exact: /apis/proxy.sgroups.io/v1alpha1
+
+        - match:
+            - uri:
                 prefix: /apis/proxy.sgroups.io/v1alpha1
           name: hbf.v2.sgroups
           route:
