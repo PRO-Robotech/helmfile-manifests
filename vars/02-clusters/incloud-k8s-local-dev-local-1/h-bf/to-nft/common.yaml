@@ -17,15 +17,15 @@ appSpec:
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1
                       address: sgroups-istio-apisvcgateway:443
                       authn:
-                        type: none
-                        # tls:
-                        #   key-file: "/opt/h-bf/sgroups/tls/tls.key"
-                        #   cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
-                        #   server:
-                        #     verify: true
-                        #     ca-files:
-                        #       - "/opt/h-bf/sgroups/tls/ca.crt"
-                        #       - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                        type: tls
+                        tls:
+                          key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                          cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                          server:
+                            verify: skip
+                            ca-files:
+                              - "/opt/h-bf/sgroups/tls/ca.crt"
+                              - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
                 base-rules:
                   networks:
                     - 10.244.0.0/16
