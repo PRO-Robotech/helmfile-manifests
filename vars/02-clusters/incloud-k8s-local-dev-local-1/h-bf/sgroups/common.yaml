@@ -3,6 +3,12 @@ appSpec:
     server:
       replicas: 1
       volumes:
+        certificateIstio:
+          volume:
+            mode: configMap
+            notReleased: true
+            name: istio-ca-root-cert
+
         configurationServerFile:
           volume:
             mode: configMap
@@ -21,6 +27,7 @@ appSpec:
                       verify: skip
                       ca-files:
                         - "/opt/h-bf/sgroups/tls/ca.crt"
+                        - "/opt/h-bf/sgroups-isrio/tls/ca.crt"
       containers:
         server:
           # image:
@@ -45,6 +52,11 @@ appSpec:
             requests:
               cpu: 100m
               memory: 128Mi
+
+          extraVolumeMounts:
+            certificateIstio:
+              volumeMount:
+                path: /opt/h-bf/sgroups-isrio/tls
 
     web:
       replicas: 1
