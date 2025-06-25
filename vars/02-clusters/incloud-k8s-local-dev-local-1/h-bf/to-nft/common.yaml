@@ -15,7 +15,7 @@ appSpec:
                     sgroups:
                       use-json-codec: false
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1
-                      address: sgroups-istio-apisvcgateway:443
+                      address: sgroups-istio-apisvcgateway:80
                       authn:
                         type: none
                         # tls:
