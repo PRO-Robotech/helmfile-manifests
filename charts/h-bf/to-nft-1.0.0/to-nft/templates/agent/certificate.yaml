@@ -10,7 +10,7 @@ spec:
   issuerRef:
     group: cert-manager.io
     kind: Issuer
-    name: {{ $.Release.Name }}
+    name: sgroups
   usages:
     - client auth
   secretName: {{ $.Release.Name }}-{{ .volumes.certificate.volume.name }}
