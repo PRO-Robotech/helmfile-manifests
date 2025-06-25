@@ -19,8 +19,8 @@ appSpec:
                       authn:
                         type: tls
                         tls:
-                          key-file: ""
-                          cert-file: ""
+                          key-file: null
+                          cert-file: null
                           server:
                             verify: true
                             ca-files:
