@@ -2108,7 +2108,7 @@ helm-inserter:
               - key: addressgroupportmappings
                 label: AddressGroupPortMappings
                 link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
-        pathToMatch: "openapi-ui/:clusterName/:namespace/:syntheticProject/api-table/*"
+        id: "stock-instance-api-table"
 
     InstancesSidebar3: |
       ---
@@ -2148,7 +2148,7 @@ helm-inserter:
               - key: addressgroupportmappings
                 label: AddressGroupPortMappings
                 link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
-        pathToMatch: "openapi-ui/:clusterName/:syntheticProject/api-table/*"
+        id: "stock-project-api-table"
 
 #    InstancesSidebar4: |
 #      ---
@@ -2188,7 +2188,7 @@ helm-inserter:
 #              - key: addressgroupportmappings
 #                label: AddressGroupPortMappings
 #                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
-#        pathToMatch: "openapi-ui/clusters/:clusterName"
+#        id: "stock-cluster-projects-list"
 
 #    InstancesSidebar2: |
 #      ---
@@ -2228,4 +2228,4 @@ helm-inserter:
 #              - key: addressgroupportmappings
 #                label: AddressGroupPortMappings
 #                link: /openapi-ui/{clusterName}/{namespace}/{syntheticProject}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
-#        pathToMatch: "openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/*"
+#        id: "stock-instance-api-form"
