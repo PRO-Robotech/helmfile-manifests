@@ -11,6 +11,7 @@ appSpec:
               format: json
               content:
                 server:
+                  use-json-codec: true
                   api-path-prefix: apis/proxy.sgroups.io/v1alpha1
                 authn:
                   type: tls
