@@ -142,3 +142,8 @@ appSpec:
             privileged: true
             runAsNonRoot: false
             runAsUser: 0
+
+          extraVolumeMounts:
+            certificate:
+              volumeMount:
+                path: *globalVolumeCertificate
