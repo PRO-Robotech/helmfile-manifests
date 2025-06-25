@@ -13,7 +13,13 @@ appSpec:
                 extapi:
                   svc:
                     sgroups:
+                      use-json-codec: true
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1
+                base-rules:
+                  networks:
+                    - 10.244.0.0/16
+                    - 29.64.0.0/16
+                    - 8.8.8.8/32
       containers:
         agent:
           # image:

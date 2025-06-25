@@ -1,7 +1,5 @@
-
-
 globalVolumeconfigurationClientFile: &globalVolumeconfigurationClientFile "/opt/h-bf/sgroups/client/config.yaml"
-globalVolumeCertificate:             &globalVolumeCertificate             "/opt/h-bf/sgroups/tls"
+globalVolumeCertificate: &globalVolumeCertificate "/opt/h-bf/sgroups/tls"
 
 certificates:
   enabled: true
@@ -39,7 +37,7 @@ appSpec:
                 exit-on-success: false
                 graceful-shutdown: 10s
                 logger:
-                    level: DEBUG
+                  level: DEBUG
                 fqdn-rules:
                   strategy: dns
                 extapi:
@@ -65,12 +63,12 @@ appSpec:
                               - "/opt/h-bf/sgroups/tls/ca.crt"
                 netlink:
                   watcher: #netlink watcher
-                      linger: 1s
+                    linger: 1s
                 base-rules:
-                  networks: 
-                    - 10.244.120.242/32
+                  networks:
+                    - 10.244.0.0/16
+                    - 29.64.0.0/16
                     - 8.8.8.8/32
-                    - 10.96.0.0/12
                 dns:
                   nameservers:
                     - 10.96.0.10
@@ -86,11 +84,11 @@ appSpec:
                   useragent: "string"
                   endpoint: 0.0.0.0:9660
                   metrics:
-                      enable: true
+                    enable: true
                   healthcheck:
-                      enable: true
+                    enable: true
                   profile:
-                      enable: true
+                    enable: true
 
       containers:
         agent:
@@ -115,7 +113,7 @@ appSpec:
 
             certificate:
               volumeMount:
-                path:  *globalVolumeCertificate
+                path: *globalVolumeCertificate
 
           extraPorts:
             metrics:
