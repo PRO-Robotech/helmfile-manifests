@@ -15,7 +15,7 @@ appSpec:
                     sgroups:
                       use-json-codec: true
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1/sgroups
-                      address: kubernetes.default.svc:443
+                      address: 29.64.0.1:443
                       authn:
                         tls:
                           server:
