@@ -51,7 +51,7 @@ appSpec:
                         push: true
                       #check-sync-status: 5s
                       use-json-codec: false
-                      api-path-prefix: "/apis/sgroups.io/v1"
+                      # api-path-prefix: "/apis/sgroups.io/v1"
                       authn:
                         type: tls
                         tls:

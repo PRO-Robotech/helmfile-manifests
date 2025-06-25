@@ -89,7 +89,7 @@ appSpec:
                 server:
                   endpoint: tcp://0.0.0.0:9006
                   graceful-shutdown: 30s
-                  api-path-prefix: "apis/sgroups.io/v1"
+                  # api-path-prefix: "apis/sgroups.io/v1"
                 storage:
                   type: postgres
                 authn:
