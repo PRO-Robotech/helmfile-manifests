@@ -13,14 +13,14 @@ appSpec:
                 server:
                   api-path-prefix: apis/proxy.sgroups.io/v1alpha1
                 authn:
-                  type: none
-                  # tls:
-                  #   key-file: "/opt/h-bf/sgroups/tls/tls.key"
-                  #   cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
-                  #   client:
-                  #     verify: skip
-                  #     ca-files:
-                  #       - "/opt/h-bf/sgroups/tls/ca.crt"
+                  type: tls
+                  tls:
+                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                    client:
+                      verify: skip
+                      ca-files:
+                        - "/opt/h-bf/sgroups/tls/ca.crt"
       containers:
         server:
           # image:

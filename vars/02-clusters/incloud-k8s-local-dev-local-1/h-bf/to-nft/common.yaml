@@ -14,13 +14,13 @@ appSpec:
                   svc:
                     sgroups:
                       use-json-codec: false
-                      api-path-prefix: apis/proxy.sgroups.io/v1alpha1
+                      api-path-prefix: apis/proxy.sgroups.io/v1alpha1/
                       address: sgroups-istio-apisvcgateway:443
                       authn:
                         type: tls
                         tls:
-                          key-file: null
-                          cert-file: null
+                          key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                          cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
                           server:
                             verify: true
                             ca-files:
