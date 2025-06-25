@@ -51,6 +51,7 @@ export \
   ARGOCD_APPLICATION_BRANCH="$(git branch --show-current)" \
   ARGOCD_APPLICATION_REPO="https://github.com/PRO-Robotech/helmfile-manifests.git"
 
+
 echo ""
 echo "--- create admin role & admin user"
 kubectl apply -f - <<EOF
@@ -97,6 +98,7 @@ subjects:
   kind: User
   name: system:anonymous
 EOF
+
 
 echo ""
 echo "--- templating cilium"
