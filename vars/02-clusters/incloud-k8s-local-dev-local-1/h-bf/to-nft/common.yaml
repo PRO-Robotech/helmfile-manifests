@@ -15,7 +15,7 @@ appSpec:
                     sgroups:
                       use-json-codec: false
                       api-path-prefix: apis/proxy.sgroups.io/v1alpha1/sgroups
-                      address: 77.73.233.27:6443
+                      address: sgroups-server:9006
                       authn:
                         tls:
                           server:
