@@ -21,7 +21,6 @@ appSpec:
                       verify: skip
                       ca-files:
                         - "/opt/h-bf/sgroups/tls/ca.crt"
-                        - "/opt/h-bf/sgroups-isrio/tls/ca.crt"
       containers:
         server:
           # image:
