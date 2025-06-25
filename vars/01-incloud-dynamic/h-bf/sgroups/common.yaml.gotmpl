@@ -122,75 +122,36 @@ helm-inserter:
           - apisvc-gateway
 
         http:
-          - name: hbf.v2.sgroups.SecGroupService
-            match:
-              - uri:
-                  prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
-                headers:
-                  content-type:
-                    exact: application/grpc
-            route:
-              - destination:
-                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
-                  port:
-                    number: 9006
-
-          - match:
+        - match:
             - uri:
-                prefix: /apis/proxy.sgroups.io/v1alpha1
-              method:
+                prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
+          name: hbf.v2.sgroups.SecGroupService
+          route:
+            - destination:
+                host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                port:
+                  number: 9006
+
+        - directResponse:
+            body:
+              string: |
+                {
+                  "kind": "APIResourceList",
+                  "apiVersion": "v1",
+                  "groupVersion": "proxy.sgroups.io/v1alpha1",
+                  "resources": []
+                }
+            status: 200
+          headers:
+            response:
+              set:
+                Content-Type: application/json
+          match:
+            - method:
                 exact: GET
-            headers:
-              response:
-                set:
-                  Content-Type: "application/json"
-            directResponse:
-              status: 200
-              body:
-                string: |
-                  {
-                    "kind": "APIResourceList",
-                    "apiVersion": "v1",
-                    "groupVersion": "proxy.sgroups.io/v1alpha1",
-                    "resources": [
-                      {
-                        "name": "hbf.v2.sgroups.SecGroupService",
-                        "singularName": "SecGroupService",
-                        "namespaced": false,
-                        "kind": "SecGroupService",
-                        "verbs": [
-                          "delete",
-                          "deletecollection",
-                          "get",
-                          "list",
-                          "create"
-                        ]
-                      },
-                      {
-                        "name": "grpc.reflection.v1alpha.ServerReflection",
-                        "singularName": "SecGroupService",
-                        "namespaced": false,
-                        "kind": "ServerReflection",
-                        "verbs": [
-                          "delete",
-                          "deletecollection",
-                          "get",
-                          "list",
-                          "create"
-                        ]
-                      }
-                    ]
-                  }
+              uri:
+                exact: /apis/proxy.sgroups.io/v1alpha1
 
-          - name: sg-grpc
-            match:
-            - uri:
-                prefix: /
-            route:
-              - destination:
-                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
-                  port:
-                    number: 9006
 
     APIService: |
       ---
