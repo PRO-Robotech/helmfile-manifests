@@ -168,9 +168,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -211,9 +208,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -258,9 +252,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -305,9 +296,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -352,9 +340,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -395,9 +380,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -438,9 +420,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -481,9 +460,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -524,9 +500,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -569,9 +542,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
@@ -612,9 +582,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
     - Replace=true
@@ -656,9 +623,6 @@ spec:
     repoURL: ${ARGOCD_APPLICATION_REPO}
     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
     - CreateNamespace=true
 EOF
