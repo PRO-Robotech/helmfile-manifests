@@ -1,0 +1,14 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleCLIDownload
+metadata:
+  name: helm-download-links
+spec:
+  description: >
+    Helm 3 is a package manager for Kubernetes applications which enables
+    defining,
+
+    installing, and upgrading applications packaged as Helm Charts.
+  displayName: helm - Helm 3 CLI
+  links:
+    - href: 'https://mirror.openshift.com/pub/openshift-v4/clients/helm/latest'
+      text: Download Helm

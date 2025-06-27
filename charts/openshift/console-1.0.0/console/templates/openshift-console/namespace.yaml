@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: openshift-console-user-settings
+  name: openshift-console-user-settings
+spec:
+  finalizers:
+  - kubernetes

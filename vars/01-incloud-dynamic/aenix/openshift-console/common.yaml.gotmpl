@@ -1,0 +1,58 @@
+serviceAccount:
+  create: true
+  name: {{ .Release.Name }}-console
+
+extraEnv:
+  BRIDGE_K8S_AUTH_BEARER_TOKEN: eyJhbGciOiJSUzI1NiIsImtpZCI6IjRxMTYyMm5PQW9JX1F1RGJYRDFGUGVsVVpfaTE5MmFqamJYZHRzME1VWDQifQ
+  BRIDGE_KUBECTL_CLIENT_ID: console
+  BRIDGE_K8S_MODE: in-cluster
+
+console:
+  dex:
+    host: https://dex.my.company.com
+
+helm-inserter:
+  templates:
+    ConsoleClusterRole: |
+      ---
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: console-admin
+      rules:
+      - apiGroups:
+        - "*"
+        resources:
+        - "*"
+        verbs:
+        - "*"
+      - nonResourceURLs:
+        - "*"
+        verbs:
+        - "*"
+
+    ConsoleClusterRoleBinding: |
+      ---
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: {{ .Release.Name }}-console
+      subjects:
+        - kind: ServiceAccount
+          name: {{ .Release.Name }}-console
+          namespace: {{ .Release.Namespace }}
+      roleRef:
+        kind: ClusterRole
+        name: console-admin
+        apiGroup: rbac.authorization.k8s.io
+
+    ConsoleClusterRoleBinding: |
+      ---
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: {{ .Release.Name }}-console
+        namespace: {{ .Release.Namespace }}
+        annotations:
+          kubernetes.io/service-account.name: {{ .Release.Name }}-console
+      type: kubernetes.io/service-account-token

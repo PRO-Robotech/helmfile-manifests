@@ -1,0 +1,23 @@
+- name: incloud-console
+  namespace: "incloud-console"
+  chart: charts/aenix/openshift-console-{{ env "OPENSHIFT_CONSOLE_VERSION" }}/openshift-console
+  version: '{{ env "OPENSHIFT_CONSOLE_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "openshift-console"
+  dependencies:
+    - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
+      alias: helm-inserter
+      version: 0.2.5
+
+#- name: incloud-console-customization-pugin
+#  namespace: "incloud-console"
+#  chart: charts/openshift/console-customization-pugin-{{ env "OPENSHIFT_CONSOLE_CUSTOMIZATION_PLUGIN_VERSION" }}/console-customization-pugin
+#  version: '{{ env "OPENSHIFT_CONSOLE_CUSTOMIZATION_PLUGIN_VERSION" }}'
+#  insecureSkipTLSVerify: true
+#  inherit:
+#    - template: localCharts
+#  labels:
+#    incloud-collections: "openshift-console"

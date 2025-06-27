@@ -12,13 +12,3 @@
     - chart: charts/incloud-main/helm-inserter-0.2.5/helm-inserter
       alias: helm-inserter
       version: 0.2.5
-
-- name: argocd-istio-ingressgateway
-  namespace: incloud-argocd
-  skipDeps: true
-  chart: charts/istio-release/gateway-{{ env "ISTIO_VERSION" }}/gateway
-  version: '{{ env "ISTIO_VERSION" }}'
-  inherit:
-    - template: localCharts
-  labels:
-    incloud-collections: "argocd"

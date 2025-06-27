@@ -1,0 +1,48 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: nexus
+spec:
+  href: 'https://jaeger-istio-system.os.local'
+  location: NamespaceDashboard
+  text: 'Nexus'
+
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: vault
+spec:
+  href: 'https://jaeger-istio-system.os.local'
+  location: NamespaceDashboard
+  text: 'Vault'
+
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: harbor
+spec:
+  href: 'https://jaeger-istio-system.os.local'
+  location: NamespaceDashboard
+  text: 'Harbor'
+
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: hubble
+spec:
+  href: 'https://jaeger-istio-system.os.local'
+  location: NamespaceDashboard
+  text: 'Hubble'
+
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: gitlab
+spec:
+  href: 'https://jaeger-istio-system.os.local'
+  location: NamespaceDashboard
+  text: 'Gitlab'

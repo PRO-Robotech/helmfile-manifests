@@ -1,0 +1,78 @@
+appSpec:
+  applications:
+    plugin:
+      enabled: true
+      type: Deployment
+      name: plugin
+      replicas: 1
+      revisionHistoryLimit: 3
+      annotations: []
+
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+
+      containers:
+        plugin:
+          name: plugin
+          enabled: true
+          image:
+            repository: quay.io/spadgett/console-customization-plugin
+            tag: "latest"
+            pullPolicy: IfNotPresent
+
+          extraPorts:
+            service:
+              containerPort: 9443
+              protocol: TCP
+              targetPort: http
+
+          extraSecurityContext:
+            readOnlyRootFilesystem: false
+            runAsGroup: 0
+
+          extraVolumeMounts:
+            serving-tls:
+              volumeMount:
+                path: /var/serving-cert/
+            nginx-config:
+              volumeMount:
+                path: /etc/nginx/nginx.conf
+                spec: 
+                  subPath: nginx.conf
+
+      volumes:
+        nginx-config:
+          volume:
+            mode: configMap
+            name: nginx.conf
+            payload:
+              format: text
+              content: |
+                error_log /dev/stdout info;
+                events {}
+                http {
+                  access_log         /dev/stdout;
+                  include            /etc/nginx/mime.types;
+                  default_type       application/octet-stream;
+                  keepalive_timeout  65;
+                  server {
+                    listen              9443 ssl;
+                    ssl_certificate     /var/serving-cert/tls.crt;
+                    ssl_certificate_key /var/serving-cert/tls.key;
+                    root                /usr/share/nginx/html;
+                  }
+                }
+
+        serving-tls:
+          volume:
+            mode: secret
+            name: serving-tls

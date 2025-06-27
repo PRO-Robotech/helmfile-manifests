@@ -1,0 +1,136 @@
+{{- with .Values.appSpec.applications.console }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+rules:
+  - apiGroups:
+      - 'rbac.authorization.k8s.io'
+    resources:
+      - 'roles'
+      - 'rolebindings'
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+
+  - apiGroups:
+      - ''
+    resources:
+      - 'configmaps'
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - patch
+      - update
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-cluster
+rules:
+  - apiGroups:
+      - 'authorization.k8s.io'
+    resources:
+      - 'subjectaccessreviews'
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+
+  - apiGroups:
+      - 'console.openshift.io'
+    resources:
+      - 'consoleplugins'
+    verbs:
+      - get
+      - list
+      - watch
+
+
+{{- end }}
+
+
+{{- with .Values.appSpec.applications.app }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-cluster
+subjects:
+  - kind: ServiceAccount
+    name: {{ $.Release.Name }}-{{ .name }}
+    namespace: {{ $.Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $.Release.Name }}-{{ .name }}-cluster
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: console-auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: {{ $.Release.Name }}-{{ .name }}
+    namespace: {{ $.Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: 'system:auth-delegator'
+{{- end }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: console-user-settings-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: console-user-settings-reader
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:authenticated
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: console-user-settings-reader
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - list
+    - watch
+
+  - apiGroups:
+    - "console.openshift.io"
+    resources:
+    - consolenotifications
+    - consolequickstarts
+    - consoleclidownloads
+    - consoleexternalloglinks
+    - consolelinks
+    - consoleplugins
+    - consoleyamlsamples
+    verbs:
+    - get
+    - list
+    - watch

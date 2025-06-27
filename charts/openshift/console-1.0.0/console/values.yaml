@@ -1,0 +1,164 @@
+quotas:
+  requestCpuMax: 60000
+  limitCpuFactor: 2
+  requestMemoryMax: 96000
+  limitMemoryFactor: 2
+  requestStorageMax: 10
+  pvcCountMax: 10
+  podsCountMax: 150
+
+appSpec:
+  applications:
+    console:
+      enabled: true
+      type: Deployment
+      name: console
+      replicas: 1
+      revisionHistoryLimit: 3
+      annotations: []
+
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/data-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/b-cloud-infra
+          effect: NoSchedule
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+
+      containers:
+        console:
+          name: console
+          enabled: true
+          image:
+            repository: quay.io/openshift/origin-console
+            tag: "4.16.0"
+            pullPolicy: IfNotPresent
+
+          extraCommand:
+            - /opt/bridge/bin/bridge
+
+          extraArgs:
+            config: /var/console-config/console-config.yaml
+            public-dir: /opt/bridge/static
+            # service-ca-file: /var/bundle-ca/root-certs.pem
+            v: 5
+            k8s-mode-off-cluster-skip-verify-tls: true
+
+          extraEnv:
+            BRIDGE_DOCUMENTATION_BASE_URL: https://kubernetes.io/docs/
+            BRIDGE_BASE_ADDRESS: https://openshift-console.example.org
+            BRIDGE_USER_AUTH: oidc
+            BRIDGE_USER_AUTH_LOGOUT_REDIRECT: https://openshift-console.example.org/auth/logout
+            BRIDGE_USER_AUTH_OIDC_ISSUER_URL: https://dex.example.org
+            BRIDGE_USER_AUTH_OIDC_CLIENT_ID: mock_id
+            BRIDGE_USER_AUTH_OIDC_CLIENT_SECRET: mock_secret
+            BRIDGE_USER_AUTH_OIDC_TOKEN_SCOPES: openid,profile,email,groups
+            BRIDGE_COOKIE_AUTHENTICATION_KEY_FILE: /etc/openshift-console-secrets/cookie_auth_key
+            BRIDGE_COOKIE_ENCRYPTION_KEY_FILE: /etc/openshift-console-secrets/cookie_enc_key
+            BRIDGE_K8S_MODE: off-cluster
+            BRIDGE_K8S_MODE_OFF_CLUSTER_ENDPOINT: https://kubernetes.default.svc
+            
+
+            # BRIDGE_K8S_AUTH: service-account # не работает с off-client
+            # TODO обавить работу по сертификатам
+
+          extraLivenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          extraReadinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          extraPorts:
+            ingress:
+              containerPort: 9000
+              protocol: TCP
+              targetPort: http
+
+          extraResources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          
+          extraVolumeMounts:
+            console-config:
+              volumeMount:
+                path: /var/console-config/
+            serving-tls:
+              volumeMount:
+                path: /var/serving-cert/
+            # cookie-secrets:
+            #   volumeMount:
+            #     path: /etc/openshift-console-secrets/
+            # bundle-ca:
+            #   volumeMount:
+            #     path: /var/bundle-ca/
+      
+      volumes:
+        console-config:
+          volume:
+            mode: configMap
+            name: console-config.yaml
+            payload:
+              format: text
+              content: |
+                apiVersion: console.openshift.io/v1
+                clusterInfo:
+                  consoleBaseAddress: https://
+                  controlPlaneTopology: HighlyAvailable
+                  masterPublicURL: https://:6443
+                  releaseVersion: ""
+                customization:
+                  branding: incloud
+                  # documentationBaseURL: https://example.com
+                kind: ConsoleConfig
+                plugins:
+                  console-customization: https://console-customization-plugin.console-customization-plugin.svc:9443/
+                providers: {}
+                servingInfo:
+                  # bindAddress: https://[::]:8443
+                  certFile: /var/serving-cert/tls.crt
+                  keyFile: /var/serving-cert/tls.key
+
+        serving-tls:
+          volume:
+            mode: secret
+            name: serving-tls
+
+        # cookie-secrets:
+        #   volume:
+        #     mode: configMap
+        #     name: console
+        #     payload:
+        #       format: dict
+        #       content:
+        #         cookie_auth_key: mock0auth0key
+        #         cookie_enc_key: mock0env0key
+
+        # bundle-ca:
+        #   volume:
+        #     mode: configMap
+        #     name: incloud-ca
+        #     notReleased: true

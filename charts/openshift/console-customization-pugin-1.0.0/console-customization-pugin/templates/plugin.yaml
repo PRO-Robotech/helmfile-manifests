@@ -1,0 +1,33 @@
+{{- with .Values.appSpec.applications.plugin }}
+# ---
+# apiVersion: console.openshift.io/v1alpha1
+# kind: ConsolePlugin
+# metadata:
+#   name: console-customization # STATIC NAME IT IS FEATURE =)
+# spec:
+#   displayName: 'OpenShift Console Customization Plugin'
+#   service:
+#     name: {{ $.Release.Name }}-{{ .name }}
+#     namespace: {{ $.Release.Name }}-{{ .name }}
+#     port: {{ .containers.plugin.extraPorts.service.containerPort }}
+#     basePath: '/'
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: issuer-selfsigned
+  dnsNames:
+  - {{ $.Release.Name }}-{{ .name }}
+  - {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}
+  - {{ $.Release.Name }}-{{ .name }}.{{ $.Release.Namespace }}.svc
+  secretName: {{ $.Release.Name }}-serving-tls
+  usages:
+    - server auth
+{{- end }}

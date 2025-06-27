@@ -1,0 +1,151 @@
+{{- $mainDomain   := printf "%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+
+appSpec:
+  applications:
+    console:
+      containers:
+        console:
+          extraEnv:
+            BRIDGE_BASE_ADDRESS: "https://console.{{ $mainDomain }}"
+            BRIDGE_DEX_API_HOST: "https://dex.example.com"
+            BRIDGE_USER_AUTH: null
+            BRIDGE_K8S_AUTH: null
+            BRIDGE_K8S_MODE: in-cluster
+            BRIDGE_USER_AUTH_LOGOUT_REDIRECT: null
+            BRIDGE_USER_AUTH_OIDC_ISSUER_URL: null
+            BRIDGE_USER_AUTH_OIDC_CLIENT_ID: null
+            BRIDGE_USER_AUTH_OIDC_CLIENT_SECRET: null
+            BRIDGE_USER_AUTH_OIDC_TOKEN_SCOPES: null
+            BRIDGE_COOKIE_AUTHENTICATION_KEY_FILE: null
+            BRIDGE_COOKIE_ENCRYPTION_KEY_FILE: null
+
+          extraMetadataEnv:
+            BRIDGE_KUBECTL_CLIENT_SECRET:
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-console
+                  key: token
+
+      volumes:
+        console-config:
+          volume:
+            mode: configMap
+            name: console-config.yaml
+            payload:
+              format: text
+              content: |
+                apiVersion: console.openshift.io/v1
+                kind: ConsoleConfig
+                clusterInfo:
+                  consoleBaseAddress: https://console.{{ $mainDomain }}
+                  controlPlaneTopology: HighlyAvailable
+                  masterPublicURL: https://console.{{ $mainDomain }}:6443
+                  releaseVersion: 0.0.0
+
+                customization:
+                  branding: okd
+                  documentationBaseURL: https://example.com/
+
+                plugins:
+                  console-customization: https://bcloud-console-customization-pugin-plugin:9443/
+
+                providers: {}
+
+                servingInfo:
+                  certFile: /var/serving-cert/tls.crt
+                  keyFile: /var/serving-cert/tls.key
+
+helm-inserter:
+  templates:
+    consoleGW: |
+      apiVersion: networking.istio.io/v1
+      kind: Gateway
+      metadata:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        selector:
+          istio: openshift-console-istio-ingressgateway
+        servers:
+        - hosts:
+            - "*.{{ $mainDomain }}"
+          port:
+            name: http
+            number: 80
+            protocol: HTTP
+        - hosts:
+            - "*.{{ $mainDomain }}"
+          port:
+            name: https
+            number: 443
+            protocol: HTTPS
+          tls:
+            credentialName: {{ .Release.Name }}-cert-tls
+            mode: SIMPLE
+
+    consoleServerCert: |
+      ---
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: {{ .Release.Name }}-server-gw
+        namespace: {{ .Release.Namespace }}
+      spec:
+        issuerRef:
+          group: cert-manager.io
+          kind: ClusterIssuer
+          name: issuer-selfsigned
+        dnsNames:
+          - "*.{{ $mainDomain }}"
+        secretName: {{ .Release.Name }}-cert-tls
+        usages:
+          - server auth
+
+    consoleVS: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        hosts:
+          - "console.{{ $mainDomain }}"
+        gateways:
+          - {{ .Release.Name }}
+        http:
+          - name: {{ .Release.Name }}-console
+            match:
+              - uri:
+                  prefix: /
+            route:
+              - destination:
+                  host: {{ .Release.Name }}-console
+                  port:
+                    number: 9000
+
+    ConsoleClusterRoleBinding: |
+      ---
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: {{ .Release.Name }}-console
+      subjects:
+        - kind: ServiceAccount
+          name: {{ .Release.Name }}-console
+          namespace: {{ .Release.Namespace }}
+      roleRef:
+        kind: ClusterRole
+        name: cluster-admin
+        apiGroup: rbac.authorization.k8s.io
+
+    ConsoleClusterRoleBinding: |
+      ---
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: {{ .Release.Name }}-console
+        namespace: {{ .Release.Namespace }}
+        annotations:
+          kubernetes.io/service-account.name: {{ .Release.Name }}-console
+      type: kubernetes.io/service-account-token

@@ -100,17 +100,17 @@ subjects:
 EOF
 
 
-echo ""
-echo "--- templating cilium"
-helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
-  --namespace kube-system \
-  --set operator.replicas=1 \
-  --set ipam.operator.clusterPoolIPv4PodCIDRList="10.244.0.0/16" \
-  --set ipam.operator.clusterPoolIPv4MaskSize=24 > ${TMP_DIR}/cilium.yaml
-echo "--- deploy cilium"
-kubectl apply -f ${TMP_DIR}/cilium.yaml
-echo "--- waiting cilium"
-kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 --timeout=180s
+# echo ""
+# echo "--- templating cilium"
+# helm template cilium ./charts/cilium/cilium-${CILIUM_VERSION}/cilium \
+#   --namespace kube-system \
+#   --set operator.replicas=1 \
+#   --set ipam.operator.clusterPoolIPv4PodCIDRList="10.244.0.0/16" \
+#   --set ipam.operator.clusterPoolIPv4MaskSize=24 > ${TMP_DIR}/cilium.yaml
+# echo "--- deploy cilium"
+# kubectl apply -f ${TMP_DIR}/cilium.yaml
+# echo "--- waiting cilium"
+# kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 --timeout=180s
 
 
 # echo ""
@@ -118,19 +118,19 @@ kubectl -n kube-system wait ds/cilium --for=jsonpath='{.status.numberReady}'=1 -
 # kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
 
 
-echo ""
-echo "--- templating argocd"
-helmfile \
-  -e ${CLUSTER_ENV} \
-  --kube-version=${K8S_VERSION} \
-  -l incloud-collections=argocd \
-  template > ${TMP_DIR}/argocd.yaml
-echo "--- deploy argocd"
-kubectl create ns incloud-argocd
-kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
-kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
+# echo ""
+# echo "--- templating argocd"
+# helmfile \
+#   -e ${CLUSTER_ENV} \
+#   --kube-version=${K8S_VERSION} \
+#   -l incloud-collections=argocd \
+#   template > ${TMP_DIR}/argocd.yaml
+# echo "--- deploy argocd"
+# kubectl create ns incloud-argocd
+# kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+# kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
+# kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+# kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
 
 
 echo ""
@@ -626,6 +626,50 @@ spec:
     syncOptions:
     - CreateNamespace=true
 EOF
+
+
+# echo ""
+# echo "--- create argocd app: osconsole"
+# kubectl apply -f - <<EOF
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: console-incloud
+#   namespace: incloud-argocd
+# spec:
+#   destination:
+#     namespace: incloud-console
+#     server: https://kubernetes.default.svc
+#   project: default
+#   source:
+#     path: .
+#     plugin:
+#       env:
+#       - name: helmfile_args
+#         value: -e ${CLUSTER_ENV} -l incloud-collections=openshift-console --namespace=incloud-console
+#       - name: CLUSTER_AREA
+#         value: ${CLUSTER_AREA}
+#       - name: CLUSTER_ENV
+#         value: ${CLUSTER_ENV}
+#       - name: CLUSTER_INDEX
+#         value: "${CLUSTER_INDEX}"
+#       - name: CLUSTER_NAME
+#         value: ${CLUSTER_NAME}
+#       - name: OPENSHIFT_CONSOLE_CUSTOMIZATION_PLUGIN_VERSION
+#         value: ${OPENSHIFT_CONSOLE_CUSTOMIZATION_PLUGIN_VERSION}
+#       - name: OPENSHIFT_CONSOLE_VERSION
+#         value: ${OPENSHIFT_CONSOLE_VERSION}
+#       - name: ISTIO_VERSION
+#         value: ${ISTIO_VERSION}
+#       - name: helmfile_envs
+#         value: CLUSTER_AREA=${CLUSTER_AREA} CLUSTER_ENV=${CLUSTER_ENV} CLUSTER_INDEX=${CLUSTER_INDEX} CLUSTER_NAME=${CLUSTER_NAME} OPENSHIFT_CONSOLE_CUSTOMIZATION_PLUGIN_VERSION=${OPENSHIFT_CONSOLE_CUSTOMIZATION_PLUGIN_VERSION} OPENSHIFT_CONSOLE_VERSION=${OPENSHIFT_CONSOLE_VERSION} ISTIO_VERSION=${ISTIO_VERSION}
+#       name: helmfile-with-args
+#     repoURL: ${ARGOCD_APPLICATION_REPO}
+#     targetRevision: ${ARGOCD_APPLICATION_BRANCH}
+#   syncPolicy:
+#     syncOptions:
+#     - CreateNamespace=true
+# EOF
 
 
 echo ""

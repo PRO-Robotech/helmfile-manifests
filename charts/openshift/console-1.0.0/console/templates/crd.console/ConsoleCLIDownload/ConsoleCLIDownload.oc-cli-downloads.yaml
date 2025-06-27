@@ -1,0 +1,38 @@
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleCLIDownload
+metadata:
+  name: oc-cli-downloads
+spec:
+  description: >
+    With the OpenShift command line interface, you can create applications and
+    manage OpenShift projects from a terminal.
+
+
+    The oc binary offers the same capabilities as the kubectl binary, but it is
+    further extended to natively support OpenShift Container Platform features.
+  displayName: СЮДА МОЖНО ЗАПИХНУТЬ ВСЕ ЧТО УГОДНО
+  links:
+    - href: >-
+        https://downloads-openshift-console.os.local/amd64/linux/oc.tar
+      text: Download oc for Linux for x86_64
+    - href: >-
+        https://downloads-openshift-console.os.local/amd64/mac/oc.zip
+      text: Download oc for Mac for x86_64
+    - href: >-
+        https://downloads-openshift-console.os.local/amd64/windows/oc.zip
+      text: Download oc for Windows for x86_64
+    - href: >-
+        https://downloads-openshift-console.os.local/arm64/linux/oc.tar
+      text: Download oc for Linux for ARM 64
+    - href: >-
+        https://downloads-openshift-console.os.local/arm64/mac/oc.zip
+      text: Download oc for Mac for ARM 64
+    - href: >-
+        https://downloads-openshift-console.os.local/ppc64le/linux/oc.tar
+      text: 'Download oc for Linux for IBM Power, little endian'
+    - href: >-
+        https://downloads-openshift-console.os.local/s390x/linux/oc.tar
+      text: Download oc for Linux for IBM Z
+    - href: 'https://downloads-openshift-console.os.local/oc-license'
+      text: LICENSE

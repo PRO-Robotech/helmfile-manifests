@@ -19,13 +19,3 @@
     - template: localCharts
   labels:
     incloud-collections: "netbox"
-
-- name: netbox-istio-ingressgateway
-  namespace: incloud-netbox
-  skipDeps: true
-  chart: charts/istio-release/gateway-{{ env "ISTIO_VERSION" }}/gateway
-  version: '{{ env "ISTIO_VERSION" }}'
-  inherit:
-    - template: localCharts
-  labels:
-    incloud-collections: "netbox"

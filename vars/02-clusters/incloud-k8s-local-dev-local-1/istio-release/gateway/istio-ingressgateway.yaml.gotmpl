@@ -23,6 +23,7 @@ helm-inserter:
               - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
               - "*.incloud-web.{{ .Values.global.domains.internal }}"
               - "*.incloud-argocd.{{ .Values.global.domains.internal }}"
+              - "*.incloud-console.{{ .Values.global.domains.internal }}"
           - port:
               number: 443
               name: https
@@ -33,6 +34,7 @@ helm-inserter:
               - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
               - "*.incloud-web.{{ .Values.global.domains.internal }}"
               - "*.incloud-argocd.{{ .Values.global.domains.internal }}"
+              - "*.incloud-console.{{ .Values.global.domains.internal }}"
             tls:
               mode: SIMPLE
               credentialName: {{ .Release.Name }}-cert-tls
@@ -57,5 +59,6 @@ helm-inserter:
           - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
           - "*.incloud-web.{{ .Values.global.domains.internal }}"
           - "*.incloud-argocd.{{ .Values.global.domains.internal }}"
+          - "*.incloud-console.{{ .Values.global.domains.internal }}"
         commonName: "{{ .Release.Namespace }}"
         secretName: {{ .Release.Name }}-cert-tls
