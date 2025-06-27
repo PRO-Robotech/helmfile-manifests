@@ -1,7 +1,3 @@
-serviceAccount:
-  create: true
-  name: {{ .Release.Name }}-console
-
 extraEnv:
   BRIDGE_K8S_AUTH_BEARER_TOKEN: eyJhbGciOiJSUzI1NiIsImtpZCI6IjRxMTYyMm5PQW9JX1F1RGJYRDFGUGVsVVpfaTE5MmFqamJYZHRzME1VWDQifQ
   BRIDGE_KUBECTL_CLIENT_ID: console
@@ -39,7 +35,7 @@ helm-inserter:
         name: {{ .Release.Name }}-console
       subjects:
         - kind: ServiceAccount
-          name: {{ .Release.Name }}-console
+          name: default
           namespace: {{ .Release.Namespace }}
       roleRef:
         kind: ClusterRole
@@ -51,8 +47,8 @@ helm-inserter:
       apiVersion: v1
       kind: Secret
       metadata:
-        name: {{ .Release.Name }}-console
+        name: default-sa-token
         namespace: {{ .Release.Namespace }}
         annotations:
-          kubernetes.io/service-account.name: {{ .Release.Name }}-console
+          kubernetes.io/service-account.name: default
       type: kubernetes.io/service-account-token
