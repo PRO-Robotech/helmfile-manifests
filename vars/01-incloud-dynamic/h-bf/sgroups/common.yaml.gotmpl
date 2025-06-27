@@ -66,6 +66,10 @@ helm-inserter:
           istio: {{ .Release.Name }}-istio-apisvcgateway
         servers:
           - port:
+              number: 80
+              name: http
+              protocol: HTTP
+          - port:
               number: 443
               name: https
               protocol: HTTPS
@@ -88,6 +92,9 @@ helm-inserter:
           tls:
             insecureSkipVerify: true
             mode: SIMPLE
+          connectionPool:
+            http:
+              http2MaxRequests: 1000
 
     SE: |
       ---
@@ -120,26 +127,43 @@ helm-inserter:
           - apisvc-gateway
 
         http:
-        - match:
-            - uri:
-                prefix: /apis/proxy.sgroups.io/v1alpha1/hbf.v2.sgroups.SecGroupService
-          name: hbf.v2.sgroups.SecGroupService
-          route:
-            - destination:
-                host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
-                port:
-                  number: 9006
+          - match:
+              - uri:
+                  regex: /apis/proxy.sgroups.io/v1alpha1/(.*)
+            rewrite:
+              uriRegexRewrite:
+                match: /apis/proxy.sgroups.io/v1alpha1/(.*)
+                rewrite: /\1
+            route:
+              - destination:
+                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                  port:
+                    number: 9006
 
-        - match:
-            - uri:
-                prefix: /apis/proxy.sgroups.io/v1alpha1/sgroups
-          name: hbf.v2.sgroups
-          route:
-            - destination:
-                host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
-                port:
-                  number: 9006
+          - match:
+              - uri:
+                  prefix: /
+            name: hbf
+            timeout: 30s
+            route:
+              - destination:
+                  host: {{ $.Release.Name }}-server.{{ $.Release.Namespace }}.svc
+                  port:
+                    number: 9006
 
+    APIServiceVSStatic: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: VirtualService
+      metadata:
+        name: apisvc-vsvc-static
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        hosts:
+          - "*"
+        gateways:
+          - apisvc-gateway
+        http:
         - directResponse:
             body:
               string: |
@@ -178,3 +202,26 @@ helm-inserter:
           namespace: {{ $.Release.Namespace }}
           name: {{ $.Release.Name }}-istio-apisvcgateway
           port: 443
+
+    EnvoyFilter: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: EnvoyFilter
+      metadata:
+        name: patch-max-request-headers
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        configPatches:
+        - applyTo: NETWORK_FILTER
+          match:
+            context: ANY
+            listener:
+              filterChain:
+                filter:
+                  name: "envoy.filters.network.http_connection_manager"
+          patch:
+            operation: MERGE
+            value:
+              typed_config:
+                "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
+                max_request_headers_kb: 96

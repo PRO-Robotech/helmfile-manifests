@@ -15,17 +15,17 @@ appSpec:
                     sgroups:
                       use-json-codec: false
                       api-path-prefix: /apis/proxy.sgroups.io/v1alpha1
-                      address: sgroups-istio-apisvcgateway:80
+                      address: sgroups-istio-apisvcgateway.incloud-sgroups.svc:443
                       authn:
-                        type: none
-                        # tls:
-                        #   key-file: "/opt/h-bf/sgroups/tls/tls.key"
-                        #   cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
-                        #   server:
-                        #     verify: true
-                        #     ca-files:
-                        #       - "/opt/h-bf/sgroups/tls/ca.crt"
-                        #       - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                        type: tls
+                        tls:
+                          key-file: "/opt/h-bf/sgroups/tls/tls.key"
+                          cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
+                          server:
+                            verify: true
+                            ca-files:
+                              - "/opt/h-bf/sgroups/tls/ca.crt"
+                              - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
                 base-rules:
                   networks:
                     - 0.0.0.0/0
@@ -44,6 +44,6 @@ appSpec:
             requests:
               cpu: 100m
               memory: 128Mi
-          # extraEnv:
-          #   GRPC_GO_LOG_SEVERITY_LEVEL: info
-          #   GRPC_GO_LOG_VERBOSITY_LEVEL: 2
+          extraEnv:
+            GRPC_GO_LOG_SEVERITY_LEVEL: info
+            GRPC_GO_LOG_VERBOSITY_LEVEL: 2
