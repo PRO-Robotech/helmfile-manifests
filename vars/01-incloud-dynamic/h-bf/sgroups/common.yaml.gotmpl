@@ -205,7 +205,7 @@ helm-inserter:
           name: {{ $.Release.Name }}-istio-apisvcgateway
           port: 443
 
-    EnvoyFilter: |
+    EnvoyFilterPatchMaxReqHeaders: |
       ---
       apiVersion: networking.istio.io/v1alpha3
       kind: EnvoyFilter
@@ -226,4 +226,4 @@ helm-inserter:
             value:
               typed_config:
                 "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
-                max_request_headers_kb: 96
+                max_request_headers_kb: 128
