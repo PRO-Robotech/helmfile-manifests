@@ -35,7 +35,7 @@ appSpec:
           extraLivenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /oauth/health
+              path: /oauth/healthcheck
               port: 8000
               scheme: HTTP
             initialDelaySeconds: 3
@@ -46,7 +46,7 @@ appSpec:
           extraReadinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /oauth/health
+              path: /oauth/healthcheck
               port: 8000
               scheme: HTTP
             initialDelaySeconds: 3
@@ -73,7 +73,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui
-            tag: "main-151e9247"
+            tag: "main-c1115260"
 
           extraSecurityContext:
             capabilities:
@@ -109,7 +109,7 @@ appSpec:
           extraLivenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /health
+              path: /healthcheck
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 3
@@ -120,8 +120,58 @@ appSpec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /health
+              path: /healthcheck
               port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+        bff:
+          name: bff
+          enabled: true
+          image:
+            repository: sgroups/openapi-ui-k8s-bff
+            tag: "main-262be6a2"
+
+          extraSecurityContext:
+            capabilities:
+              add:
+                - CAP_CHOWN
+                - CAP_NET_BIND_SERVICE
+                - CAP_SETGID
+                - CAP_SETUID
+            readOnlyRootFilesystem: false
+            runAsGroup: 0
+            runAsUser: 101
+
+          extraEnv:
+            KUBE_API_URL: https://api.incloud-web.svc.incloud-k8s-local-dev-local-1.in-cloud.internal
+            LOGGER: "TRUE"
+            PORT: "64231"
+
+          extraPorts:
+            http:
+              containerPort: 64231
+              protocol: TCP
+
+          extraLivenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthcheck
+              port: 64231
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthcheck
+              port: 64231
               scheme: HTTP
             initialDelaySeconds: 3
             periodSeconds: 10
