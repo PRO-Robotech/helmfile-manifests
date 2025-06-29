@@ -146,6 +146,14 @@ appSpec:
             runAsGroup: 0
             runAsUser: 101
 
+          extraResources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+
           extraEnv:
             KUBE_API_URL: http://istio-ingressgateway.incloud-istio.svc.cluster.local
             LOGGER: "TRUE"
