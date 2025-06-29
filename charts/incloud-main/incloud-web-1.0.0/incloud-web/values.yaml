@@ -147,7 +147,7 @@ appSpec:
             runAsUser: 101
 
           extraEnv:
-            KUBE_API_URL: https://api.incloud-web.svc.incloud-web.svc.cluster.local
+            KUBE_API_URL: https://istio-ingressgateway.incloud-istio.svc.incloud-web.svc.cluster.local
             LOGGER: "TRUE"
             PORT: "64231"
 
