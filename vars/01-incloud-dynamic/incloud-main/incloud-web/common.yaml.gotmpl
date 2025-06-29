@@ -1083,7 +1083,7 @@ helm-inserter:
         keysToParse:
         - metadata
         - name
-        pathToMatch: "/openapi-ui/clusters/:clusterName/api-table/in-cloud.io/v1alpha1/projects"
+        pathToMatch: "/openapi-ui/:clusterName/api-table/in-cloud.io/v1alpha1/projects"
         pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/api-table/in-cloud.io/v1alpha1/instances"
 
     CustomFormsOverrideInstances: |
@@ -2370,7 +2370,7 @@ helm-inserter:
                     link: /openapi-ui/{clusterName}/builtin-table/persistentvolumes
                   - key: storageclasses
                     label: StorageClasses
-                    link: /openapi-ui/{clusterName}/builtin-table/storageclasses
+                    link: /openapi-ui/{clusterName}/api-table/storage.k8s.io/v1/storageclasses
 
               - key: compute
                 label: Compute
@@ -2510,7 +2510,7 @@ helm-inserter:
                     link: /openapi-ui/{clusterName}/{namespace}/builtin-table/persistentvolumeclaims
                   - key: storageclasses
                     label: StorageClasses
-                    link: /openapi-ui/{clusterName}/builtin-table/storageclasses
+                    link: /openapi-ui/{clusterName}/api-table/storage.k8s.io/v1/storageclasses
 
               - key: compute
                 label: Compute
