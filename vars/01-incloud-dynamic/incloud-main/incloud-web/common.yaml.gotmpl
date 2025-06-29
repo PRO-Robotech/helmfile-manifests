@@ -2426,7 +2426,7 @@ helm-inserter:
           metadata:
             name: project-elements
           spec:
-            menuItems:
+            menuItems: &projectMenuItems
               - key: home
                 label: Home
                 children:
@@ -2577,13 +2577,12 @@ helm-inserter:
 
             id: stock-project-api-table
 
-        # Далее просто перечисляем остальные Sidebar'ы, которые ссылаются на *instanceMenuItems
         - apiVersion: front.in-cloud.io/v1alpha1
           kind: Sidebar
           metadata:
             name: project-builtin-table
           spec:
-            menuItems: *instanceMenuItems
+            menuItems: *projectMenuItems
             id: stock-project-builtin-table
 
         - apiVersion: front.in-cloud.io/v1alpha1
@@ -2591,5 +2590,5 @@ helm-inserter:
           metadata:
             name: project-crds-table
           spec:
-            menuItems: *instanceMenuItems
+            menuItems: *projectMenuItems
             id: stock-project-crd-table
