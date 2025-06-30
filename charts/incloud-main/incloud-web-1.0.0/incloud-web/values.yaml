@@ -73,7 +73,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui
-            tag: "main-c1115260"
+            tag: "main-214a92d4"
 
           extraSecurityContext:
             capabilities:
@@ -133,7 +133,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui-k8s-bff
-            tag: "main-262be6a2"
+            tag: "main-791764aa"
 
           extraSecurityContext:
             capabilities:
