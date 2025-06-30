@@ -158,6 +158,8 @@ appSpec:
             KUBE_API_URL: http://istio-ingressgateway.incloud-istio.svc.cluster.local
             LOGGER: "TRUE"
             PORT: "64231"
+            BASE_API_GROUP: front.in-cloud.io
+            BASE_API_VERSION: v1alpha1
 
           extraPorts:
             http:
