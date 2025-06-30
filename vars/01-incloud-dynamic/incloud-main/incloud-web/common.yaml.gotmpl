@@ -3049,3 +3049,19 @@ helm-inserter:
           spec:
             menuItems: *ClusterMenuItems
             id: inside-cluster-crd-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: stock-cluster-apis
+          spec:
+            menuItems: *ClusterMenuItems
+            id: stock-cluster-apis
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: stock-namespace-apis
+          spec:
+            menuItems: *ClusterMenuItems
+            id: stock-namespace-apis
