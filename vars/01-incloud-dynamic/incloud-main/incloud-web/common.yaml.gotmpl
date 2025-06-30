@@ -2604,3 +2604,183 @@ helm-inserter:
           spec:
             menuItems: *projectMenuItems
             id: stock-project-crd-table
+
+
+    ProjectsSidebar: |
+      ---
+      kind: List
+      apiVersion: v1
+      metadata:
+        resourceVersion: ""
+      items:
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: project-elements-form
+          spec:
+            menuItems: &projectMenuItems
+              - key: home
+                label: Home
+                children:
+                  - key: instances
+                    label: Instances
+                    link: /openapi-ui/{clusterName}/api-table/in-cloud.io/v1alpha1/instances
+
+              - key: workloads
+                label: Workloads
+                children:
+                  - key: pods
+                    label: Pods
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/pods
+                  - key: deployments
+                    label: Deployments
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/apps/v1/deployments
+                  - key: statefulsets
+                    label: Statefulsets
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/apps/v1/statefulsets
+                  - key: secrets
+                    label: Secrets
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/secrets
+                  - key: configmaps
+                    label: ConfigMaps
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/configmaps
+                  - key: cronjobs
+                    label: CronJobs
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/batch/v1/cronjobs
+                  - key: jobs
+                    label: Jobs
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/batch/v1/jobs
+                  - key: daemonsets
+                    label: Daemonsets
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/apps/v1/daemonsets
+                  - key: replicasets
+                    label: ReplicaSets
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/apps/v1/replicasets
+                  - key: replicationcontrollers
+                    label: ReplicationControllers
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/replicationcontrollers
+                  - key: horizontalpodautoscalers
+                    label: HorizontalPodAutoscalers
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/autoscaling/v2/horizontalpodautoscalers
+                  - key: poddisruptionbudgets
+                    label: PodDisruptionBudgets
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/policy/v1/poddisruptionbudgets
+
+              - key: networking
+                label: Networking
+                children:
+                  - key: services
+                    label: Services
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/services
+                  - key: networkpolicies
+                    label: NetworkPolicies
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/networking.k8s.io/v1/networkpolicies
+                  - key: ingresses
+                    label: Ingresses
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/networking.k8s.io/v1/ingresses
+
+              - key: storage
+                label: Storage
+                children:
+                  - key: persistentvolumes
+                    label: PersistentVolumes
+                    link: /openapi-ui/{clusterName}/builtin-table/persistentvolumes
+                  - key: persistentvolumeclaims
+                    label: PersistentVolumeClaims
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/persistentvolumeclaims
+                  - key: storageclasses
+                    label: StorageClasses
+                    link: /openapi-ui/{clusterName}/api-table/storage.k8s.io/v1/storageclasses
+
+              - key: compute
+                label: Compute
+                children:
+                  - key: nodes
+                    label: Nodes
+                    link: /openapi-ui/{clusterName}/builtin-table/nodes
+
+              - key: usermanagement
+                label: User Management
+                children:
+                  - key: groups
+                    label: ServiceAccounts
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/serviceaccounts
+                  - key: roles
+                    label: Roles
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/rbac.authorization.k8s.io/v1/roles
+                  - key: rolebindings
+                    label: RoleBindings
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/rbac.authorization.k8s.io/v1/rolebindings
+                  - key: clusterroles
+                    label: ClusterRoles
+                    link: /openapi-ui/{clusterName}/api-table/rbac.authorization.k8s.io/v1/clusterroles
+                  - key: clusterrolebindings
+                    label: ClusterRoleBindings
+                    link: /openapi-ui/{clusterName}/api-table/rbac.authorization.k8s.io/v1/clusterrolebindings
+
+
+              - key: administration
+                label: Administration
+                children:
+                  - key: namespaces
+                    label: Namespaces
+                    link: /openapi-ui/{clusterName}/builtin-table/namespaces
+                  - key: limitranges
+                    label: LimitRanges
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/limitranges
+                  - key: resourcequotas
+                    label: ResourceQuotas
+                    link: /openapi-ui/{clusterName}/{namespace}/builtin-table/resourcequotas
+                  - key: customresourcedefinitions
+                    label: CustomResourceDefinitions
+                    link: /openapi-ui/{clusterName}/api-table/apiextensions.k8s.io/v1/customresourcedefinitions
+
+
+              - key: hbf
+                label: HBF
+                children:
+                  - key: networks
+                    label: Networks
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/networks
+                  - key: addressgroups
+                    label: AddressGroups
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/addressgroups
+                  - key: networkbindings
+                    label: NetworkBindings
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/networkbindings
+                  - key: ieagagrules
+                    label: RuleAG2AG
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/provider.sgroups.io/v1alpha1/ieagagrules
+                  - key: services
+                    label: Services
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/services
+                  - key: servicealiases
+                    label: ServiceAliases
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/servicealiases
+                  - key: addressgroupbindings
+                    label: AddressGroupBindings
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/addressgroupbindings
+                  - key: rules2ses
+                    label: RuleS2S
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/rules2ses
+                  - key: addressgroupportmappings
+                    label: AddressGroupPortMappings
+                    link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1alpha1/addressgroupportmappings
+
+            id: stock-project-api-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: project-builtin-form
+          spec:
+            menuItems: *projectMenuItems
+            id: stock-project-builtin-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: project-crds-form
+          spec:
+            menuItems: *projectMenuItems
+            id: stock-project-crd-form
