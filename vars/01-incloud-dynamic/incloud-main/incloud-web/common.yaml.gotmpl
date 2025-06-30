@@ -2983,7 +2983,7 @@ helm-inserter:
                 children:
                   - key: projects
                     label: Projects
-                    link: /openapi-ui/{clusterName}/api-table/in-cloud.io/v1alpha1/projects
+                    link: /openapi-ui/inside/{clusterName}/api-table/in-cloud.io/v1alpha1/projects
 
 
               - key: storage
@@ -3056,7 +3056,7 @@ helm-inserter:
             name: stock-cluster-apis
           spec:
             menuItems: *ClusterMenuItems
-            id: stock-cluster-apis
+            id: inside-cluster-apis
 
         - apiVersion: front.in-cloud.io/v1alpha1
           kind: Sidebar
@@ -3064,4 +3064,4 @@ helm-inserter:
             name: stock-namespace-apis
           spec:
             menuItems: *ClusterMenuItems
-            id: stock-namespace-apis
+            id: inside-namespace-apis
