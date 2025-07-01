@@ -226,7 +226,7 @@ helm-inserter:
               port:
                 number: 443
           {{- if eq (.name) ($mainClusterName) }}
-              host: istio-ingressgateway.{{ .Values.global.istioNamespace}}.svc
+              host: istio-ingressgateway.{{ $.Values.global.istioNamespace}}.svc
           {{- else }}
               host: {{ .api }}
             headers:
