@@ -9,7 +9,7 @@
   {{- $managedCluster := $managedInstance.cluster -}}
   {{- $clusterValues  := printf "../../../../02-clusters/%s/%s.yaml" $managedCluster $managedCluster | readFile | fromYaml }}
   {{- $baseDomain     := printf "svc.%s.%s" ($managedCluster) ($.Values.global.domains.external) -}}
-  {{- $extWebAddr    := printf "%s.%s" ($.Release.Namespace) ($baseDomain) -}}
+  {{- $extWebAddr     := printf "%s.%s" ($.Release.Namespace) ($baseDomain) -}}
   {{- $extApiAddr     := printf "api.%s.%s"  ($.Release.Namespace) ($baseDomain) -}}
 
   {{- $tmpDict := dict }}

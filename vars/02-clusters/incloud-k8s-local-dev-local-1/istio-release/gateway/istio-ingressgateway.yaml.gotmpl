@@ -21,7 +21,7 @@ helm-inserter:
               - "*.incloud-idp.svc.{{ .Values.global.domains.internal }}"
               - "*.incloud-netbox.svc.{{ .Values.global.domains.internal }}"
               - "*.incloud-sgroups.svc.{{ .Values.global.domains.internal }}"
-              - "*.incloud-web.svc.{{ .Values.global.domains.internal }}"
+              - "*.incloud-web.{{ .Values.global.domains.internal }}"
               - "*.incloud-argocd.svc.{{ .Values.global.domains.internal }}"
               - "*.incloud-console.svc.{{ .Values.global.domains.internal }}"
           - port:
