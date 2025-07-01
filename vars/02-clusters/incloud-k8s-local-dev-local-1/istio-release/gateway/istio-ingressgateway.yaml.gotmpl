@@ -18,23 +18,23 @@ helm-inserter:
               name: http
               protocol: HTTP
             hosts:
-              - "*.incloud-idp.svc.{{ .Values.global.domains.internal }}"
-              - "*.incloud-netbox.svc.{{ .Values.global.domains.internal }}"
-              - "*.incloud-sgroups.svc.{{ .Values.global.domains.internal }}"
-              - "*.incloud-web.{{ .Values.global.domains.internal }}"
-              - "*.incloud-argocd.svc.{{ .Values.global.domains.internal }}"
-              - "*.incloud-console.svc.{{ .Values.global.domains.internal }}"
+              - "*.incloud-idp.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-netbox.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-sgroups.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-web.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-argocd.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-console.{{ .Values.global.domains.internalSVC }}"
           - port:
               number: 443
               name: https
               protocol: HTTPS
             hosts:
-              - "*.incloud-idp.{{ .Values.global.domains.internal }}"
-              - "*.incloud-netbox.{{ .Values.global.domains.internal }}"
-              - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
-              - "*.incloud-web.{{ .Values.global.domains.internal }}"
-              - "*.incloud-argocd.{{ .Values.global.domains.internal }}"
-              - "*.incloud-console.{{ .Values.global.domains.internal }}"
+              - "*.incloud-idp.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-netbox.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-sgroups.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-web.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-argocd.{{ .Values.global.domains.internalSVC }}"
+              - "*.incloud-console.{{ .Values.global.domains.internalSVC }}"
             tls:
               mode: SIMPLE
               credentialName: {{ .Release.Name }}-cert-tls
@@ -54,11 +54,11 @@ helm-inserter:
           kind: ClusterIssuer
           name: issuer-selfsigned
         dnsNames:
-          - "*.incloud-idp.{{ .Values.global.domains.internal }}"
-          - "*.incloud-netbox.{{ .Values.global.domains.internal }}"
-          - "*.incloud-sgroups.{{ .Values.global.domains.internal }}"
-          - "*.incloud-web.{{ .Values.global.domains.internal }}"
-          - "*.incloud-argocd.{{ .Values.global.domains.internal }}"
-          - "*.incloud-console.{{ .Values.global.domains.internal }}"
+          - "*.incloud-idp.{{ .Values.global.domains.internalSVC }}"
+          - "*.incloud-netbox.{{ .Values.global.domains.internalSVC }}"
+          - "*.incloud-sgroups.{{ .Values.global.domains.internalSVC }}"
+          - "*.incloud-web.{{ .Values.global.domains.internalSVC }}"
+          - "*.incloud-argocd.{{ .Values.global.domains.internalSVC }}"
+          - "*.incloud-console.{{ .Values.global.domains.internalSVC }}"
         commonName: "{{ .Release.Namespace }}"
         secretName: {{ .Release.Name }}-cert-tls

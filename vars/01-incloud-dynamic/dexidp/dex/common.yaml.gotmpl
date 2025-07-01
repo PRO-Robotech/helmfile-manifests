@@ -1,5 +1,5 @@
 
-{{- $mainDomain       := printf "dex.%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+{{- $mainDomain       := printf "dex.%s.%s" .Release.Namespace .Values.global.domains.internalSVC -}}
 {{- $idpFQDN          := .Values.global.addresses.idp.fqdn -}}
 {{- $idpURL           := printf "%s://%s" .Values.global.addresses.idp.schema $idpFQDN -}}
 

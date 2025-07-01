@@ -1,4 +1,4 @@
-{{- $mainDomain   := printf "%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+{{- $mainDomain   := printf "%s.%s" .Release.Namespace .Values.global.domains.internalSVC -}}
 
 appSpec:
   applications:

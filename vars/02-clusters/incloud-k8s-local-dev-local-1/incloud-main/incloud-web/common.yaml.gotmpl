@@ -1,4 +1,4 @@
-{{- $internalDomain         := printf "%s.%s" .Release.Namespace .Values.global.domains.internal -}}
+{{- $internalDomain         := printf "%s.%s" .Release.Namespace .Values.global.domains.internalSVC -}}
 {{- $webAddr                := printf "incloud.%s" $internalDomain }}
 {{- $apiAddr                := printf "api.%s" $internalDomain }}
 {{- $mainClusterName        := .Values.global.clusterFullName -}}
@@ -30,14 +30,14 @@ appSpec:
       containers:
         gatekeeper:
           extraArgs:
-            discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.internal }}"
-            redirection-url:  "https://incloud.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internal }}"
+            discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.internalSVC }}"
+            redirection-url:  "https://incloud.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internalSVC }}"
 
     web:
       containers:
         bff:
           extraEnv:
-            KUBE_API_URL: "http://istio-ingressgateway.{{ .Values.global.istioNamespace}}.svc.{{ .Values.global.domains.internal }}"
+            KUBE_API_URL: "http://istio-ingressgateway.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internalSVC }}"
 
 helm-inserter:
   templates:
@@ -175,8 +175,8 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - "*.{{ .Values.global.istioNamespace}}.svc.{{ .Values.global.domains.internal }}"
-        - "*.{{ .Release.Namespace}}.svc.{{ .Values.global.domains.internal }}"
+        - "*.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internalSVC }}"
+        - "*.{{ .Release.Namespace}}.{{ .Values.global.domains.internalSVC }}"
         gateways:
         - {{ .Values.global.istioNamespace}}/istio-ingressgateway
         http:

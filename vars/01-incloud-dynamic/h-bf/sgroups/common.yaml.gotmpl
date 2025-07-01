@@ -1,4 +1,4 @@
-{{- $mainDomain := .Values.global.domains.internal -}}
+{{- $mainDomain := .Values.global.domains.internalSVC -}}
 {{- $clusterFullName := .Values.global.clusterFullName -}}
 {{- $hbfDomain  := printf "%s.%s.%s" .Release.Name .Release.Namespace $mainDomain }}
 
