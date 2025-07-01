@@ -7,9 +7,6 @@ global:
   incloudComponentsVersion: v1.0.0
   incloudRepositoryVersion: dev
   clusterNetwork: 10.244.0.0/24
-  domains:
-    external: incloud-k8s-local-dev-local-1.in-cloud.internal
-    internal: incloud-k8s-local-dev-local-1.in-cloud.internal
 
 mgmtClusters:
   - cluster: incloud-k8s-local-dev-local-1

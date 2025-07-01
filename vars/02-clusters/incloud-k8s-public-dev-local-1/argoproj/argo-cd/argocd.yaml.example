@@ -1,8 +1,0 @@
-# Файл добавлен в .gitignore
-
-configs:
-  credentialTemplates:
-    private-repo:
-      url: "https://github.com/PRO-Robotech/helmfile-manifests"
-      username: ""
-      password: ""

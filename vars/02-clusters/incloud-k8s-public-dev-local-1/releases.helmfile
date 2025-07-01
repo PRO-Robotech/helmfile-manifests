@@ -1,2 +1,0 @@
-{{ readFile "templates.yaml" }}
-releases:
