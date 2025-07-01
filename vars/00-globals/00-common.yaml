@@ -28,7 +28,7 @@ global:
 
   domains:
     external: in-cloud.internal
-    internal: cluster.local
+    internal: in-cloud.internal
 
   netbox:
     externalDB:
