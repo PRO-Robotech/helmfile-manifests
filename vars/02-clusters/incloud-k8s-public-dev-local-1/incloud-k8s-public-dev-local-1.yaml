@@ -1,7 +1,7 @@
 global:
   clusterName: incloud-k8s-public
   clusterEnv: dev
-  clusterArea: public
+  clusterArea: local
   clusterIndex: 1
   clusterVersion: v1.31.0
   incloudComponentsVersion: v1.0.0

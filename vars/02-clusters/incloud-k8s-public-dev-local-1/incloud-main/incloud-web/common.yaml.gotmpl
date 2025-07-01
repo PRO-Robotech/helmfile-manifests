@@ -175,8 +175,8 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - "*.svc.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internal }}"
-        - "*.svc.{{ .Release.Namespace}}.{{ .Values.global.domains.internal }}"
+        - "*.{{ .Values.global.istioNamespace}}.svc.{{ .Values.global.domains.internal }}"
+        - "*.{{ .Release.Namespace}}.svc.{{ .Values.global.domains.internal }}"
         gateways:
         - {{ .Values.global.istioNamespace}}/istio-ingressgateway
         http:
