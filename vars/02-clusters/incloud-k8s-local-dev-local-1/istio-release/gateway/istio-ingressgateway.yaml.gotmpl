@@ -24,6 +24,7 @@ helm-inserter:
               - "*.incloud-web.{{ .Values.global.domains.internalSVC }}"
               - "*.incloud-argocd.{{ .Values.global.domains.internalSVC }}"
               - "*.incloud-console.{{ .Values.global.domains.internalSVC }}"
+              - "*.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internalSVC }}"
           - port:
               number: 443
               name: https
@@ -35,6 +36,7 @@ helm-inserter:
               - "*.incloud-web.{{ .Values.global.domains.internalSVC }}"
               - "*.incloud-argocd.{{ .Values.global.domains.internalSVC }}"
               - "*.incloud-console.{{ .Values.global.domains.internalSVC }}"
+              - "*.{{ .Values.global.istioNamespace}}.{{ .Values.global.domains.internalSVC }}"
             tls:
               mode: SIMPLE
               credentialName: {{ .Release.Name }}-cert-tls
