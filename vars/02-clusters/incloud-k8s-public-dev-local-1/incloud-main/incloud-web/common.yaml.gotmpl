@@ -31,7 +31,7 @@ appSpec:
         gatekeeper:
           extraArgs:
             discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.internal }}"
-            redirection-url:  "https://incloud.incloud-istio.{{ .Values.global.domains.internal }}"
+            redirection-url:  "https://incloud.incloud-istio.svc.{{ .Values.global.domains.internal }}"
 
     web:
       containers:

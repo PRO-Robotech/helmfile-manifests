@@ -21,6 +21,7 @@ environments:
     - {{ printf "%s/vars/02-clusters/%s/common.yaml" (exec "pwd" (list) | trim) (requiredEnv "CLUSTER_NAME") }}
     - {{ printf "%s/vars/02-clusters/%s/common-%s.yaml" (exec "pwd" (list) | trim) (requiredEnv "CLUSTER_NAME") (.Environment.Name) }}
     - {{ printf "%s/vars/02-clusters/%s-%s-%s-%s/common.yaml" (exec "pwd" (list) | trim) ( requiredEnv "CLUSTER_NAME" ) ( env "CLUSTER_ENV" ) ( env "CLUSTER_AREA" ) ( env "CLUSTER_INDEX" ) }}
+    - {{ printf "%s/vars/02-clusters/%s-%s-%s-%s/%s-%s-%s-%s.yaml" (exec "pwd" (list) | trim) ( requiredEnv "CLUSTER_NAME" ) ( env "CLUSTER_ENV" ) ( env "CLUSTER_AREA" ) ( env "CLUSTER_INDEX" ) ( requiredEnv "CLUSTER_NAME" ) ( env "CLUSTER_ENV" ) ( env "CLUSTER_AREA" ) ( env "CLUSTER_INDEX" ) }}
     - {{ printf "%s/vars/02-clusters/%s/common-%s.yaml" (exec "pwd" (list) | trim) (requiredEnv "CLUSTER_NAME") (.Environment.Name) }}
   test:
     missingFileHandler: *common_missingFileHandler

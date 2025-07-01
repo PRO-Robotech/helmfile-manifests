@@ -17,22 +17,6 @@ postgresql:
 redis:
   auth:
     password: "P8SeOy490Y" # Нужно или отключить авторизацию или указать пароль, чтобы не начинался редеплой при синке в арго
-  master:
-    resources:
-      requests:
-        cpu: 500m
-        memory: 128Mi
-      limits:
-        cpu: 1500m
-        memory: 256Mi
-  replica:
-    resources:
-      requests:
-        cpu: 500m
-        memory: 128Mi
-      limits:
-        cpu: 1500m
-        memory: 256Mi
 
 worker:
   enabled: false
@@ -51,8 +35,6 @@ readinessProbe:
 
 startupProbe:
   enabled: false
-
-replicaCount: 3
 
 metrics:
   enabled: true

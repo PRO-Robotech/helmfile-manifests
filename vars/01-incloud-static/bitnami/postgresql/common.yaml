@@ -1,7 +1,15 @@
 primary:
   persistence:
-    enabled: true
     size: 2Gi
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
 readReplicas:
   persistence:
     enabled: false

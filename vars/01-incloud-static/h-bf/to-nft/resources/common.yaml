@@ -1,10 +1,10 @@
 appSpec:
   applications:
-    netguard:
+    agent:
       containers:
-        manager:
+        agent:
           # image:
-          #   repository: sgroups/sgroups.k8s.netguard
+          #   repository: sgroups/sgroups.to-nft
           #   tag: ""
           extraResources:
             limits:

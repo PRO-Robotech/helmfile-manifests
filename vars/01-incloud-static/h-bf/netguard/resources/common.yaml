@@ -3,9 +3,6 @@ appSpec:
     ipamprovider:
       containers:
         manager:
-          # image:
-          #   repository: ""
-          #   tag: ""
           extraResources:
             limits:
               cpu: 200m

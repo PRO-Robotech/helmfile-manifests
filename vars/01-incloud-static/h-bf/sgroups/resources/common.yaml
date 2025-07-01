@@ -1,27 +1,6 @@
 appSpec:
   applications:
     server:
-      replicas: 1
-      volumes:
-        configurationServerFile:
-          volume:
-            mode: configMap
-            name: server-config
-            payload:
-              format: json
-              content:
-                server:
-                  api-path-prefix: apis/proxy.sgroups.io/v1alpha1
-                authn:
-                  type: tls
-                  tls:
-                    key-file: "/opt/h-bf/sgroups/tls/tls.key"
-                    cert-file: "/opt/h-bf/sgroups/tls/tls.crt"
-                    client:
-                      verify: skip
-                      ca-files:
-                        - "/opt/h-bf/sgroups/tls/ca.crt"
-                        - "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
       containers:
         server:
           # image:
