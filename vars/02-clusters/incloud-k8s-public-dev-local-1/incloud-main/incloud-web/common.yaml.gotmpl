@@ -65,7 +65,7 @@ helm-inserter:
         name: {{ $.Release.Name }}-{{ .name }}-dr-local
         namespace: {{ $.Release.Namespace }}
       spec:
-        host: istio-ingressgateway.{{ .Values.global.istioNamespace}}.svc
+        host: istio-ingressgateway.{{ $.Values.global.istioNamespace}}.svc
         trafficPolicy:
           tls:
             insecureSkipVerify: true
