@@ -31,13 +31,13 @@ appSpec:
         gatekeeper:
           extraArgs:
             discovery-url:    "https://dex.incloud-idp.{{ .Values.global.domains.internal }}"
-            redirection-url:  "https://incloud.incloud-istio.{{ .Values.global.domains.internal }}"
+            redirection-url:  "https://incloud.{{ .global.istioNamespace}}.{{ .Values.global.domains.internal }}"
 
     web:
       containers:
         bff:
           extraEnv:
-            KUBE_API_URL: "http://istio-ingressgateway.incloud-istio.svc.{{ .Values.global.domains.internal }}"
+            KUBE_API_URL: "http://istio-ingressgateway.{{ .global.istioNamespace}}.svc.{{ .Values.global.domains.internal }}"
 
 helm-inserter:
   templates:
@@ -65,7 +65,7 @@ helm-inserter:
         name: {{ $.Release.Name }}-{{ .name }}-dr-local
         namespace: {{ $.Release.Namespace }}
       spec:
-        host: istio-ingressgateway.incloud-istio.svc
+        host: istio-ingressgateway.{{ .global.istioNamespace}}.svc
         trafficPolicy:
           tls:
             insecureSkipVerify: true
@@ -117,7 +117,7 @@ helm-inserter:
         namespace: {{ $.Release.Namespace }}
       spec:
         hosts:
-          - istio-ingressgateway.incloud-istio.svc
+          - istio-ingressgateway.{{ .global.istioNamespace}}.svc
           - kubernetes.default.svc
         location: MESH_EXTERNAL
         ports:
@@ -154,7 +154,7 @@ helm-inserter:
         hosts:
         - test.com # {{ $webAddr }}
         gateways:
-        - incloud-istio/istio-ingressgateway
+        - {{ .global.istioNamespace}}/istio-ingressgateway
         http:
         - name: incloud
           match:
@@ -175,10 +175,10 @@ helm-inserter:
         namespace: {{ .Release.Namespace }}
       spec:
         hosts:
-        - "*.{{ .Release.Namespace}}.{{ .Values.global.domains.internal }}"
-        - "*.incloud-istio.svc.cluster.local"
+        - "*.svc.{{ .global.istioNamespace}}.{{ .Values.global.domains.internal }}"
+        - "*.svc.{{ .Release.Namespace}}.{{ .Values.global.domains.internal }}"
         gateways:
-        - incloud-istio/istio-ingressgateway
+        - {{ .global.istioNamespace}}/istio-ingressgateway
         http:
 
         - name: bff-ws
@@ -226,7 +226,7 @@ helm-inserter:
               port:
                 number: 443
           {{- if eq (.name) ($mainClusterName) }}
-              host: istio-ingressgateway.incloud-istio.svc
+              host: istio-ingressgateway.{{ .global.istioNamespace}}.svc
           {{- else }}
               host: {{ .api }}
             headers:
