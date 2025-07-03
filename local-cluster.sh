@@ -118,19 +118,19 @@ EOF
 # kubectl apply -f ./charts/istio-release/base-${ISTIO_VERSION}/base/files/crd-all.gen.yaml
 
 
-# echo ""
-# echo "--- templating argocd"
-# helmfile \
-#   -e ${CLUSTER_ENV} \
-#   --kube-version=${K8S_VERSION} \
-#   -l incloud-collections=argocd \
-#   template > ${TMP_DIR}/argocd.yaml
-# echo "--- deploy argocd"
-# kubectl create ns incloud-argocd
-# kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-# kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
-# kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
-# kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
+echo ""
+echo "--- templating argocd"
+helmfile \
+  -e ${CLUSTER_ENV} \
+  --kube-version=${K8S_VERSION} \
+  -l incloud-collections=argocd \
+  template > ${TMP_DIR}/argocd.yaml
+echo "--- deploy argocd"
+kubectl create ns incloud-argocd
+kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+kubectl -n incloud-argocd wait deployment/argocd-repo-server --for=jsonpath='{.status.availableReplicas}'=1 --timeout=300s
+kubectl -n incloud-argocd apply -f ${TMP_DIR}/argocd.yaml
+kubectl -n incloud-argocd wait job/argocd-redis-secret-init --for=jsonpath='{.status.succeeded}'=1 --timeout=180s
 
 
 echo ""
