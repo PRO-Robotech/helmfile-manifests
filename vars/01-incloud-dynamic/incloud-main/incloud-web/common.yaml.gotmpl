@@ -3166,6 +3166,14 @@ helm-inserter:
         - apiVersion: front.in-cloud.io/v1alpha1
           kind: Sidebar
           metadata:
+            name: inside-cluster-apis
+          spec:
+            menuItems: *ClusterMenuItems
+            id: inside-cluster-apis
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
             name: inside-cluster-crd-table
           spec:
             menuItems: *ClusterMenuItems
@@ -3182,6 +3190,116 @@ helm-inserter:
           kind: Sidebar
           metadata:
             name: inside-cluster-projects-form
+          spec:
+            menuItems: &ClusterMenuItems
+              - key: home
+                label: Home
+                children:
+                  - key: projects
+                    label: Projects
+                    link: /openapi-ui/inside/{clusterName}/api-table/in-cloud.io/v1alpha1/projects
+
+
+              - key: storage
+                label: Storage
+                children:
+                  - key: persistentvolumes
+                    label: PersistentVolumes
+                    link: /openapi-ui/inside/{clusterName}/builtin-table/persistentvolumes
+                  - key: storageclasses
+                    label: StorageClasses
+                    link: /openapi-ui/inside/{clusterName}/api-table/storage.k8s.io/v1/storageclasses
+
+              - key: compute
+                label: Compute
+                children:
+                  - key: nodes
+                    label: Nodes
+                    link: /openapi-ui/inside/{clusterName}/builtin-table/nodes
+
+              - key: usermanagement
+                label: User Management
+                children:
+                  - key: clusterroles
+                    label: ClusterRoles
+                    link: /openapi-ui/inside/{clusterName}/api-table/rbac.authorization.k8s.io/v1/clusterroles
+                  - key: clusterrolebindings
+                    label: ClusterRoleBindings
+                    link: /openapi-ui/inside/{clusterName}/api-table/rbac.authorization.k8s.io/v1/clusterrolebindings
+
+
+              - key: administration
+                label: Administration
+                children:
+                  - key: namespaces
+                    label: Namespaces
+                    link: /openapi-ui/inside/{clusterName}/builtin-table/namespaces
+                  - key: customresourcedefinitions
+                    label: CustomResourceDefinitions
+                    link: /openapi-ui/inside/{clusterName}/api-table/apiextensions.k8s.io/v1/customresourcedefinitions
+
+
+              - key: hbf
+                label: HBF
+                children:
+                  - key: networks
+                    label: Networks
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/networks
+                  - key: addressgroups
+                    label: AddressGroups
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/addressgroups
+                  - key: networkbindings
+                    label: NetworkBindings
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/networkbindings
+                  - key: ieagagrules
+                    label: RuleAG2AG
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/ieagagrules
+                  - key: services
+                    label: Services
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/services
+                  - key: servicealiases
+                    label: ServiceAliases
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/servicealiases
+                  - key: addressgroupbindings
+                    label: AddressGroupBindings
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/addressgroupbindings
+                  - key: rules2ses
+                    label: RuleS2S
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/rules2ses
+                  - key: addressgroupportmappings
+                    label: AddressGroupPortMappings
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/addressgroupportmappings
+
+            id: inside-cluster-projects-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: inside-cluster-builtin-form
+          spec:
+            menuItems: *ClusterMenuItems
+            id: inside-cluster-builtin-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: inside-cluster-api-form
+          spec:
+            menuItems: *ClusterMenuItems
+            id: inside-cluster-api-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: inside-cluster-crd-form
+          spec:
+            menuItems: *ClusterMenuItems
+            id: inside-cluster-crd-form
+
+        - apiVersion: front.in-cloud.io/v1alpha1
+          kind: Sidebar
+          metadata:
+            name: stock-namespace-apis
           spec:
             menuItems: &ClusterMenuItems
               - key: home
@@ -3260,46 +3378,6 @@ helm-inserter:
                     link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1beta1/rules2ses
                   - key: addressgroupportmappings
                     label: AddressGroupPortMappings
-                    link: /openapi-ui/{clusterName}/{namespace}/api-table/netguard.sgroups.io/v1beta1/addressgroupportmappings
+                    link: /openapi-ui/{clusterName}/api-table/netguard.sgroups.io/v1beta1/addressgroupportmappings
 
-            id: inside-cluster-projects-form
-
-        - apiVersion: front.in-cloud.io/v1alpha1
-          kind: Sidebar
-          metadata:
-            name: inside-cluster-builtin-form
-          spec:
-            menuItems: *ClusterMenuItems
-            id: inside-cluster-builtin-form
-
-        - apiVersion: front.in-cloud.io/v1alpha1
-          kind: Sidebar
-          metadata:
-            name: inside-cluster-api-form
-          spec:
-            menuItems: *ClusterMenuItems
-            id: inside-cluster-api-form
-
-        - apiVersion: front.in-cloud.io/v1alpha1
-          kind: Sidebar
-          metadata:
-            name: inside-cluster-crd-form
-          spec:
-            menuItems: *ClusterMenuItems
-            id: inside-cluster-crd-form
-
-        - apiVersion: front.in-cloud.io/v1alpha1
-          kind: Sidebar
-          metadata:
-            name: inside-cluster-apis
-          spec:
-            menuItems: *ClusterMenuItems
-            id: inside-cluster-apis
-
-        - apiVersion: front.in-cloud.io/v1alpha1
-          kind: Sidebar
-          metadata:
-            name: stock-namespace-apis
-          spec:
-            menuItems: *ClusterMenuItems
             id: inside-namespace-apis
