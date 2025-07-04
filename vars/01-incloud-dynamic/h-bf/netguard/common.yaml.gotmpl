@@ -282,7 +282,7 @@ helm-inserter:
           - - spec
             - serviceRef
             - kind
-        overrideType: netguard.sgroups.io/v1alpha1/addressgroupbindings
+        customizationId: default-/netguard.sgroups.io/v1alpha1/addressgroupbindings
         schema:
           properties:
             spec:
@@ -399,7 +399,7 @@ helm-inserter:
           - - spec
             - serviceRef
             - kind
-        overrideType: netguard.sgroups.io/v1alpha1/rules2ses
+        customizationId: default-/netguard.sgroups.io/v1alpha1/rules2ses
         schema:
           properties:
             spec:
@@ -538,7 +538,7 @@ helm-inserter:
           - - spec
             - serviceRef
             - kind
-        overrideType: netguard.sgroups.io/v1alpha1/servicealiases
+        customizationId: default-/netguard.sgroups.io/v1alpha1/servicealiases
         schema:
           properties:
             spec:
@@ -639,7 +639,7 @@ helm-inserter:
             - serviceRef
             - kind
           - - addressGroups
-        overrideType: netguard.sgroups.io/v1alpha1/services
+        customizationId: default-/netguard.sgroups.io/v1alpha1/services
         schema:
           properties:
             addressGroups:
@@ -695,14 +695,14 @@ helm-inserter:
               type: object
         strategy: merge
 
-    CCPAddressGroupBindings: |
+    CFPAddressGroupBindings: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomFormsPrefill
       metadata:
         name: netguard.sgroups.io.v1alpha1.addressgroupbindings
       spec:
-        overrideType: netguard.sgroups.io/v1alpha1/addressgroupbindings
+        customizationId: default-/netguard.sgroups.io/v1alpha1/addressgroupbindings
         values:
           - path:
               - metadata
@@ -729,14 +729,14 @@ helm-inserter:
               - kind
             value: Service
 
-    CCPRuleS2S: |
+    CFPRuleS2S: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomFormsPrefill
       metadata:
         name: netguard.sgroups.io.v1alpha1.rules2ses
       spec:
-        overrideType: netguard.sgroups.io/v1alpha1/rules2ses
+        customizationId: default-/netguard.sgroups.io/v1alpha1/rules2ses
         values:
           - path:
               - metadata
@@ -767,14 +767,14 @@ helm-inserter:
               - traffic
             value: ingress
 
-    CCPServiceAliases: |
+    CFPServiceAliases: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomFormsPrefill
       metadata:
         name: netguard.sgroups.io.v1alpha1.servicealiases
       spec:
-        overrideType: netguard.sgroups.io/v1alpha1/servicealiases
+        customizationId: default-/netguard.sgroups.io/v1alpha1/servicealiases
         values:
           - path:
               - spec
@@ -787,14 +787,14 @@ helm-inserter:
               - kind
             value: Service
 
-    CCPServices: |
+    CFPServices: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomFormsPrefill
       metadata:
         name: netguard.sgroups.io.v1alpha1.services
       spec:
-        overrideType: netguard.sgroups.io/v1alpha1/services
+        customizationId: default-/netguard.sgroups.io/v1alpha1/services
         values:
           - path:
               - metadata

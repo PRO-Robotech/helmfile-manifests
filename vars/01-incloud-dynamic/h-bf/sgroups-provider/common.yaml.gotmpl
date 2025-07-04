@@ -164,7 +164,7 @@ helm-inserter:
       metadata:
         name: provider.sgroups.io.v1alpha1.addressgroups
       spec:
-        overrideType: provider.sgroups.io/v1alpha1/addressgroups
+        customizationId: default-/provider.sgroups.io/v1alpha1/addressgroups
         values:
           - path:
               - metadata
@@ -190,7 +190,7 @@ helm-inserter:
       metadata:
         name: provider.sgroups.io.v1alpha1.ieagagrules
       spec:
-        overrideType: provider.sgroups.io/v1alpha1/ieagagrules
+        customizationId: default-/provider.sgroups.io/v1alpha1/ieagagrules
         values:
           - path:
               - metadata
@@ -240,7 +240,7 @@ helm-inserter:
       metadata:
         name: provider.sgroups.io.v1alpha1.iecidragrules
       spec:
-        overrideType: provider.sgroups.io/v1alpha1/iecidragrules
+        customizationId: default-/provider.sgroups.io/v1alpha1/iecidragrules
         values:
           - path:
               - metadata
@@ -280,7 +280,7 @@ helm-inserter:
       metadata:
         name: provider.sgroups.io.v1alpha1.networkbindings
       spec:
-        overrideType: provider.sgroups.io/v1alpha1/networkbindings
+        customizationId: default-/provider.sgroups.io/v1alpha1/networkbindings
         values:
           - path:
               - metadata
@@ -314,7 +314,7 @@ helm-inserter:
       metadata:
         name: provider.sgroups.io.v1alpha1.networks
       spec:
-        overrideType: provider.sgroups.io/v1alpha1/networks
+        customizationId: default-/provider.sgroups.io/v1alpha1/networks
         values:
           - path:
               - metadata
@@ -363,7 +363,7 @@ helm-inserter:
             - selfLink
           - - metadata
             - uid
-        overrideType: provider.sgroups.io/v1alpha1/addressgroups
+        customizationId: default-/provider.sgroups.io/v1alpha1/addressgroups
         schema: {}
         strategy: merge
 
@@ -401,7 +401,7 @@ helm-inserter:
           - - spec
             - addressGroupLocal
             - namespace
-        overrideType: provider.sgroups.io/v1alpha1/ieagagrules
+        customizationId: default-/provider.sgroups.io/v1alpha1/ieagagrules
         schema:
           properties:
             spec:
@@ -557,7 +557,7 @@ helm-inserter:
           - - spec
             - addressGroup
             - namespace
-        overrideType: provider.sgroups.io/v1alpha1/iecidragrules
+        customizationId: default-/provider.sgroups.io/v1alpha1/iecidragrules
         schema:
           properties:
             spec:
@@ -675,7 +675,7 @@ helm-inserter:
           - - spec
             - networkRef
             - kind
-        overrideType: provider.sgroups.io/v1alpha1/networkbindings
+        customizationId: default-/provider.sgroups.io/v1alpha1/networkbindings
         schema:
           properties:
             spec:
@@ -726,6 +726,6 @@ helm-inserter:
           - - kind
           - - status
           - - metadata
-        overrideType: provider.sgroups.io/v1alpha1/networks
+        customizationId: default-/provider.sgroups.io/v1alpha1/networks
         schema: {}
         strategy: merge
