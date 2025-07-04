@@ -25,9 +25,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-list
+        name: stock-cluster-projects-list
       spec:
-        pathToMatch: "/openapi-ui/clusters/:clusterName"
+        id: "stock-cluster-projects-list"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -40,14 +40,14 @@ helm-inserter:
         - key: projects
           label: "Projects"
 
-    BreadcrumbBuildInTable: |
+    BreadcrumbClusterBuiltInTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-buildin-table
+        name: stock-cluster-builtin-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/builtin-table/:typeName"
+        id: "stock-cluster-builtin-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -61,14 +61,14 @@ helm-inserter:
         - key: builtin
           label: "{typeName}"
 
-    BreadcrumbApiTable: |
+    BreadcrumbClusterApiTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-api-buildin-table
+        name: stock-cluster-api-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/api-table/:apiGroup/:apiVersion/:typeName"
+        id: "stock-cluster-api-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -82,14 +82,14 @@ helm-inserter:
         - key: api
           label: "{typeName}"
 
-    BreadcrumbCRDsTable: |
+    BreadcrumbClusterCrdTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-crds-table
+        name: stock-cluster-crd-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/crds/:apiGroup/:apiVersion/:typeName"
+        id: "stock-cluster-crd-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -103,14 +103,14 @@ helm-inserter:
         - key: crds
           label: "{typeName}"
 
-    BreadcrumbInstanceList: |
+    BreadcrumbProjectApiTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-list
+        name: stock-project-api-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/in-cloud.io/v1alpha1/instances"
+        id: "stock-project-api-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -126,41 +126,17 @@ helm-inserter:
         - key: project
           label: "{namespace}"
           link: "/openapi-ui/clusters/{clusterName}/projects/{namespace}"
-        - key: instances
-          label: "instances"
-
-    BreadcrumbProject: |
-      ---
-      apiVersion: front.in-cloud.io/v1alpha1
-      kind: Breadcrumb
-      metadata:
-        name: project
-      spec:
-        pathToMatch: "/openapi-ui/clusters/:clusterName/projects/:namespace"
-        breadcrumbItems:
-        - key: In-Cloud
-          label: In-Cloud
-          link: "/openapi-ui"
-        - key: clusterList
-          label: "Cluster List"
-          link: "/openapi-ui/clusters"
-        - key: cluster
-          label: "{clusterName}"
-          link: "/openapi-ui/clusters/{clusterName}"
-        - key: projects
-          label: "Projects"
-          link: "/openapi-ui/clusters/{clusterName}"
-        - key: project
-          label: "{namespace}"
+        - key: typeName
+          label: "{typeName}"
 
     BreadcrumbProjectFactory: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-factory
+        name: factory-project
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/factory/project/:namespace"
+        id: "stock-project-factory-project""
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -177,14 +153,14 @@ helm-inserter:
         - key: project
           label: "{namespace}"
 
-    BreadcrumbProjectAPIs: |
+    BreadcrumbProjectApiForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-apis
+        name: stock-project-api-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName"
+        id: "stock-project-api-form"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -207,14 +183,14 @@ helm-inserter:
         - key: create-api-res-namespaced-typename
           label: Create
 
-    BreadcrumbInstanceAPIs: |
+    BreadcrumbInstanceApiForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-apis
+        name: stock-instance-api-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/:apiGroup/:apiVersion/:typeName"
+        id: "stock-instance-api-form"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -243,14 +219,14 @@ helm-inserter:
         - key: create-api-res-namespaced-typename
           label: Create
 
-    BreadcrumbProjectEdit: |
+    BreadcrumbProjectApiFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-edit
+        name: stock-project-api-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "stock-project-api-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -273,14 +249,14 @@ helm-inserter:
         - key: create-api-res-namespaced-typename
           label: Update {entryName}
 
-    BreadcrumbInstanceEdit: |
+    BreadcrumbInstanceApiFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-edit
+        name: stock-instance-api-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "stock-instance-api-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -309,15 +285,15 @@ helm-inserter:
         - key: create-api-res-namespaced-typename
           label: Update {entryName}
 
-    BreadcrumbProjectBuildIn: |
+    BreadcrumbProjectBuiltInForm: |
       ---
       # form builtin project
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-buildin
+        name: stock-project-builtin-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName"
+        id: "stock-project-builtin-form"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -340,14 +316,14 @@ helm-inserter:
         - key: create-builtin-res-namespaced-typename
           label: Create
 
-    BreadcrumbInstanceBuildIn: |
+    BreadcrumbInstanceBuiltInForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-buildin
+        name: stock-instance-builtin-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/builtin/:apiVersion/:typeName"
+        id: "stock-instance-builtin-form"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -370,14 +346,14 @@ helm-inserter:
         - key: create-builtin-res-namespaced-typename
           label: Create
 
-    BreadcrumbProjectBuildInEdit: |
+    BreadcrumbProjectBuiltInFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-buildin-edit
+        name: stock-project-builtin-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName/:entryName"
+        id: "stock-project-builtin-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -400,14 +376,14 @@ helm-inserter:
         - key: create-builtin-res-namespaced-typename
           label: Update3 {entryName}
 
-    BreadcrumbInstanceBuildInEdit: |
+    BreadcrumbInstanceBuiltInFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-buildin-edit
+        name: stock-instance-builtin-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/builtin/:apiVersion/:typeName/:entryName"
+        id: "stock-instance-builtin-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -436,14 +412,14 @@ helm-inserter:
         - key: create-builtin-res-namespaced-typename
           label: Update4 {entryName}
 
-    BreadcrumbProjectCRDForm: |
+    BreadcrumbProjectCrdForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-crd-form
+        name: stock-project-crd-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName"
+        id: "stock-project-crd-form"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -466,15 +442,15 @@ helm-inserter:
         - key: create-crd-res-namespaced-typename
           label: Create
 
-    BreadcrumbInstanceCRDForm: |
+    BreadcrumbInstanceCrdForm: |
       ---
       # form crds instance
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-crd-form
+        name: stock-instance-crd-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/crds/:apiGroup/:apiVersion/:typeName"
+        id: "stock-instance-crd-form"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -503,14 +479,14 @@ helm-inserter:
         - key: create-crd-res-namespaced-typename
           label: Create6
 
-    BreadcrumbProjectCRDEdit: |
+    BreadcrumbProjectCrdFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-crd-edit
+        name: stock-instance-crd-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "stock-instance-crd-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -533,14 +509,14 @@ helm-inserter:
         - key: create-crd-res-namespaced-typename
           label: Update5 {entryName}
 
-    BreadcrumbInstanceCRDEdit: |
+    BreadcrumbInstanceCrdFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
         name: instance-crd-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "/openapi-ui/:clusterName/:namespace/:syntheticProject/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -569,14 +545,14 @@ helm-inserter:
         - key: create-crd-res-namespaced-typename
           label: Update6 {entryName}
 
-    BreadcrumbInstanceCRDTable: |
+    BreadcrumbInstanceCrdTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-crd-table
+        name: stock-instance-crd-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        id: "stock-instance-crd-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -602,15 +578,15 @@ helm-inserter:
         - key: crd
           label: "{crdName}"
 
-    BreadcrumbInstanceNonCRDTable: |
+    BreadcrumbInstanceApiTable: |
       ---
       # non crd table instance
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-non-crd-table
+        name: stock-instance-api-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/api-table/:apiGroup/:apiVersion/:typeName"
+        id: "stock-instance-api-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -636,14 +612,14 @@ helm-inserter:
         - key: noncrd
           label: "{typeName}"
 
-    BreadcrumbInstanceBuildInTable: |
+    BreadcrumbInstanceBuiltInTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: instance-buildin-table
+        name: stock-instance-builtin-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/:syntheticProject/builtin-table/:typeName"
+        id: "stock-instance-builtin-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -669,14 +645,14 @@ helm-inserter:
         - key: builtin
           label: "{typeName}"
 
-    BreadcrumbProjectCRDTable: |
+    BreadcrumbProjectCrdTable: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-crd-table
+        name: stock-project-crd-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        id: "stock-project-crd-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -696,15 +672,15 @@ helm-inserter:
         - key: crd
           label: "{crdName}"
 
-    BreadcrumbInstanceNonCRDForm: |
+    BreadcrumbInstanceApiForm: |
       ---
       # crd table project
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-non-crd-table
+        name: stock-project-api-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/:apiGroup/:apiVersion/:typeName"
+        id: "stock-project-api-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -724,15 +700,15 @@ helm-inserter:
         - key: noncrd
           label: "{typeName}"
 
-    BreadcrumbProjectBuildInTable: |
+    BreadcrumbProjectBuiltInTable: |
       ---
       # builtin table project
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: project-buildin-table
+        name: stock-project-builtin-table
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/builtin-table/:typeName"
+        id: "stock-project-builtin-table"
         breadcrumbItems:
         - key: In-Cloud
           label: In-Cloud
@@ -752,14 +728,14 @@ helm-inserter:
         - key: builtin
           label: "{typeName}"
 
-    BreadcrumbClusterAPIsForm: |
+    BreadcrumbClusterApiForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-apis-form
+        name: stock-cluster-api-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName"
+        id: "stock-cluster-api-form"
         breadcrumbItems:
         - key: in-cloud
           label: In-Cloud
@@ -776,14 +752,14 @@ helm-inserter:
         - key: create-api-res-typename
           label: Create
 
-    BreadcrumbClusterAPIsEdit: |
+    BreadcrumbClusterApiFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-apis-edit
+        name: stock-cluster-api-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "stock-cluster-api-form-edit"
         breadcrumbItems:
         - key: in-cloud
           label: In-Cloud
@@ -800,14 +776,14 @@ helm-inserter:
         - key: create-api-res-typename
           label: Update {entryName}
 
-    BreadcrumbClusterBuildInForm: |
+    BreadcrumbClusterBuiltInForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-buildin-form
+        name: stock-cluster-builtin-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName"
+        id: "stock-cluster-builtin-form"
         breadcrumbItems:
         - key: in-cloud
           label: In-Cloud
@@ -821,14 +797,14 @@ helm-inserter:
         - key: create-builtin-res-typename
           label: Create
 
-    BreadcrumbClusterBuildInEdit: |
+    BreadcrumbClusterBuiltInFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-buildin-edit
+        name: stock-cluster-builtin-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/forms/builtin/:apiVersion/:typeName/:entryName"
+        id: "stock-cluster-builtin-form-edit"
         breadcrumbItems:
         - key: in-cloud
           label: In-Cloud
@@ -842,14 +818,14 @@ helm-inserter:
         - key: create-builtin-res-typename
           label: Update {entryName}
 
-    BreadcrumbClusterCRDForm: |
+    BreadcrumbClusterCrdForm: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-crd-form
+        name: stock-cluster-crd-form
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        id: "stock-cluster-crd-form"
         breadcrumbItems:
         - key: in-cloud
           label: In-Cloud
@@ -863,14 +839,14 @@ helm-inserter:
         - key: create-crd-res-typename
           label: Create
 
-    BreadcrumbClusterCRDEdit: |
+    BreadcrumbClusterCrdFormEdit: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: Breadcrumb
       metadata:
-        name: cluster-crd-edit
+        name: stock-cluster-crd-form-edit
       spec:
-        pathToMatch: "/openapi-ui/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "stock-cluster-crd-form-edit"
         breadcrumbItems:
         - key: in-cloud
           label: In-Cloud
@@ -1144,7 +1120,7 @@ helm-inserter:
             - selfLink
           - - metadata
             - uid
-        overrideType: in-cloud.io/v1alpha1/instances
+        customizationId: default-/in-cloud.io/v1alpha1/instances
         schema: {}
         strategy: merge
 
@@ -1212,7 +1188,7 @@ helm-inserter:
             - selfLink
           - - metadata
             - uid
-        overrideType: in-cloud.io/v1alpha1/projects
+        customizationId: default-/in-cloud.io/v1alpha1/projects
         schema: {}
         strategy: merge
 
@@ -1523,7 +1499,7 @@ helm-inserter:
       metadata:
         name: projects
       spec:
-        overrideType: in-cloud.io/v1alpha1/projects
+        customizationId: default-/in-cloud.io/v1alpha1/projects
         values:
         - path:
           - metadata
@@ -1577,7 +1553,7 @@ helm-inserter:
       metadata:
         name: instances
       spec:
-        overrideType: in-cloud.io/v1alpha1/instances
+        customizationId: default-/in-cloud.io/v1alpha1/instances
         values:
         - path:
           - metadata
@@ -1633,9 +1609,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0011-000000000001
+        name: inside-cluster-apis
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/apis"
+        id: "inside-cluster-apis"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1649,9 +1625,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0011-000000000002
+        name: inside-namespace-apis
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/apis"
+        id: "inside-namespace-apis"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1662,15 +1638,15 @@ helm-inserter:
         - key: namespace
           label: "namespace: {namespace}"
 
-    BCIInsideCRDByApiCluster: |
+    BCIInsideCrdByApiCluster: |
       ---
       # inside apis: crds by api
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0011-000000000003
+        name: inside-cluster-crd-by-api
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion"
+        id: "inside-cluster-crd-by-api"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1687,9 +1663,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0011-000000000004
+        name: inside-namespace-crd-by-api
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion"
+        id: "inside-namespace-crd-by-api"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1709,9 +1685,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0011-000000000005
+        name: inside-cluster-api-by-api
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/apis-by-api/:apiGroup/:apiVersion/"
+        id: "inside-cluster-api-by-api"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1728,9 +1704,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0011-000000000006
+        name: inside-namespace-api-by-api
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/apis-by-api/:apiGroup/:apiVersion/"
+        id: "inside-namespace-api-by-api"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1744,15 +1720,15 @@ helm-inserter:
         - key: apis-by-api
           label: "APIs by API: {apiGroup}/{apiVersion}"
 
-    BCIFormApisNamespace: |
+    BCIFormApiNamespace: |
       ---
       # form apis project
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000011
+        name: inside-namespace-api-form
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName"
+        id: "inside-namespace-api-form"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1769,15 +1745,15 @@ helm-inserter:
         - key: create-api-res-namespaced-typename
           label: Create
 
-    BCIFormApisNamespaceEdit: |
+    BCIFormApiNamespaceEdit: |
       ---
       # form apis project: edit
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000012
+        name: inside-namespace-api-form-edit
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "inside-namespace-api-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1800,9 +1776,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000021
+        name: inside-namespace-builtin-form
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName"
+        id: "inside-namespace-builtin-form"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1825,9 +1801,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000023
+        name: inside-namespace-builtin-form-edit
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/builtin/:apiVersion/:typeName/:entryName"
+        id: "inside-namespace-builtin-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1844,15 +1820,15 @@ helm-inserter:
         - key: create-builtin-res-namespaced-typename
           label: Update {entryName}
 
-    BCIFormCRDNamespace: |
+    BCIFormCrdNamespace: |
       ---
       # form crds project
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000031
+        name: inside-namespace-crd-form
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        id: "inside-namespace-crd-form"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1869,15 +1845,15 @@ helm-inserter:
         - key: create-crd-res-namespaced-typename
           label: Create
 
-    BCIFormCRDNamespaceEdit: |
+    BCIFormCrdNamespaceEdit: |
       ---
       # form crds project: edit
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000033
+        name: inside-namespace-crd-form-edit
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "inside-namespace-crd-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1894,15 +1870,15 @@ helm-inserter:
         - key: create-crd-res-namespaced-typename
           label: Update {entryName}
 
-    BCICRDTableNamespace: |
+    BCICrdTableNamespace: |
       ---
       # crd table project
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000042
+        name: inside-namespace-crd-table
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        id: "inside-namespace-crd-table"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1922,9 +1898,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000044
+        name: inside-namespace-api-table
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/api-table/:apiGroup/:apiVersion/:typeName"
+        id: "inside-namespace-api-table"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1944,9 +1920,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000045
+        name: inside-namespace-builtin-table
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/:namespace/builtin-table/:typeName"
+        id: "inside-namespace-builtin-table"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1960,15 +1936,15 @@ helm-inserter:
         - key: builtin
           label: "{typeName}"
 
-    BCIFormApistCluster: |
+    BCIFormApiCluster: |
       ---
       # form apis cluster
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0001-000000000011
+        name: inside-cluster-api-form
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName"
+        id: "inside-cluster-api-form"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -1982,15 +1958,15 @@ helm-inserter:
         - key: create-api-res-typename
           label: Create
 
-    BCIFormApisClusterEdit: |
+    BCIFormApiClusterEdit: |
       ---
       # form apis cluster: edit
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0001-000000000012
+        name: inside-cluster-api-form-edit
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "inside-cluster-api-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2010,9 +1986,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0001-000000000021
+        name: inside-cluster-builtin-form
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/forms/builtin/:apiVersion/:typeName"
+        id: "inside-cluster-builtin-form"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2032,9 +2008,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0001-000000000023
+        name: inside-cluster-builtin-form-edit
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/forms/builtin/:apiVersion/:typeName/:entryName"
+        id: "inside-cluster-builtin-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2054,9 +2030,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0001-000000000031
+        name: inside-cluster-crd-form
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/"
+        id: "inside-cluster-crd-form"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2076,9 +2052,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0001-000000000033
+        name: inside-cluster-crd-form-edit
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName"
+        id: "inside-cluster-crd-form-edit"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2098,9 +2074,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000101
+        name: inside-cluster-crd-table
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName"
+        id: "inside-cluster-crd-table"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2117,9 +2093,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000102
+        name: inside-cluster-api-table
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/api-table/:apiGroup/:apiVersion/:typeName"
+        id: "inside-cluster-api-table"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
@@ -2136,9 +2112,9 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: BreadcrumbInside
       metadata:
-        name: 00000001-0000-0000-0000-000000000103
+        name: inside-cluster-builtin-table
       spec:
-        pathToMatch: "/openapi-ui/inside/:clusterName/builtin-table/:typeName"
+        id: "inside-cluster-builtin-table"
         breadcrumbItems:
         - key: In-Cloud
           label: "In-Cloud: inside"
