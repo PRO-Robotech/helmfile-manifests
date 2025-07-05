@@ -18,7 +18,7 @@ helm-inserter:
         gateways:
         - {{ .Values.global.istioNamespace }}/istio-ingressgateway
         hosts:
-        - 'sgroups.{{ .Values.global.istioNamespace }}.svc.{{ $mainDomain }}'
+        - 'sgroups.{{ .Values.global.istioNamespace }}.{{ $mainDomain }}'
         http:
           - match:
               - uri:
