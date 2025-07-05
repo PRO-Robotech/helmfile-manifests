@@ -4,6 +4,13 @@
 
 domain: {{ $mainDomain }}
 
+appSpec:
+  applications:
+    web:
+      containers:
+        web:
+          extraEnv:
+            HBF_API: https://sgroups.{{ .Values.global.istioNamespace }}.{{ $mainDomain }}/server
 
 helm-inserter:
   templates:
