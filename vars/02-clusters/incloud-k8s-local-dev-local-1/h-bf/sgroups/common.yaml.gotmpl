@@ -42,3 +42,7 @@ helm-inserter:
                 host: {{ .Release.Name }}-server.{{ .Release.Namespace }}.svc
                 port:
                   number: 9006
+              headers:
+                request:
+                  add:
+                    content-type: application/json
