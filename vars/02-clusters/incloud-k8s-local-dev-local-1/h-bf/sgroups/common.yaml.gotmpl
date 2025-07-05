@@ -20,29 +20,25 @@ helm-inserter:
         hosts:
         - '*'
         http:
-        - match:
-          - uri:
-              prefix: /client
-          name: web
-          rewrite:
-            uri: /client
-          route:
-          - destination:
-              host: {{ .Release.Name }}-web.{{ .Release.Namespace }}.svc
-              port:
-                number: 80
-        - match:
-          - uri:
-              prefix: /server
-          rewrite:
-            uri: /server
-          name: web
-          route:
-            - destination:
-                host: {{ .Release.Name }}-server.{{ .Release.Namespace }}.svc
-                port:
-                  number: 9006
-              headers:
-                request:
-                  add:
-                    content-type: application/json
+          - match:
+              - uri:
+                  prefix: /client
+            name: web
+            rewrite:
+              uri: /client
+            route:
+              - destination:
+                  host: {{ .Release.Name }}-web
+                  port:
+                    number: 80
+          - match:
+              - uri:
+                  prefix: /server/
+            name: server
+            rewrite:
+              uri: /
+            route:
+              - destination:
+                  host: {{ .Release.Name }}-server
+                  port:
+                    number: 9006
