@@ -170,6 +170,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -210,6 +213,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -254,6 +260,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -298,6 +307,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -342,6 +354,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -382,6 +397,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -422,6 +440,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -462,6 +483,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -502,6 +526,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -585,6 +612,9 @@ spec:
     syncOptions:
     - CreateNamespace=true
     - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 
@@ -625,6 +655,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
 EOF
 
 

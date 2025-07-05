@@ -1,0 +1,41 @@
+{{- $mainDomain := .Values.global.domains.internalSVC -}}
+{{- $clusterFullName := .Values.global.clusterFullName -}}
+{{- $hbfDomain  := printf "%s.%s.%s" .Release.Name .Release.Namespace $mainDomain }}
+
+domain: {{ $mainDomain }}
+
+
+helm-inserter:
+  templates:
+    VirtualService: |
+      ---
+      apiVersion: networking.istio.io/v1
+      kind: VirtualService
+      metadata:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+      spec:
+        gateways:
+        - {{ .Values.global.istioNamespace }}/istio-ingressgateway
+        hosts:
+        - '*'
+        http:
+        - match:
+          - uri:
+              prefix: /client
+          name: web
+          route:
+            - destination:
+                host: {{ .Release.Name }}-web
+                port:
+                  number: 80
+        - match:
+          - uri:
+              prefix: /server
+          name: web
+          route:
+            - destination:
+                host: {{ .Release.Name }}-server
+                port:
+                  number: 9006
+
