@@ -52,7 +52,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.k8s.provider
-            tag: "v1.0.3-d8d3d5c8"
+            tag: "fix-9127aeb9"
 
           extraCommand:
             - /manager
