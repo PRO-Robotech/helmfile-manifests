@@ -441,6 +441,11 @@ helm-inserter:
                         keysToValue:
                           - metadata
                           - name
+                        keysToValue:
+                          - metadata
+                          - labels
+                          - chat_id
+                        type: exists
                         mode: tag
                         valueUri: /api/clusters/{clusterName}/k8s/apis/in-cloud.io/v1alpha1/instances
                       type: listInput
@@ -485,6 +490,11 @@ helm-inserter:
                         keysToValue:
                           - metadata
                           - name
+                        keysToValue:
+                          - metadata
+                          - labels
+                          - chat_id
+                        type: exists
                         mode: tag
                         valueUri: /api/clusters/{clusterName}/k8s/apis/in-cloud.io/v1alpha1/instances
                       type: listInput
