@@ -447,7 +447,7 @@ helm-inserter:
                           - chat_id
                         type: exists
                         mode: tag
-                        valueUri: /api/clusters/{clusterName}/k8s/apis/in-cloud.io/v1alpha1/instances
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
                       type: listInput
                   required:
                     - apiVersion
@@ -496,7 +496,7 @@ helm-inserter:
                           - chat_id
                         type: exists
                         mode: tag
-                        valueUri: /api/clusters/{clusterName}/k8s/apis/in-cloud.io/v1alpha1/instances
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
                       type: listInput
                   required:
                     - apiVersion
