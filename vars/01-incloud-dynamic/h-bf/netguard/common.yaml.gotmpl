@@ -350,11 +350,7 @@ helm-inserter:
                           - metadata
                           - name
                         mode: tag
-                        valueUri: "/api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{relatedFieldValue}/services"
-                        relatedValuePath:
-                        - spec
-                        - serviceRef
-                        - namespace
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/services
                       type: listInput
                     namespace:
                       customProps:
@@ -365,7 +361,7 @@ helm-inserter:
                           - metadata
                           - name
                         mode: tag
-                        valueUri: /apis/in-cloud.io/v1alpha1/instances
+                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
                       type: listInput
                   required:
                     - apiVersion
@@ -434,7 +430,7 @@ helm-inserter:
                         valueUri: "/api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{relatedFieldValue}/servicealiases"
                         relatedValuePath:
                         - spec
-                        - serviceRef
+                        - serviceLocalRef
                         - namespace
                       type: listInput
                     namespace:
@@ -446,7 +442,7 @@ helm-inserter:
                           - metadata
                           - name
                         mode: tag
-                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/in-cloud.io/v1alpha1/instances
                       type: listInput
                   required:
                     - apiVersion
@@ -475,7 +471,11 @@ helm-inserter:
                           - metadata
                           - name
                         mode: tag
-                        valueUri: /api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/servicealiases
+                        valueUri: "/api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{relatedFieldValue}/servicealiases"
+                        relatedValuePath:
+                        - spec
+                        - serviceRef
+                        - namespace
                       type: listInput
                     namespace:
                       customProps:
@@ -486,7 +486,7 @@ helm-inserter:
                           - metadata
                           - name
                         mode: tag
-                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                        valueUri: /api/clusters/{clusterName}/k8s/apis/in-cloud.io/v1alpha1/instances
                       type: listInput
                   required:
                     - apiVersion
