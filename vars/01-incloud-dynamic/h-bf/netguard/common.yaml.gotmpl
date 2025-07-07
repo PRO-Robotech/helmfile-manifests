@@ -435,14 +435,18 @@ helm-inserter:
                       type: listInput
                     namespace:
                       customProps:
+                        criteria:
+                          keysToValue:
+                            - metadata
+                            - labels
+                            - chat_id
+                          type: exists
                         keysToValue:
                           - metadata
                           - name
                         keysToValue:
                           - metadata
-                          - labels
-                          - chat_id
-                        type: exists
+                          - name
                         mode: tag
                         valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
                       type: listInput
@@ -481,14 +485,18 @@ helm-inserter:
                       type: listInput
                     namespace:
                       customProps:
+                        criteria:
+                          keysToValue:
+                            - metadata
+                            - labels
+                            - chat_id
+                          type: exists
                         keysToValue:
                           - metadata
                           - name
                         keysToValue:
                           - metadata
-                          - labels
-                          - chat_id
-                        type: exists
+                          - name
                         mode: tag
                         valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
                       type: listInput
