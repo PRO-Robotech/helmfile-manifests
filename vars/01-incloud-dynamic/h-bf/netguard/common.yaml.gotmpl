@@ -344,8 +344,8 @@ helm-inserter:
                     name:
                       customProps:
                         keysToLabel:
-                          - status
-                          - addressGroupName
+                          - metadata
+                          - name
                         keysToValue:
                           - metadata
                           - name
@@ -420,6 +420,9 @@ helm-inserter:
                       type: string
                     name:
                       customProps:
+                        keysToLabel:
+                          - metadata
+                          - name
                         keysToValue:
                           - metadata
                           - name
@@ -463,6 +466,9 @@ helm-inserter:
                       type: string
                     name:
                       customProps:
+                        keysToLabel:
+                          - metadata
+                          - name
                         keysToValue:
                           - metadata
                           - name
