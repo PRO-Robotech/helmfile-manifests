@@ -394,6 +394,9 @@ helm-inserter:
             - serviceLocalRef
             - kind
           - - spec
+            - serviceLocalRef
+            - namespace
+          - - spec
             - serviceRef
             - apiVersion
           - - spec
@@ -427,28 +430,7 @@ helm-inserter:
                           - metadata
                           - name
                         mode: tag
-                        valueUri: "/api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{relatedFieldValue}/servicealiases"
-                        relatedValuePath:
-                        - spec
-                        - serviceLocalRef
-                        - namespace
-                      type: listInput
-                    namespace:
-                      customProps:
-                        criteria:
-                          keysToValue:
-                            - metadata
-                            - labels
-                            - chat_id
-                          type: exists
-                        keysToValue:
-                          - metadata
-                          - name
-                        keysToValue:
-                          - metadata
-                          - name
-                        mode: tag
-                        valueUri: /api/clusters/{clusterName}/k8s/api/v1/namespaces
+                        valueUri: "/api/clusters/{clusterName}/k8s/apis/netguard.sgroups.io/v1alpha1/namespaces/{namespace}/servicealiases"
                       type: listInput
                   required:
                     - apiVersion
