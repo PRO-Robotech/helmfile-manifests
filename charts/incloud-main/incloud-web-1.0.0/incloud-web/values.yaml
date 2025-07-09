@@ -133,7 +133,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui-k8s-bff
-            tag: "main-e107d307"
+            tag: "main-2ab3ca6"
 
           extraSecurityContext:
             capabilities:
@@ -155,7 +155,6 @@ appSpec:
               memory: 128Mi
 
           extraEnv:
-            KUBE_API_URL: http://istio-ingressgateway.incloud-istio.svc.cluster.local
             LOGGER: "TRUE"
             PORT: "64231"
             BASE_API_GROUP: front.in-cloud.io
