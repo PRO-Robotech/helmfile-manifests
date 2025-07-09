@@ -42,6 +42,7 @@ rules:
   - ieagagrules/status
   - iecidragrules/status
   - networkbindings/status
+  - networkbindings/network
   - networks/status
   verbs:
   - get
