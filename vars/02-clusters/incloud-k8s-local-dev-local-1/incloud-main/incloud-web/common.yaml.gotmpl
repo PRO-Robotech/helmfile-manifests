@@ -185,8 +185,6 @@ helm-inserter:
           match:
             - uri:
                 prefix: /openapi-bff-ws/
-          rewrite:
-            uri: /openapi-bff/
           route:
             - destination:
                 host: {{ .Release.Name }}-web
@@ -197,8 +195,6 @@ helm-inserter:
           match:
             - uri:
                 prefix: /openapi-bff/
-          rewrite:
-            uri: /openapi-bff/
           route:
             - destination:
                 host: {{ .Release.Name }}-web
