@@ -1025,7 +1025,7 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: TableUriMapping
       metadata:
-        name: "/in-cloud.io/v1alpha1/instances"
+        name: in-cloud.io.v1alpha1.instances
       spec:
         keysToParse:
         - metadata
@@ -1038,25 +1038,12 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: TableUriMapping
       metadata:
-        name: "in-cloud.io/v1alpha1/projects"
+        name: in-cloud.io.v1alpha1.projects
       spec:
         keysToParse:
         - metadata
         - name
         id: "default-/in-cloud.io/v1alpha1/projects"
-        pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/api-table/in-cloud.io/v1alpha1/instances"
-
-    TableUriMappingProjectApi: |
-      ---
-      apiVersion: front.in-cloud.io/v1alpha1
-      kind: TableUriMapping
-      metadata:
-        name: "in-cloud.io/v1alpha1/instances"
-      spec:
-        keysToParse:
-        - metadata
-        - name
-        id: "default-/in-cloud.io/v1alpha1/instances"
         pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/api-table/in-cloud.io/v1alpha1/instances"
 
     CustomFormsOverrideInstances: |
