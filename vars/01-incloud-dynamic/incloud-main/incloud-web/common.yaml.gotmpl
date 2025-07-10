@@ -1025,12 +1025,12 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: TableUriMapping
       metadata:
-        name: instances
+        name: "/in-cloud.io/v1alpha1/instances"
       spec:
         keysToParse:
         - metadata
         - name
-        pathToMatch: "/openapi-ui/:clusterName/:namespace/api-table/in-cloud.io/v1alpha1/instances"
+        id: "default-/in-cloud.io/v1alpha1/instances"
         pathToNavigate: "/openapi-ui/{clusterName}/{namespace}-~recordValue~/{namespace}/api-table/netguard.sgroups.io/v1alpha1/services"
 
     TableUriMappingProject: |
@@ -1038,12 +1038,12 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: TableUriMapping
       metadata:
-        name: cluster-project
+        name: "in-cloud.io/v1alpha1/projects"
       spec:
         keysToParse:
         - metadata
         - name
-        pathToMatch: "/openapi-ui/clusters/:clusterName"
+        id: "default-/in-cloud.io/v1alpha1/projects"
         pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/api-table/in-cloud.io/v1alpha1/instances"
 
     TableUriMappingProjectApi: |
@@ -1051,12 +1051,12 @@ helm-inserter:
       apiVersion: front.in-cloud.io/v1alpha1
       kind: TableUriMapping
       metadata:
-        name: cluster-api-project
+        name: "in-cloud.io/v1alpha1/instances"
       spec:
         keysToParse:
         - metadata
         - name
-        pathToMatch: "/openapi-ui/:clusterName/api-table/in-cloud.io/v1alpha1/projects"
+        id: "default-/in-cloud.io/v1alpha1/instances"
         pathToNavigate: "/openapi-ui/{clusterName}/~recordValue~/api-table/in-cloud.io/v1alpha1/instances"
 
     CustomFormsOverrideInstances: |
@@ -1218,7 +1218,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: apps/v1/statefulsets
+        id: default-/apps/v1/statefulsets
 
     CCODeployments: |
       ---
@@ -1246,7 +1246,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: apps/v1/deployments
+        id: default-/apps/v1/deployments
 
     CCOPods: |
       ---
@@ -1288,7 +1288,7 @@ helm-inserter:
           value: Unschedulable
         - key: Pod IP
           value: NotAllocated
-        overrideType: v1/pods
+        id: default-/v1/pods
 
     CCOResourceQuotas: |
       ---
@@ -1316,7 +1316,7 @@ helm-inserter:
         - jsonPath: .status.used["requests.memory"]
           name: Used Memory
           type: string
-        overrideType: v1/resourcequotas
+        id: default-/v1/resourcequotas
 
     CCOServices: |
       ---
@@ -1341,7 +1341,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: v1/services
+        id: default-/v1/services
 
     CCOGateWays: |
       ---
@@ -1357,7 +1357,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: networking.istio.io/v1/gateways
+        id: default-/networking.istio.io/v1/gateways
 
     CCOVirtualServices: |
       ---
@@ -1379,7 +1379,7 @@ helm-inserter:
         - jsonPath: .spec.http[0].route[0].destination.host
           name: service
           type: string
-        overrideType: networking.istio.io/v1/virtualservices
+        id: default-/networking.istio.io/v1/virtualservices
 
     CCOConfigMaps: |
       ---
@@ -1395,7 +1395,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: v1/configmaps
+        id: default-/v1/configmaps
 
     CCOSecrets: |
       ---
@@ -1411,7 +1411,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: v1/secrets
+        id: default-/v1/secrets
 
     CCOPersistentVolumeClaims: |
       ---
@@ -1442,7 +1442,7 @@ helm-inserter:
         - jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
-        overrideType: v1/persistentvolumeclaims
+        id: default-/v1/persistentvolumeclaims
 
     CCOEvents: |
       ---
@@ -1473,7 +1473,7 @@ helm-inserter:
         - jsonPath: .message
           name: Message
           type: string
-        overrideType: v1/events
+        id: default-/v1/events
 
     CCOself: |
       ---
@@ -1486,10 +1486,10 @@ helm-inserter:
           - jsonPath: .metadata.name
             name: name
             type: string
-          - jsonPath: .spec.overrideType
+          - jsonPath: .spec.id
             name: override type
-            type: overrideType
-        overrideType: front.in-cloud.io/v1alpha1/customcolumnsoverrides
+            type: string
+        id: default-/front.in-cloud.io/v1alpha1/customcolumnsoverrides
 
 
     CustomFormsPrefillProject: |
@@ -1564,7 +1564,7 @@ helm-inserter:
           - description
           value: Описание проекта
 
-    instanceCCO: |
+    CCOinstance: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomColumnsOverride
@@ -1581,9 +1581,9 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: in-cloud.io/v1alpha1/instances
+        id: default-/in-cloud.io/v1alpha1/instances
 
-    projectCCO: |
+    CCOproject: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
       kind: CustomColumnsOverride
@@ -1600,7 +1600,7 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: in-cloud.io/v1alpha1/projects
+        id: default-/in-cloud.io/v1alpha1/projects
 
 
     BCIInsideApisCluster: |

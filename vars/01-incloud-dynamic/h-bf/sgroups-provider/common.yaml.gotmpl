@@ -32,7 +32,7 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: provider.sgroups.io/v1alpha1/addressgroups
+        id: default-/provider.sgroups.io/v1alpha1/addressgroups
         additionalPrinterColumnsTrimLengths:
           - key: GenerateName
             value: 63
@@ -71,7 +71,7 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: provider.sgroups.io/v1alpha1/ieagagrules
+        id: default-/provider.sgroups.io/v1alpha1/ieagagrules
 
     CCOiecidragrules: |
       ---
@@ -105,7 +105,7 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: provider.sgroups.io/v1alpha1/iecidragrules
+        id: default-/provider.sgroups.io/v1alpha1/iecidragrules
 
     CCONetworkBindings: |
       ---
@@ -127,7 +127,7 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: provider.sgroups.io/v1alpha1/networkbindings
+        id: default-/provider.sgroups.io/v1alpha1/networkbindings
 
     CCONetworks: |
       ---
@@ -155,7 +155,7 @@ helm-inserter:
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
-        overrideType: provider.sgroups.io/v1alpha1/networks
+        id: default-/provider.sgroups.io/v1alpha1/networks
 
     CFPAddressGroups: |
       ---
