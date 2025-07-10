@@ -52,7 +52,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.k8s.provider
-            tag: "8-networkitem-in-netvorkbinding-a45c58f5"
+            tag: "8-networkitem-in-netvorkbinding-bc0e3973"
 
           extraCommand:
             - /manager
