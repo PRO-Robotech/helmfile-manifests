@@ -26,7 +26,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/sgroups.k8s.netguard
-            tag: "v1.0.1-e9e0fa52"
+            tag: "feature-retry-logic-41a3bb79"
 
           extraCommand:
             - /manager
