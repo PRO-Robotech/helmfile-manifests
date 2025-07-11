@@ -40,6 +40,8 @@ spec:
           spec:
             description: RuleS2SSpec defines the desired state of RuleS2S.
             properties:
+              description:
+                type: string
               serviceLocalRef:
                 description: ServiceLocalRef is a reference to the local service
                 properties:
