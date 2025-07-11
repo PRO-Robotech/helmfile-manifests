@@ -199,6 +199,9 @@ helm-inserter:
           - jsonPath: .status.conditions[?(@.type=="Ready")].status
             name: Ready
             type: Boolean
+          - jsonPath: .spec.description
+            name: Description
+            type: string
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
@@ -252,6 +255,9 @@ helm-inserter:
           - jsonPath: .status.conditions[?(@.type=="Ready")].status
             name: Ready
             type: Boolean
+          - jsonPath: .spec.description
+            name: Description
+            type: string
           - jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
@@ -408,6 +414,8 @@ helm-inserter:
             spec:
               description: RuleS2SSpec defines the desired state of RuleS2S.
               properties:
+                description:
+                  type: string
                 serviceLocalRef:
                   description: ServiceLocalRef is a reference to the local service
                   properties:
