@@ -133,7 +133,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui-k8s-bff
-            tag: "main-e51e5cf7"
+            tag: "main-a9f7a23f"
 
           extraSecurityContext:
             capabilities:
