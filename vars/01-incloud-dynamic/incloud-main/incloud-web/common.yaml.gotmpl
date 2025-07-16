@@ -1020,6 +1020,23 @@ helm-inserter:
                           baseprefix: openapi-ui
 
 
+    Navigation: |
+      ---
+      apiVersion: front.in-cloud.io/v1alpha1
+      kind: Navigation
+      metadata:
+        name: navigation
+      spec:
+        projects:
+          clear: "/openapi-ui/clusters/{selectedCluster}"
+          change: "/openapi-ui/clusters/{selectedCluster}/projects/{value}"
+        instances:
+          clear: "/openapi-ui/{selectedCluster}/{selectedProject}/api-table/in-cloud.io/v1alpha1/instances"
+          change: "/openapi-ui/{selectedCluster}/{value}/{selectedProject}/api-table/apps/v1/deployments"
+        namespaces:
+          clear: "/openapi-ui/clusters/{selectedCluster}"
+          change: "/openapi-ui/clusters/{selectedCluster}/projects/{value}"
+
     TableUriMappingInstance: |
       ---
       apiVersion: front.in-cloud.io/v1alpha1
