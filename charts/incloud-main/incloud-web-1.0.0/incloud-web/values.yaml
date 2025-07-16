@@ -102,7 +102,7 @@ appSpec:
             PROJECTS_VERSION: v1alpha1
             CUSTOMIZATION_NAVIGATION_RESOURCE_NAME: navigations
             CUSTOMIZATION_NAVIGATION_RESOURCE: navigation
-            # USE_NAMESPACE_NAV: true
+            USE_NAMESPACE_NAV: true
             NAVIGATE_FROM_CLUSTERLIST: /openapi-ui/clusters/~recordValue~
 
           extraPorts:
