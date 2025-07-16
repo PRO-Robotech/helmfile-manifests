@@ -178,3 +178,22 @@ helm-inserter:
           namespace: {{ $.Release.Namespace }}
           name: {{ $.Release.Name }}-istio-apisvcgateway
           port: 443
+
+    SGSVCNodePort: |
+      ---
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: {{ $.Release.Name }}-server-nodeport
+        namespace: {{ $.Release.Namespace }}
+      spec:
+        ports:
+          - name: ingress
+            nodePort: 32006
+            port: 9006
+            protocol: TCP
+            targetPort: 9006
+        selector:
+          app.kubernetes.io/instance: sgroups
+          app.kubernetes.io/name: server
+        type: NodePort
