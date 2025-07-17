@@ -1,0 +1,19 @@
+- name: prometheus
+  namespace: incloud-monitoring
+  chart: charts/prometheus-community/prometheus-{{ env "PROMETHEUS_VERSION" }}/prometheus
+  version: '{{ env "PROMETHEUS_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "monitoring"
+
+- name: prometheus-adapter
+  namespace: incloud-monitoring
+  chart: charts/prometheus-community/prometheus-adapter-{{ env "PROMETHEUS_ADAPTER_VERSION" }}/prometheus-adapter
+  version: '{{ env "PROMETHEUS_ADAPTER_VERSION" }}'
+  insecureSkipTLSVerify: true
+  inherit:
+    - template: localCharts
+  labels:
+    incloud-collections: "monitoring"

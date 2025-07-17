@@ -73,7 +73,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui
-            tag: "main-0adbbe90"
+            tag: "main-aabb375c"
 
           extraSecurityContext:
             capabilities:
@@ -100,6 +100,10 @@ appSpec:
             PROJECTS_API_GROUP: in-cloud.io
             PROJECTS_RESOURCE_NAME: projects
             PROJECTS_VERSION: v1alpha1
+            CUSTOMIZATION_NAVIGATION_RESOURCE_NAME: navigations
+            CUSTOMIZATION_NAVIGATION_RESOURCE: navigation
+            # USE_NAMESPACE_NAV: true
+            NAVIGATE_FROM_CLUSTERLIST: /openapi-ui/clusters/~recordValue~
 
           extraPorts:
             http:
@@ -133,7 +137,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui-k8s-bff
-            tag: "main-a9f7a23f"
+            tag: "main-66baf722"
 
           extraSecurityContext:
             capabilities:

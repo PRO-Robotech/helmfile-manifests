@@ -1,0 +1,5 @@
+
+server:
+  image:
+    repository: prompp/prompp
+    tag: 2.53.2-0.3.3
