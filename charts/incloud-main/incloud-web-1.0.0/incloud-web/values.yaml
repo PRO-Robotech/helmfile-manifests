@@ -73,7 +73,7 @@ appSpec:
           enabled: true
           image:
             repository: sgroups/openapi-ui
-            tag: "main-e13c8605"
+            tag: "main-504c0bb7"
 
           extraSecurityContext:
             capabilities:
