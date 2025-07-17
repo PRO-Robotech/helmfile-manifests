@@ -45,15 +45,29 @@ spec:
                 items:
                   description: NetworkItem defines a network associated with an AddressGroup.
                   properties:
+                    apiVersion:
+                      description: ApiVersion represents the version of the API used
+                        to create or update this network item
+                      type: string
                     cidr:
                       description: CIDR of the network
+                      type: string
+                    kind:
+                      description: Kind specifies the type of the network item.
                       type: string
                     name:
                       description: Name of the network
                       type: string
+                    namespace:
+                      description: Namespace represents the namespace in which the
+                        network item is located.
+                      type: string
                   required:
+                  - apiVersion
                   - cidr
+                  - kind
                   - name
+                  - namespace
                   type: object
                 type: array
             type: object
